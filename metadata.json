@@ -1,0 +1,6 @@
+{
+  "name": "BiO Station - Hệ Sinh Thái Bách Mộc",
+  "description": "Nền tảng Hệ sinh thái Nông sản Hữu cơ, Trải nghiệm, Bán lẻ & Kết nối Thuận Tự Nhiên - BiO Station Chạm để trở về.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

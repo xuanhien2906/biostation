@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --display-font: 'Playfair Display', serif;
+    --body-font: 'Be Vietnam Pro', sans-serif;
+    --font-scale: 100%;
+  }
+
+  html {
+    font-size: var(--font-scale, 100%);
+  }
+
+  body {
+    font-family: var(--body-font);
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-serif {
+    font-family: var(--display-font);
+  }
+
+  p, span, div, button, input, textarea, select, a, label, li, td, th, .font-sans {
+    font-family: var(--body-font);
+  }
+
+  /* Override specific utility classes if needed */
+  .font-serif {
+    font-family: var(--display-font) !important;
+  }
+
+  .font-sans {
+    font-family: var(--body-font) !important;
+  }
+}
