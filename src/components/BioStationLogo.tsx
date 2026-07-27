@@ -25,8 +25,9 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
     slogan: 'Chạm để trở về',
   };
   const isDark = variant === 'dark';
+  const imageUrl = isDark && brandConfig.footerLogoImageUrl ? brandConfig.footerLogoImageUrl : brandConfig.logoImageUrl;
 
-  const isImageMode = (brandConfig.logoType === 'image' || brandConfig.logoType === 'combined') && Boolean(brandConfig.logoImageUrl);
+  const isImageMode = (brandConfig.logoType === 'image' || brandConfig.logoType === 'combined') && Boolean(imageUrl);
   const scale = (brandConfig.logoScale ?? 100) / 100;
   const offsetX = brandConfig.logoOffsetX ?? 0;
   const offsetY = brandConfig.logoOffsetY ?? 0;
@@ -45,7 +46,7 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
         {isImageMode ? (
           <div className="relative flex items-center justify-center shrink-0 overflow-visible py-1">
             <img
-              src={brandConfig.logoImageUrl}
+              src={imageUrl}
               alt={brandConfig.logoMainText || 'Logo'}
               style={imageTransformStyle}
               className="w-auto max-w-none object-contain select-none"

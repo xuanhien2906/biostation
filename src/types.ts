@@ -63,6 +63,7 @@ export interface BioCategoryOption {
 export interface BrandConfig {
   logoType?: 'vector' | 'image' | 'combined'; // 'vector' (default), 'image', or 'combined'
   logoImageUrl?: string;                      // custom image base64 data URL or external URL
+  footerLogoImageUrl?: string;                // footer logo URL
   logoScale?: number;                         // scale zoom factor percentage (50% - 300%)
   logoOffsetX?: number;                       // horizontal offset position in px (-150 to +150)
   logoOffsetY?: number;                       // vertical offset position in px (-100 to +100)
