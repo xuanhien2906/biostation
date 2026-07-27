@@ -172,10 +172,10 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
 export const DEFAULT_BRAND_CONFIG: BrandConfig = {
   logoType: 'image',
   logoImageUrl: '/logo.png',
-  logoScale: 100,
+  logoScale: 130,
   logoOffsetX: 0,
   logoOffsetY: 0,
-  logoHeight: 44,
+  logoHeight: 80,
   logoMainText: 'BiO',
   logoSubText: 'Station',
   slogan: 'Chạm Để Trở Về',
@@ -311,7 +311,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V3';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V4';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
