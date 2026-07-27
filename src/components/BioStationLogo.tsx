@@ -33,7 +33,7 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   const offsetY = isDark ? 0 : (brandConfig.logoOffsetY ?? 0);
   const baseHeight = brandConfig.logoHeight ?? 44;
 
-  const imageTransformStyle: React.CSSProperties = {
+  const imageTransformStyle: React.CSSProperties = isDark ? {} : {
     height: `${baseHeight}px`,
     transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
     transformOrigin: 'center center',
@@ -41,15 +41,15 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   };
 
   return (
-    <div className={`inline-flex flex-col items-center justify-center ${className}`}>
-      <div className="flex items-center gap-3">
+    <div className={`inline-flex flex-col ${isDark ? 'items-start' : 'items-center'} justify-center ${className}`}>
+      <div className="flex items-center gap-3 w-full">
         {isImageMode ? (
-          <div className="relative flex items-center justify-center shrink-0 overflow-visible py-1">
+          <div className={`relative flex ${isDark ? 'items-start justify-start w-full max-w-sm' : 'items-center justify-center shrink-0'} overflow-visible py-1`}>
             <img
               src={imageUrl}
               alt={brandConfig.logoMainText || 'Logo'}
               style={imageTransformStyle}
-              className="w-auto max-w-none object-contain select-none"
+              className={isDark ? "w-full h-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"}
             />
           </div>
         ) : (
