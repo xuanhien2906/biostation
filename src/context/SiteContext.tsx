@@ -164,8 +164,8 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   bgTone: '#f8f5f0',
   headerBg: '#1f381c',
   footerBg: '#1f381c',
-  displayFont: 'Playfair Display',
-  bodyFont: 'Be Vietnam Pro',
+  displayFont: 'Montserrat',
+  bodyFont: 'Montserrat',
   fontScale: 'standard',
 };
 
@@ -311,7 +311,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V2';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V3';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
@@ -457,8 +457,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     root.style.setProperty('--font-scale', scaleVal);
 
     // Set Font Families on Root & Body
-    const displayFontName = themeConfig.displayFont || 'Playfair Display';
-    const bodyFontName = themeConfig.bodyFont || 'Be Vietnam Pro';
+    const displayFontName = themeConfig.displayFont || 'Montserrat';
+    const bodyFontName = themeConfig.bodyFont || 'Montserrat';
 
     root.style.setProperty('--display-font', `'${displayFontName}', serif`);
     root.style.setProperty('--body-font', `'${bodyFontName}', sans-serif`);

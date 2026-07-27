@@ -2,8 +2,8 @@
 
 @layer base {
   :root {
-    --display-font: 'Playfair Display', serif;
-    --body-font: 'Be Vietnam Pro', sans-serif;
+    --display-font: 'Montserrat', sans-serif;
+    --body-font: 'Montserrat', sans-serif;
     --font-scale: 100%;
   }
 
