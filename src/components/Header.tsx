@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* TOP ROW: Logo + Search Bar + Cart & Mobile Toggle */}
-        <div className="flex items-center justify-between py-3 md:py-4 gap-4">
+        <div className="flex items-center justify-between py-1 md:py-1.5 gap-4">
           {/* Logo */}
           <div className="cursor-pointer shrink-0" onClick={() => handleNavClick('home')}>
             <BioStationLogo showSlogan={true} />

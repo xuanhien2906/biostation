@@ -144,8 +144,8 @@ import {
 } from '../data/businessModel';
 
 export const DEFAULT_PAYMENT_CONFIG: PaymentConfig = {
-  bankName: 'MBBank (Ngân Hàng Quân Đội)',
-  accountNumber: '908123456789',
+  bankName: 'VP Bank',
+  accountNumber: '0813 13 13 85',
   accountName: 'HE SINH THAI BIO STATION BACH MOC',
   bankBranch: 'Chi nhánh Phú Mỹ Hưng, TP. Hồ Chí Minh',
   qrCodeUrl: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=500&q=80',
@@ -155,7 +155,7 @@ export const DEFAULT_PAYMENT_CONFIG: PaymentConfig = {
   outerCityShippingFee: 35000,
   freeShippingThreshold: 300000,
   emailSender: 'donhang@biostation.vn',
-  supportPhone: '0908 123 456',
+  supportPhone: '0813 13 13 85',
 };
 
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
@@ -172,16 +172,16 @@ export const DEFAULT_THEME_CONFIG: ThemeConfig = {
 export const DEFAULT_BRAND_CONFIG: BrandConfig = {
   logoType: 'image',
   logoImageUrl: '/logo.png',
-  logoScale: 130,
+  logoScale: 250,
   logoOffsetX: 0,
   logoOffsetY: 0,
-  logoHeight: 80,
+  logoHeight: 60,
   logoMainText: 'BiO',
   logoSubText: 'Station',
   slogan: 'Chạm Để Trở Về',
   subSlogan: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
   topBannerText: '🔥 Khai trương Station Cộng Đồng mới tại Vinhomes Central Park & Thảo Điền – Ưu đãi 15% tất cả gạo hữu cơ Bách Mộc!',
-  hotline: '0908 123 456',
+  hotline: '0813 13 13 85',
   email: 'contact@biostation.vn',
   address: 'Đường Nguyễn Văn Linh, Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM',
   websiteUrl: 'biostation.vn',
@@ -191,7 +191,7 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
   copyrightText: '© 2026 BiO Station – Hệ Sinh Thái Bách Mộc. Chạm để trở về.',
   footerDescription: 'BiO Station là hệ sinh thái điểm trạm nông sản hữu cơ Bách Mộc, kết nối cộng đồng sống xanh và tiêu dùng tử tế.',
   socialFacebook: 'https://facebook.com/biostation.vn',
-  socialZalo: 'https://zalo.me/0908123456',
+  socialZalo: 'https://zalo.me/0813131385',
   socialYoutube: 'https://youtube.com/biostation.official',
   socialTiktok: 'https://tiktok.com/@biostation.vn',
   homepageLabel: 'Trang Chủ',
@@ -226,7 +226,7 @@ export const DEFAULT_STATIONS: StationItem[] = [
     type: 'center',
     typeName: 'Station Trung Tâm',
     address: 'Đường Nguyễn Văn Linh, Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM',
-    phone: '0908 123 456',
+    phone: '0813 13 13 85',
     hours: '07:00 - 21:00 Hàng ngày',
     status: 'Đang vận hành',
     features: ['Trải nghiệm nếm thử nông sản', 'Thưởng trà & nước ép', 'Trung tâm đào tạo & điều phối'],
@@ -311,7 +311,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V4';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V5';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
