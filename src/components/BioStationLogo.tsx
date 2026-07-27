@@ -42,14 +42,14 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
 
   return (
     <div className={`inline-flex flex-col ${isDark ? 'items-start' : 'items-center'} justify-center ${className}`}>
-      <div className="flex items-center gap-3 w-full">
+      <div className="flex items-center gap-3">
         {isImageMode ? (
-          <div className={`relative flex ${isDark ? 'items-start justify-start w-full max-w-sm' : 'items-center justify-center shrink-0'} overflow-visible py-1`}>
+          <div className={`relative flex ${isDark ? 'items-start justify-start' : 'items-center justify-center shrink-0'} overflow-visible py-1`}>
             <img
               src={imageUrl}
               alt={brandConfig.logoMainText || 'Logo'}
               style={imageTransformStyle}
-              className={isDark ? "w-full h-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"}
+              className={isDark ? "h-16 sm:h-20 w-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"}
             />
           </div>
         ) : (
