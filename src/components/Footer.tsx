@@ -21,28 +21,29 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   };
 
   return (
-    <footer className="bg-[#1f381c] text-emerald-100 border-t border-[#274e23] pt-12 pb-8" style={{ backgroundColor: 'var(--footer-bg, #1f381c)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 pb-10 border-b border-emerald-800/80">
+    <footer className="bg-[#1f381c] text-emerald-100 border-t border-[#274e23] pt-6 pb-8" style={{ backgroundColor: 'var(--footer-bg, #1f381c)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 pb-8 border-b border-emerald-800/80">
           {/* Brand Info */}
-          <div className="lg:col-span-5 space-y-4">
-            <BioStationLogo variant="dark" showSlogan={true} />
+          <div className="lg:col-span-5 space-y-4 flex flex-col items-center text-center lg:items-start lg:text-left">
+            <div className="flex flex-col items-center text-center space-y-4 w-full">
+              <BioStationLogo variant="dark" showSlogan={true} />
 
-            <p className="text-xs text-emerald-200/90 leading-relaxed max-w-sm">
-              {brandConfig.footerDescription || brandConfig.subSlogan}
-            </p>
+              <p className="text-xs text-emerald-200/90 leading-relaxed max-w-sm">
+                {brandConfig.footerDescription || brandConfig.subSlogan}
+              </p>
 
-            <div className="flex items-center gap-3 text-xs text-amber-300 font-bold pt-1">
-              <span>Đúng: Nguồn gốc rõ ràng</span>
-              <span>•</span>
-              <span>Thật: Thông tin thật</span>
-              <span>•</span>
-              <span>Thuận tự nhiên</span>
-            </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-amber-300 font-bold pt-1">
+                <span>Đúng: Nguồn gốc rõ ràng</span>
+                <span>•</span>
+                <span>Thật: Thông tin thật</span>
+                <span>•</span>
+                <span>Thuận tự nhiên</span>
+              </div>
 
-            {/* Social Links if present */}
-            {(brandConfig.socialFacebook || brandConfig.socialZalo || brandConfig.socialYoutube || brandConfig.socialTiktok) && (
-              <div className="flex items-center gap-3 pt-2 text-xs">
+              {/* Social Links if present */}
+              {(brandConfig.socialFacebook || brandConfig.socialZalo || brandConfig.socialYoutube || brandConfig.socialTiktok) && (
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs">
                 <span className="text-emerald-300/80 text-[11px] font-bold">Kênh Truyền Thông:</span>
                 {brandConfig.socialFacebook && (
                   <a href={brandConfig.socialFacebook} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 rounded-md bg-emerald-800/60 hover:bg-emerald-700 text-amber-300 font-bold text-[11px] transition-colors">
@@ -66,6 +67,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 )}
               </div>
             )}
+            </div>
           </div>
 
           {/* Quick Navigation Links */}
