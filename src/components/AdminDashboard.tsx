@@ -1095,6 +1095,85 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Hero / CTA Texts Editing */}
+                <div className="pt-4 border-t border-[#f0e6d8] space-y-4">
+                  <h4 className="font-bold text-xs uppercase tracking-wider text-[#274e23] flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    Chỉnh Sửa Nút Bấm & Ba Điểm Nhấn Trang Chủ
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-2 p-3 bg-[#f8f5f0] rounded-xl border border-[#e2d5c3]">
+                      <h4 className="text-[11px] font-bold text-[#274e23]">Điểm Nhấn 1 (Biểu tượng Lúa)</h4>
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue1Title}
+                        onChange={(e) => updateHeroConfig({ coreValue1Title: e.target.value })}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white font-bold"
+                      />
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue1Desc}
+                        onChange={(e) => updateHeroConfig({ coreValue1Desc: e.target.value })}
+                        className="w-full text-[11px] p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 p-3 bg-[#f8f5f0] rounded-xl border border-[#e2d5c3]">
+                      <h4 className="text-[11px] font-bold text-[#274e23]">Điểm Nhấn 2 (Biểu tượng Thịt)</h4>
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue2Title}
+                        onChange={(e) => updateHeroConfig({ coreValue2Title: e.target.value })}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white font-bold"
+                      />
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue2Desc}
+                        onChange={(e) => updateHeroConfig({ coreValue2Desc: e.target.value })}
+                        className="w-full text-[11px] p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 p-3 bg-[#f8f5f0] rounded-xl border border-[#e2d5c3]">
+                      <h4 className="text-[11px] font-bold text-[#274e23]">Điểm Nhấn 3 (Biểu tượng Bát Súp)</h4>
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue3Title}
+                        onChange={(e) => updateHeroConfig({ coreValue3Title: e.target.value })}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white font-bold"
+                      />
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.coreValue3Desc}
+                        onChange={(e) => updateHeroConfig({ coreValue3Desc: e.target.value })}
+                        className="w-full text-[11px] p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Tên Nút Bấm Chính (Xanh)</label>
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.ctaPrimaryText}
+                        onChange={(e) => updateHeroConfig({ ctaPrimaryText: e.target.value })}
+                        className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-[#274e23]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Tên Nút Bấm Phụ (Vàng)</label>
+                      <input
+                        type="text"
+                        value={siteData.heroConfig.ctaSecondaryText}
+                        onChange={(e) => updateHeroConfig({ ctaSecondaryText: e.target.value })}
+                        className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-amber-700"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Custom Phrases & Terms Deep Customization */}
                 <div className="pt-4 border-t border-[#f0e6d8] space-y-4">
                   <div className="bg-[#274e23]/5 p-4 rounded-2xl border border-[#274e23]/20 space-y-3">

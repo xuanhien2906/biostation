@@ -210,14 +210,14 @@ export const DEFAULT_HERO_CONFIG: HeroConfig = {
   subTitle: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
   descriptionText:
     'BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, gạo hữu cơ Bách Mộc, sản phẩm tử tế và cộng đồng yêu thiên nhiên.',
-  coreValue1Title: 'Đúng',
-  coreValue1Desc: 'Nguồn gốc rõ ràng',
-  coreValue2Title: 'Thật',
-  coreValue2Desc: 'Sản phẩm & thông tin thật',
-  coreValue3Title: 'Thuận tự nhiên',
-  coreValue3Desc: 'Sống hài hòa sinh thái',
-  ctaPrimaryText: 'Xem Mô Hình Kinh Doanh',
-  ctaSecondaryText: 'Nông Sản BMQ Qualified',
+  coreValue1Title: 'Gạo ST25 Bách Mộc',
+  coreValue1Desc: 'Lúa tôm dẻo ngọt',
+  coreValue2Title: 'Thịt & Rau Hữu Cơ',
+  coreValue2Desc: 'Sạch chuẩn BMQ',
+  coreValue3Title: 'Bữa Ăn Trải Nghiệm',
+  coreValue3Desc: 'Chỉ từ 50k / người',
+  ctaPrimaryText: 'Mua Nông Sản & Gạo ST25',
+  ctaSecondaryText: 'Xem Bữa Ăn Trải Nghiệm (50k)',
 };
 
 export const DEFAULT_STATIONS: StationItem[] = [

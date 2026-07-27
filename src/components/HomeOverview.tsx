@@ -135,8 +135,8 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                     🌾
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#274e23]">Gạo ST25 Bách Mộc</div>
-                    <div className="text-[10px] text-[#7a6858]">Lúa tôm dẻo ngọt</div>
+                    <div className="text-xs font-bold text-[#274e23]">{heroConfig.coreValue1Title}</div>
+                    <div className="text-[10px] text-[#7a6858]">{heroConfig.coreValue1Desc}</div>
                   </div>
                 </div>
 
@@ -145,8 +145,8 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                     🥩
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#274e23]">Thịt & Rau Hữu Cơ</div>
-                    <div className="text-[10px] text-[#7a6858]">Sạch chuẩn BMQ</div>
+                    <div className="text-xs font-bold text-[#274e23]">{heroConfig.coreValue2Title}</div>
+                    <div className="text-[10px] text-[#7a6858]">{heroConfig.coreValue2Desc}</div>
                   </div>
                 </div>
 
@@ -155,8 +155,8 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                     🍲
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#274e23]">Bữa Ăn Trải Nghiệm</div>
-                    <div className="text-[10px] text-[#7a6858]">Chỉ từ 50k / người</div>
+                    <div className="text-xs font-bold text-[#274e23]">{heroConfig.coreValue3Title}</div>
+                    <div className="text-[10px] text-[#7a6858]">{heroConfig.coreValue3Desc}</div>
                   </div>
                 </div>
               </div>
@@ -168,7 +168,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                   className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all hover:scale-[1.02] cursor-pointer"
                 >
                   <ShoppingBag className="w-4 h-4 text-amber-300" />
-                  <span>Mua Nông Sản & Gạo ST25</span>
+                  <span>{heroConfig.ctaPrimaryText}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -177,7 +177,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                   className="flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm transition-all cursor-pointer shadow"
                 >
                   <Utensils className="w-4 h-4" />
-                  <span>Xem Bữa Ăn Trải Nghiệm (50k)</span>
+                  <span>{heroConfig.ctaSecondaryText}</span>
                 </a>
               </div>
             </div>
