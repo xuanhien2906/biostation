@@ -28,9 +28,9 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   const imageUrl = isDark && brandConfig.footerLogoImageUrl ? brandConfig.footerLogoImageUrl : brandConfig.logoImageUrl;
 
   const isImageMode = (brandConfig.logoType === 'image' || brandConfig.logoType === 'combined') && Boolean(imageUrl);
-  const scale = (brandConfig.logoScale ?? 100) / 100;
-  const offsetX = brandConfig.logoOffsetX ?? 0;
-  const offsetY = brandConfig.logoOffsetY ?? 0;
+  const scale = isDark ? 1.2 : (brandConfig.logoScale ?? 100) / 100;
+  const offsetX = isDark ? 0 : (brandConfig.logoOffsetX ?? 0);
+  const offsetY = isDark ? 0 : (brandConfig.logoOffsetY ?? 0);
   const baseHeight = brandConfig.logoHeight ?? 44;
 
   const imageTransformStyle: React.CSSProperties = {

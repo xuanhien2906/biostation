@@ -173,8 +173,8 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
   logoType: 'image',
   logoImageUrl: '/logo.png',
   footerLogoImageUrl: '/footer-logo.png',
-  logoScale: 400,
-  logoOffsetX: 40,
+  logoScale: 320,
+  logoOffsetX: 80,
   logoOffsetY: 0,
   logoHeight: 60,
   logoMainText: 'BiO',
@@ -312,7 +312,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V6';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V7';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
