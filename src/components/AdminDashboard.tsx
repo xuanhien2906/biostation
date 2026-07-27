@@ -468,9 +468,12 @@ export const AdminDashboard: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('BIO_STATION_ADMIN_AUTH') === 'true';
   });
-  const [loginUser, setLoginUser] = useState('admin');
-  const [loginPass, setLoginPass] = useState('admin123');
+  const [loginUser, setLoginUser] = useState('');
+  const [loginPass, setLoginPass] = useState('');
   const [authError, setAuthError] = useState('');
+
+  const [newAdminUser, setNewAdminUser] = useState(localStorage.getItem('BIO_STATION_ADMIN_USER') || 'admin');
+  const [newAdminPass, setNewAdminPass] = useState(localStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123');
 
   const [activeTab, setActiveTab] = useState<
     'brand' | 'theme' | 'payment' | 'experience_meal' | 'business' | 'products' | 'stations' | 'recipes' | 'articles' | 'stories' | 'tools'
@@ -511,7 +514,10 @@ export const AdminDashboard: React.FC = () => {
 
   const handleLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if ((loginUser === 'admin' || loginUser === 'biostation') && (loginPass === 'admin123' || loginPass === 'biostation2026')) {
+    const validUser = localStorage.getItem('BIO_STATION_ADMIN_USER') || 'admin';
+    const validPass = localStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123';
+
+    if ((loginUser === validUser || loginUser === 'biostation') && (loginPass === validPass || loginPass === 'biostation2026')) {
       setIsAuthenticated(true);
       sessionStorage.setItem('BIO_STATION_ADMIN_AUTH', 'true');
       setAuthError('');
@@ -533,7 +539,19 @@ export const AdminDashboard: React.FC = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('BIO_STATION_ADMIN_AUTH');
+    setLoginUser('');
+    setLoginPass('');
     showNotification('Đã đăng xuất khỏi tài khoản Quản trị!');
+  };
+
+  const handleUpdateAdminCredentials = () => {
+    if (!newAdminUser.trim() || !newAdminPass.trim()) {
+      alert('Tên đăng nhập và mật khẩu không được để trống!');
+      return;
+    }
+    localStorage.setItem('BIO_STATION_ADMIN_USER', newAdminUser.trim());
+    localStorage.setItem('BIO_STATION_ADMIN_PASS', newAdminPass.trim());
+    showNotification('Đã cập nhật thông tin đăng nhập Admin thành công!');
   };
 
   const showNotification = (msg: string) => {
@@ -687,18 +705,6 @@ export const AdminDashboard: React.FC = () => {
             </p>
           </div>
 
-          {/* Credentials Notice Box */}
-          <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-bold text-amber-800">
-              <Lock className="w-4 h-4 text-amber-600" />
-              <span>Thông Tin Tài Khoản Đăng Nhập Mặc Định:</span>
-            </div>
-            <div className="bg-white p-3 rounded-xl border border-amber-200 font-mono space-y-1 text-slate-800">
-              <div>• Tên đăng nhập: <strong className="text-[#274e23]">admin</strong></div>
-              <div>• Mật khẩu: <strong className="text-[#274e23]">admin123</strong></div>
-            </div>
-          </div>
-
           <form onSubmit={handleLogin} className="space-y-4 text-xs">
             <div>
               <label className="font-bold text-[#5c4d43] block mb-1">Tên Đăng Nhập</label>
@@ -706,7 +712,7 @@ export const AdminDashboard: React.FC = () => {
                 type="text"
                 value={loginUser}
                 onChange={(e) => setLoginUser(e.target.value)}
-                placeholder="Nhập 'admin'"
+                placeholder="Nhập tên đăng nhập..."
                 className="w-full p-3 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] focus:border-[#274e23] focus:ring-1 focus:ring-[#274e23] outline-none"
               />
             </div>
@@ -717,7 +723,7 @@ export const AdminDashboard: React.FC = () => {
                 type="password"
                 value={loginPass}
                 onChange={(e) => setLoginPass(e.target.value)}
-                placeholder="Nhập 'admin123'"
+                placeholder="Nhập mật khẩu..."
                 className="w-full p-3 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] focus:border-[#274e23] focus:ring-1 focus:ring-[#274e23] outline-none"
               />
             </div>
@@ -734,16 +740,6 @@ export const AdminDashboard: React.FC = () => {
             >
               <Unlock className="w-4 h-4 text-amber-300" /> Đăng Nhập Quản Trị
             </button>
-
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={handleQuickAutoLogin}
-                className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-1.5 transition-all"
-              >
-                <Sparkles className="w-4 h-4" /> Đăng Nhập Nhanh Trải Nghiệm 1-Click
-              </button>
-            </div>
           </form>
         </div>
       </div>
@@ -2762,49 +2758,85 @@ export const AdminDashboard: React.FC = () => {
 
         {/* TAB 9: BACKUP & IMPORT */}
         {activeTab === 'tools' && (
-          <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
-            <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2 border-b border-[#f0e6d8] pb-3">
-              <Settings className="w-5 h-5 text-amber-600" />
-              Công Cụ Sao Lưu, Khôi Phục & Import File JSON
-            </h3>
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+              <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2 border-b border-[#f0e6d8] pb-3">
+                <Lock className="w-5 h-5 text-amber-600" />
+                Thiết Lập Tài Khoản Đăng Nhập Admin
+              </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-5 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3">
-                <h4 className="font-bold text-sm text-[#274e23] flex items-center gap-1.5">
-                  <Download className="w-4 h-4 text-amber-600" /> Xuất File Backup Toàn Bộ Dữ Liệu
-                </h4>
-                <p className="text-xs text-[#5c4d43]">
-                  Tải về file JSON bảo toàn toàn bộ sản phẩm, công thức món ăn, phông chữ, màu sắc và bài viết đã chỉnh sửa.
-                </p>
-                <button
-                  onClick={handleExport}
-                  className="w-full py-2.5 bg-[#274e23] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Download className="w-4 h-4 text-amber-300" /> Tải File Cấu Hình JSON
-                </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1 text-xs">Tên Đăng Nhập Mới</label>
+                  <input
+                    type="text"
+                    value={newAdminUser}
+                    onChange={(e) => setNewAdminUser(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-[#dcd0bf] bg-white text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1 text-xs">Mật Khẩu Mới</label>
+                  <input
+                    type="text"
+                    value={newAdminPass}
+                    onChange={(e) => setNewAdminPass(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-[#dcd0bf] bg-white text-xs"
+                  />
+                </div>
               </div>
+              <button
+                onClick={handleUpdateAdminCredentials}
+                className="py-2.5 px-6 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2 transition-colors"
+              >
+                <Save className="w-4 h-4 text-amber-300" /> Cập Nhật Thông Tin Đăng Nhập
+              </button>
+            </div>
 
-              <div className="p-5 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3">
-                <h4 className="font-bold text-sm text-[#274e23] flex items-center gap-1.5">
-                  <Upload className="w-4 h-4 text-amber-600" /> Nhập File JSON Mới
-                </h4>
-                <p className="text-xs text-[#5c4d43]">
-                  Dán nội dung file JSON để cập nhật toàn bộ hệ thống ngay lập tức.
-                </p>
-                <textarea
-                  rows={4}
-                  placeholder="Dán chuỗi JSON cấu hình vào đây..."
-                  value={jsonInput}
-                  onChange={(e) => setJsonInput(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-mono"
-                />
-                {jsonError && <p className="text-xs text-red-600 font-bold">{jsonError}</p>}
-                <button
-                  onClick={handleImport}
-                  className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Upload className="w-4 h-4 text-white" /> Áp Dụng Dữ Liệu Mới
-                </button>
+            <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+              <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2 border-b border-[#f0e6d8] pb-3">
+                <Settings className="w-5 h-5 text-amber-600" />
+                Công Cụ Sao Lưu, Khôi Phục & Import File JSON
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-5 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3">
+                  <h4 className="font-bold text-sm text-[#274e23] flex items-center gap-1.5">
+                    <Download className="w-4 h-4 text-amber-600" /> Xuất File Backup Toàn Bộ Dữ Liệu
+                  </h4>
+                  <p className="text-xs text-[#5c4d43]">
+                    Tải về file JSON bảo toàn toàn bộ sản phẩm, công thức món ăn, phông chữ, màu sắc và bài viết đã chỉnh sửa.
+                  </p>
+                  <button
+                    onClick={handleExport}
+                    className="w-full py-2.5 bg-[#274e23] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-4 h-4 text-amber-300" /> Tải File Cấu Hình JSON
+                  </button>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3">
+                  <h4 className="font-bold text-sm text-[#274e23] flex items-center gap-1.5">
+                    <Upload className="w-4 h-4 text-amber-600" /> Nhập File JSON Mới
+                  </h4>
+                  <p className="text-xs text-[#5c4d43]">
+                    Dán nội dung file JSON để cập nhật toàn bộ hệ thống ngay lập tức.
+                  </p>
+                  <textarea
+                    rows={4}
+                    placeholder="Dán chuỗi JSON cấu hình vào đây..."
+                    value={jsonInput}
+                    onChange={(e) => setJsonInput(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-mono"
+                  />
+                  {jsonError && <p className="text-xs text-red-600 font-bold">{jsonError}</p>}
+                  <button
+                    onClick={handleImport}
+                    className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Upload className="w-4 h-4 text-white" /> Áp Dụng Dữ Liệu Mới
+                  </button>
+                </div>
               </div>
             </div>
           </div>
