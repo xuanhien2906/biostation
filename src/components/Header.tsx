@@ -66,20 +66,32 @@ export const Header: React.FC<HeaderProps> = ({
           <span>{brandConfig.headquarters}</span>
         </div>
 
-        <div className="flex items-center justify-center gap-2 mx-auto md:mx-0">
-          <Sprout className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-          <span className="font-semibold">{brandConfig.topBannerText}</span>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 mx-auto md:mx-0">
+          <div className="flex flex-col items-center text-center leading-tight">
+            <div className="flex items-center gap-1.5">
+              <Sprout className="w-3 h-3 text-amber-300 animate-pulse shrink-0" />
+              <span className="font-semibold">{brandConfig.topBannerText.split(/ – | - |\|/)[0]}</span>
+            </div>
+            {brandConfig.topBannerText.split(/ – | - |\|/).length > 1 && (
+              <span className="font-semibold text-amber-300 mt-0.5">
+                {brandConfig.topBannerText.split(/ – | - |\|/).slice(1).join(' - ')}
+              </span>
+            )}
+          </div>
           <button
             onClick={() => handleNavClick('model')}
-            className="underline font-bold text-amber-300 hover:text-white transition-colors cursor-pointer ml-1"
+            className="underline font-bold text-amber-300 hover:text-white transition-colors cursor-pointer text-[10px] sm:text-[11px]"
           >
             Kế hoạch kinh doanh &rarr;
           </button>
         </div>
 
-        <div className="hidden lg:flex items-center gap-2 text-emerald-100 text-[11px] font-semibold">
-          <Phone className="w-3.5 h-3.5 text-amber-400" />
-          <span>Hotline: {brandConfig.hotline}</span>
+        <div className="hidden lg:flex flex-col items-end text-emerald-100 text-[11px] font-semibold leading-tight">
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3 h-3 text-amber-400" />
+            <span>Hotline</span>
+          </div>
+          <span className="text-amber-300 tracking-wider">{brandConfig.hotline}</span>
         </div>
       </div>
 
