@@ -97,14 +97,14 @@ export const Header: React.FC<HeaderProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* TOP ROW: Logo + Search Bar + Cart & Mobile Toggle */}
-        <div className="flex items-center justify-between py-1 md:py-1.5 gap-4">
+        <div className="flex flex-wrap md:flex-nowrap items-center justify-between py-2 md:py-1.5 gap-y-3 gap-x-4">
           {/* Logo */}
           <div className="cursor-pointer shrink-0" onClick={() => handleNavClick('home')}>
             <BioStationLogo showSlogan={true} isHeader={true} />
           </div>
 
           {/* Universal Search Bar - Prominent & Flexible on 16:9 / Wide Displays */}
-          <div className="relative flex-1 max-w-xl md:max-w-2xl mx-2 sm:mx-4">
+          <div className="relative w-full md:w-auto md:flex-1 md:max-w-2xl order-3 md:order-2">
             <div className="relative">
               <input
                 type="text"
@@ -189,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Action Controls: Cart & Mobile Toggle */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-3 shrink-0 order-2 md:order-3">
             {/* Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
