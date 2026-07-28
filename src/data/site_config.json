@@ -1,7 +1,7 @@
 {
   "brandConfig": {
     "logoType": "image",
-    "logoImageUrl": "https://i.postimg.cc/MTfSVgS3/Thiet-ke-chua-co-ten.png",
+    "logoImageUrl": "/custom-logo.png",
     "footerLogoImageUrl": "/footer-logo.png",
     "logoScale": 300,
     "logoOffsetX": 82,
@@ -31,7 +31,7 @@
     "cleanMeatLabel": "Thịt & Hải Sản Sạch",
     "bioStationLabel": "Hệ Sinh Thái BiO Station",
     "mainSaleProductTitle": "Sản Phẩm Bán Lẻ Chủ Lực Trang Chủ",
-    "certificationLogoUrl": "https://i.postimg.cc/v89yBRXY/footer-logo-png.jpg"
+    "certificationLogoUrl": "/custom-footer-logo.jpg"
   },
   "heroConfig": {
     "badgeTag": "Hệ Sinh Thái Nông Sản Hữu Cơ & Sống Xanh Bách Mộc",
