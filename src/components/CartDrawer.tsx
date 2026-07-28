@@ -65,6 +65,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     address: 'Số 123 Đường Nguyễn Văn Linh, Phường Tân Phong, Quận 7',
     city: 'TP. Hồ Chí Minh',
     shippingType: 'inner',
+    orderType: 'delivery',
     notes: 'Giao giờ hành chính, gọi trước 15 phút.',
   });
 
@@ -84,6 +85,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     shippingFee: number;
     vatAmount: number;
     grandTotal: number;
+    amountToPay: number;
+    remainingAmount: number;
     recipient: OrderRecipient;
     createdAt: string;
   } | null>(null);
@@ -97,7 +100,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   // Shipping Fee calculation (Zero for food orders or free threshold)
   const isFreeShipping = recipient.shippingType === 'inner' && subtotal >= (paymentConfig.freeShippingThreshold || 300000);
-  const shippingFee = (subtotal === 0 || hasFoodOrder)
+  const shippingFee = (subtotal === 0 || hasFoodOrder || recipient.orderType !== 'delivery')
     ? 0 
     : isFreeShipping 
       ? 0 
@@ -111,6 +114,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   // Grand Total including items, discount, shipping, and VAT
   const grandTotal = subtotalAfterDiscount + shippingFee + vatAmount;
+
+  // Amount to pay based on order type
+  const isDepositRequired = recipient.orderType === 'takeaway' || recipient.orderType === 'dine-in';
+  const amountToPay = isDepositRequired ? Math.round(grandTotal / 2) : grandTotal;
+  const remainingAmount = grandTotal - amountToPay;
 
   const applyPromoCode = () => {
     const code = promoCode.trim().toUpperCase();
@@ -155,18 +163,31 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       shippingFee,
       vatAmount,
       grandTotal,
+      amountToPay,
+      remainingAmount,
       recipient: { ...recipient },
       createdAt: new Date().toLocaleString('vi-VN'),
     };
 
-    const orderDetailsText = cartItems.map(item => `- ${item.product.name} (SL: ${item.quantity}) - ${new Intl.NumberFormat('vi-VN').format(item.product.price * item.quantity)} đ`).join('\n');
+    const orderDetailsText = cartItems.map((item, index) => `
+      <tr>
+        <td style="padding: 12px 10px; border-bottom: 1px solid #e2d5c3; text-align: center; color: #5c4d43;">${index + 1}</td>
+        <td style="padding: 12px 10px; border-bottom: 1px solid #e2d5c3; color: #274e23; font-weight: bold;">${item.product.name}</td>
+        <td style="padding: 12px 10px; border-bottom: 1px solid #e2d5c3; text-align: center; color: #2d241e; font-weight: bold;">${item.quantity}</td>
+        <td style="padding: 12px 10px; border-bottom: 1px solid #e2d5c3; text-align: right; color: #5c4d43;">${new Intl.NumberFormat('vi-VN').format(item.product.price)}đ</td>
+        <td style="padding: 12px 10px; border-bottom: 1px solid #e2d5c3; text-align: right; color: #b14811; font-weight: bold;">${new Intl.NumberFormat('vi-VN').format(item.product.price * item.quantity)}đ</td>
+      </tr>
+    `).join('');
     
     await sendOrderEmail({
       customer_name: recipient.fullName,
       customer_phone: recipient.phone,
+      customer_email: recipient.email,
       customer_address: recipient.address,
       order_details: orderDetailsText,
-      total_price: `${new Intl.NumberFormat('vi-VN').format(grandTotal)} đ`
+      total_price: `${new Intl.NumberFormat('vi-VN').format(grandTotal)} đ`,
+      paid_amount: `${new Intl.NumberFormat('vi-VN').format(amountToPay)} đ`,
+      remaining_amount: `${new Intl.NumberFormat('vi-VN').format(remainingAmount)} đ`,
     });
 
     setSavedOrderSnapshot(currentOrder);
@@ -409,12 +430,55 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   )}
                 </div>
 
-                {/* Shipping Type Choice - only for physical product delivery */}
-                {!hasFoodOrder && (
+                {/* Order Type Choice */}
+                <div className="bg-white p-4 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm">
+                  <h3 className="text-xs font-bold text-[#274e23] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#f0e6d8] pb-2">
+                    <ShoppingBag className="w-4 h-4 text-amber-600" />
+                    2. Hình Thức Nhận Hàng
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <label
+                      onClick={() => setRecipient({ ...recipient, orderType: 'delivery' })}
+                      className={`p-2.5 rounded-xl border cursor-pointer text-center transition-all ${
+                        recipient.orderType === 'delivery'
+                          ? 'border-[#274e23] bg-[#274e23]/5 font-bold text-[#274e23]'
+                          : 'border-[#dcd0bf] bg-white text-[#7a6858]'
+                      }`}
+                    >
+                      <div className="text-xs">🚚 Giao hàng tận nơi</div>
+                      <div className="text-[10px] mt-0.5 opacity-80">(Thanh toán 100%)</div>
+                    </label>
+                    <label
+                      onClick={() => setRecipient({ ...recipient, orderType: 'takeaway' })}
+                      className={`p-2.5 rounded-xl border cursor-pointer text-center transition-all ${
+                        recipient.orderType === 'takeaway'
+                          ? 'border-[#274e23] bg-[#274e23]/5 font-bold text-[#274e23]'
+                          : 'border-[#dcd0bf] bg-white text-[#7a6858]'
+                      }`}
+                    >
+                      <div className="text-xs">🛍️ Mua đem về</div>
+                      <div className="text-[10px] mt-0.5 opacity-80">(Cọc trước 50%)</div>
+                    </label>
+                    <label
+                      onClick={() => setRecipient({ ...recipient, orderType: 'dine-in' })}
+                      className={`p-2.5 rounded-xl border cursor-pointer text-center transition-all ${
+                        recipient.orderType === 'dine-in'
+                          ? 'border-[#274e23] bg-[#274e23]/5 font-bold text-[#274e23]'
+                          : 'border-[#dcd0bf] bg-white text-[#7a6858]'
+                      }`}
+                    >
+                      <div className="text-xs">🍽️ Đặt bàn tại quán</div>
+                      <div className="text-[10px] mt-0.5 opacity-80">(Cọc trước 50%)</div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Shipping Type Choice - only for physical product delivery and delivery type */}
+                {!hasFoodOrder && recipient.orderType === 'delivery' && (
                   <div className="bg-white p-4 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm">
                     <h3 className="text-xs font-bold text-[#274e23] uppercase tracking-wider flex items-center gap-1.5 border-b border-[#f0e6d8] pb-2">
                       <Truck className="w-4 h-4 text-amber-600" />
-                      2. Phương Thức Vận Chuyển
+                      3. Phương Thức Vận Chuyển
                     </h3>
 
                     <div className="space-y-2">
@@ -607,8 +671,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </div>
 
                     <div className="flex justify-between items-center pt-2 text-sm font-black text-[#274e23]">
-                      <span>Số tiền chuyển khoản:</span>
-                      <span className="text-base text-amber-700">{grandTotal.toLocaleString('vi-VN')} VNĐ</span>
+                      <span>Số tiền chuyển khoản {isDepositRequired ? '(Cọc 50%)' : '(100%)'}:</span>
+                      <span className="text-base text-amber-700">{amountToPay.toLocaleString('vi-VN')} VNĐ</span>
                     </div>
                   </div>
                 </div>
@@ -656,11 +720,27 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </h4>
                   <div><strong>Người nhận:</strong> {savedOrderSnapshot.recipient.fullName} - {savedOrderSnapshot.recipient.phone}</div>
                   <div><strong>Địa chỉ:</strong> {savedOrderSnapshot.recipient.address}, {savedOrderSnapshot.recipient.city}</div>
-                  <div><strong>Hình thức giao:</strong> {savedOrderSnapshot.recipient.shippingType === 'inner' ? 'Giao nội thành' : 'Giao ngoại tỉnh'}</div>
+                  <div><strong>Hình thức:</strong> {
+                    savedOrderSnapshot.recipient.orderType === 'delivery' ? 'Giao hàng tận nơi' : 
+                    savedOrderSnapshot.recipient.orderType === 'takeaway' ? 'Mua đem về' : 'Đặt bàn tại quán'
+                  }</div>
+                  {savedOrderSnapshot.recipient.orderType === 'delivery' && !hasFoodOrder && (
+                    <div><strong>Giao vận:</strong> {savedOrderSnapshot.recipient.shippingType === 'inner' ? 'Nội thành' : 'Ngoại tỉnh'}</div>
+                  )}
                   <div className="pt-2 border-t border-[#f0e6d8] flex justify-between font-bold text-[#274e23]">
-                    <span>Tổng cộng đã thanh toán (Đã VAT):</span>
-                    <span className="text-amber-700">{savedOrderSnapshot.grandTotal.toLocaleString('vi-VN')} VNĐ</span>
+                    <span>Tổng đơn (Đã VAT):</span>
+                    <span>{savedOrderSnapshot.grandTotal.toLocaleString('vi-VN')} VNĐ</span>
                   </div>
+                  <div className="flex justify-between font-bold text-[#274e23]">
+                    <span>Đã thanh toán {savedOrderSnapshot.recipient.orderType !== 'delivery' ? '(Cọc 50%)' : ''}:</span>
+                    <span className="text-amber-700">{savedOrderSnapshot.amountToPay.toLocaleString('vi-VN')} VNĐ</span>
+                  </div>
+                  {savedOrderSnapshot.remainingAmount > 0 && (
+                    <div className="flex justify-between font-bold text-red-600">
+                      <span>Còn lại cần thanh toán:</span>
+                      <span>{savedOrderSnapshot.remainingAmount.toLocaleString('vi-VN')} VNĐ</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Email Preview & Print Button */}

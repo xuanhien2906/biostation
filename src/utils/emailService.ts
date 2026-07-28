@@ -7,9 +7,12 @@ const PUBLIC_KEY = 'wTEBEaHzcO5_FyhsF';
 export interface OrderData {
   customer_name: string;
   customer_phone: string;
+  customer_email: string;
   customer_address: string;
   order_details: string;
   total_price: string;
+  paid_amount?: string;
+  remaining_amount?: string;
 }
 
 export const sendOrderEmail = async (orderData: OrderData): Promise<boolean> => {
@@ -20,9 +23,12 @@ export const sendOrderEmail = async (orderData: OrderData): Promise<boolean> => 
       {
         customer_name: orderData.customer_name,
         customer_phone: orderData.customer_phone,
+        customer_email: orderData.customer_email,
         customer_address: orderData.customer_address,
         order_details: orderData.order_details,
         total_price: orderData.total_price,
+        paid_amount: orderData.paid_amount || '',
+        remaining_amount: orderData.remaining_amount || '',
       },
       PUBLIC_KEY
     );

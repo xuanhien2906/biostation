@@ -200,6 +200,7 @@ export interface OrderRecipient {
   address: string;
   city: string;
   shippingType: 'inner' | 'outer';
+  orderType: 'delivery' | 'takeaway' | 'dine-in';
   notes?: string;
 }
 

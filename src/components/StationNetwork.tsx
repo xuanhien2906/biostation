@@ -44,6 +44,7 @@ export const StationNetwork: React.FC = () => {
     await sendOrderEmail({
       customer_name: partnerName,
       customer_phone: partnerPhone,
+      customer_email: '',
       customer_address: `Vị trí mong muốn: ${partnerLocation || 'Không xác định'}`,
       order_details: "==== ĐĂNG KÝ LÀM ĐỐI TÁC TRẠM CỘNG ĐỒNG ====",
       total_price: "Đối Tác Trạm"
