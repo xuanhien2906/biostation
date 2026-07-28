@@ -2276,6 +2276,20 @@ export const AdminDashboard: React.FC = () => {
 
               {/* Mission Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3]">
+                <div className="md:col-span-2">
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Hình Ảnh Hợp Tác Kinh Doanh (URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.partnershipImageUrl || ''}
+                    onChange={(e) => updateBusinessMission({ partnershipImageUrl: e.target.value })}
+                    placeholder="/partnership.png hoặc https://..."
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                  <p className="text-[10px] text-[#7a6858] mt-1">Hình ảnh này sẽ thay thế Logo ở ô "Hệ Sinh Thái Bách Mộc" trong Mô Hình Kinh Doanh.</p>
+                </div>
+
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
                     Khẩu Hiệu Sứ Mệnh (Mission Quote)
@@ -2283,7 +2297,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="text"
                     value={siteData.businessMission?.quote || ''}
-                    onChange={(e) => updateBusinessMission({ quote: e.target.value })}
+                    onChange={(e) => updateBusinessMission({ quote: e.target.value as any })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
                   />
                 </div>
@@ -2295,7 +2309,7 @@ export const AdminDashboard: React.FC = () => {
                   <textarea
                     rows={2}
                     value={siteData.businessMission?.description || ''}
-                    onChange={(e) => updateBusinessMission({ description: e.target.value })}
+                    onChange={(e) => updateBusinessMission({ description: e.target.value as any })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
                   />
                 </div>

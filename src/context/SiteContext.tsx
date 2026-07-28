@@ -276,7 +276,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [businessMission, setBusinessMissionState] = useState(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_mission`);
-    return saved ? JSON.parse(saved) : BUSINESS_MISSION;
+    return saved ? JSON.parse(saved) : (SITE_CONFIG_DATA.businessMission || BUSINESS_MISSION);
   });
 
   const [businessBlocks, setBusinessBlocks] = useState<BusinessBlock[]>(() => {

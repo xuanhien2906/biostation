@@ -116,7 +116,16 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
             </div>
 
             <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-[#e2d5c3] shadow-inner text-center shrink-0 w-full md:w-80">
-              <BioStationLogo variant="full" className="mb-3" />
+              {businessMission?.partnershipImageUrl ? (
+                <img 
+                  src={businessMission.partnershipImageUrl} 
+                  alt="Business Partnership" 
+                  className="w-full h-32 sm:h-40 object-cover rounded-xl mb-3 shadow-sm border border-[#e2d5c3]"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+              ) : (
+                <BioStationLogo variant="full" className="mb-3" />
+              )}
               <div className="w-full h-px bg-[#e2d5c3] my-3" />
               <p className="text-xs font-bold uppercase tracking-wider text-[#274e23]">
                 Hệ Sinh Thái Bách Mộc

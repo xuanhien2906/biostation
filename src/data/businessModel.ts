@@ -1,6 +1,7 @@
 import { BusinessBlock, RoadmapStage, Principle } from '../types';
 
 export const BUSINESS_MISSION = {
+  partnershipImageUrl: '/partnership.png',
   title: 'KẾ HOẠCH KINH DOANH BiO Station',
   subTitle: 'MÔ HÌNH: TRẢI NGHIỆM – BÁN LẺ – KẾT NỐI THUẬN TỰ NHIÊN',
   missionText:
