@@ -240,6 +240,7 @@ interface SiteContextType {
   setStories: React.Dispatch<React.SetStateAction<SuccessStory[]>>;
   setBioCategories: React.Dispatch<React.SetStateAction<BioCategoryOption[]>>;
   toggleMainSaleProduct: (productId: string) => void;
+  toggleProductVisibility: (productId: string) => Promise<void>;
   resetToDefaults: () => void;
   importJSON: (jsonString: string) => boolean;
   exportJSON: () => string;
@@ -469,6 +470,40 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const toggleProductVisibility = async (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    const newHiddenState = !product.is_hidden;
+    
+    // Update local state first for immediate UI response
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === productId ? { ...p, is_hidden: newHiddenState } : p
+      )
+    );
+
+    // Update Supabase
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ is_hidden: newHiddenState })
+        .eq('id', productId);
+        
+      if (error) {
+        console.error('Error toggling product visibility:', error);
+        // Revert on error
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === productId ? { ...p, is_hidden: !newHiddenState } : p
+          )
+        );
+      }
+    } catch (err) {
+      console.error('Failed to update Supabase:', err);
+    }
+  };
+
   const resetToDefaults = () => {
     setBrandConfig(DEFAULT_BRAND_CONFIG);
     setHeroConfig(DEFAULT_HERO_CONFIG);
@@ -587,6 +622,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setStories,
         setBioCategories,
         toggleMainSaleProduct,
+        toggleProductVisibility,
         resetToDefaults,
         importJSON,
         exportJSON,

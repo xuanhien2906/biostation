@@ -44,7 +44,8 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
 
   const brandConfig = siteData?.brandConfig || {};
-  const allProducts = siteData?.products || PRODUCTS;
+  const rawProducts = siteData?.products || PRODUCTS;
+  const allProducts = rawProducts.filter(p => !p.is_hidden);
   const bioCategories = siteData?.bioCategories || [];
 
   // Main sales products selected in Admin
@@ -73,7 +74,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
   };
 
   // Main retail staple products
-  const storeStaples = PRODUCTS.filter((p) => p.category !== 'Bữa Ăn Trải Nghiệm').slice(0, 4);
+  const storeStaples = allProducts.filter((p) => p.category !== 'Bữa Ăn Trải Nghiệm').slice(0, 4);
 
   const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -329,7 +330,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
               onClick={() => setActiveTab('shop')}
               className="px-5 py-2.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2 cursor-pointer shadow transition-all hover:scale-105 shrink-0"
             >
-              <span>Đến Cửa Hàng ({PRODUCTS.length} Sản Phẩm)</span>
+              <span>Đến Cửa Hàng ({allProducts.length} Sản Phẩm)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

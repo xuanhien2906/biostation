@@ -51,6 +51,7 @@ import {
   Truck,
   Percent,
   Eye,
+  EyeOff,
   Lock,
   Unlock,
   ArrowUp,
@@ -67,7 +68,13 @@ import {
   Megaphone,
   Sprout,
   Utensils,
+  ArrowLeft,
+  Calendar,
+  Clock,
+  ThumbsUp,
 } from 'lucide-react';
+import { supabase } from '../utils/supabaseClient';
+import { ImagePickerModal } from './ImagePickerModal';
 
 // Helper to automatically convert Google Drive share links to direct image links
 const formatImageUrl = (url: string) => {
@@ -482,6 +489,7 @@ export const AdminDashboard: React.FC = () => {
     setStories,
     setBioCategories,
     toggleMainSaleProduct,
+    toggleProductVisibility,
     resetToDefaults,
     importJSON,
     exportJSON,
@@ -525,14 +533,9 @@ export const AdminDashboard: React.FC = () => {
 
   const [editingStory, setEditingStory] = useState<SuccessStory | null>(null);
   const [isAddingStory, setIsAddingStory] = useState(false);
-
-  // Image Cropper Sub-Modal State
-  const [imageToolTarget, setImageToolTarget] = useState<{
-    type: 'product' | 'station' | 'recipe' | 'article' | 'story' | 'brand';
-    field: string;
-    currentUrl: string;
-    objectFit: string;
-    aspectRatio: string;
+  const [imagePickerTarget, setImagePickerTarget] = useState<{
+    type: 'product' | 'article' | 'recipe' | 'station' | 'story' | 'brand';
+    callback: (url: string) => void;
   } | null>(null);
 
   const handleLogin = (e?: React.FormEvent) => {
@@ -608,7 +611,7 @@ export const AdminDashboard: React.FC = () => {
       setJsonInput('');
       showNotification('Đã nhập dữ liệu cấu hình mới thành công!');
     } else {
-      setJsonError('Định dạng JSON không hợp lệ. Vui lòng kiểm tra lại cấu trúc file!');
+      setJsonError('Định dạng JSON không hợp lệ. V vui lòng kiểm tra lại cấu trúc file!');
     }
   };
 
@@ -710,6 +713,28 @@ export const AdminDashboard: React.FC = () => {
       })
     );
   };
+
+  const renderImageInput = (type: 'product' | 'article' | 'recipe' | 'station' | 'story' | 'brand', currentValue: string, onUpdate: (url: string) => void) => (
+    <div>
+      <label className="font-bold text-[#5c4d43] block mb-2">Đường Link Hình Ảnh *</label>
+      <div className="flex gap-3">
+        {currentValue && (
+          <div className="w-12 h-12 rounded-lg bg-stone-100 border border-stone-200 overflow-hidden shrink-0">
+            <img src={currentValue} alt="Preview" className="w-full h-full object-cover" />
+          </div>
+        )}
+        <div className="flex-1 flex flex-col justify-center">
+          <button
+            type="button"
+            onClick={() => setImagePickerTarget({ type, callback: onUpdate })}
+            className="w-full p-2.5 rounded-xl border-2 border-dashed border-[#274e23] text-[#274e23] hover:bg-[#274e23] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+          >
+            <ImageIcon className="w-4 h-4" /> Chọn Hoặc Tải Hình Ảnh Lên
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   // If not logged in, render an elegant Admin Login Gateway
   if (!isAuthenticated) {
@@ -2280,13 +2305,7 @@ export const AdminDashboard: React.FC = () => {
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
                     Hình Ảnh Hợp Tác Kinh Doanh (URL)
                   </label>
-                  <input
-                    type="text"
-                    value={siteData.businessMission?.partnershipImageUrl || ''}
-                    onChange={(e) => updateBusinessMission({ partnershipImageUrl: e.target.value })}
-                    placeholder="/partnership.png hoặc https://..."
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
-                  />
+                  {renderImageInput('brand', siteData.businessMission?.partnershipImageUrl || '', (url) => updateBusinessMission({ partnershipImageUrl: url }))}
                   <p className="text-[10px] text-[#7a6858] mt-1">Hình ảnh này sẽ thay thế Logo ở ô "Hệ Sinh Thái Bách Mộc" trong Mô Hình Kinh Doanh.</p>
                 </div>
 
@@ -2526,8 +2545,8 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {siteData.products.map((p) => (
-                <div key={p.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-2 flex flex-col justify-between relative">
+              {(siteData.products || []).map((p) => (
+                <div key={p.id} className={`p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-2 flex flex-col justify-between relative transition-opacity ${p.is_hidden ? 'opacity-60 grayscale-[30%]' : ''}`}>
                   <div className="flex gap-3">
                     <img src={p.image} alt={p.name} className="w-16 h-16 rounded-xl object-cover shrink-0 border border-[#e2d5c3]" />
                     <div className="flex-1 min-w-0">
@@ -2567,6 +2586,21 @@ export const AdminDashboard: React.FC = () => {
                     >
                       <Star className={`w-3.5 h-3.5 ${p.isMainSaleProduct ? 'fill-amber-600 text-amber-600' : 'text-stone-500'}`} />
                       <span>{p.isMainSaleProduct ? 'Nổi Bật' : 'Đặt Chính'}</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        toggleProductVisibility(p.id);
+                        showNotification(p.is_hidden ? `Đã BẬT hiển thị: ${p.name}` : `Đã ẨN: ${p.name}`);
+                      }}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                        p.is_hidden
+                          ? 'bg-slate-700 text-white hover:bg-slate-800'
+                          : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                      }`}
+                      title={p.is_hidden ? "Sản phẩm đang bị Ẩn (Nhấn để Bật)" : "Sản phẩm đang Hiển thị (Nhấn để Ẩn)"}
+                    >
+                      {p.is_hidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      <span>{p.is_hidden ? 'Đang Ẩn' : 'Hiển Thị'}</span>
                     </button>
                     <button
                       onClick={() => {
@@ -2620,7 +2654,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {siteData.stations.map((st) => (
+              {(siteData.stations || []).map((st) => (
                 <div key={st.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-2 flex justify-between gap-3">
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#274e23] text-white uppercase">{st.typeName}</span>
@@ -2687,7 +2721,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {siteData.recipes.map((r) => (
+              {(siteData.recipes || []).map((r) => (
                 <div key={r.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3 flex flex-col justify-between">
                   <div>
                     <div className="relative h-36 rounded-xl overflow-hidden bg-[#e2d5c3] mb-3">
@@ -2701,7 +2735,7 @@ export const AdminDashboard: React.FC = () => {
                     <div className="flex items-center gap-2 text-[11px] text-[#7a6858] pt-2">
                       <span>• {r.prepTime}</span>
                       <span>• {r.servings} người</span>
-                      <span>• {r.instructions.length} bước nấu</span>
+                      <span>• {r.instructions?.length || 0} bước nấu</span>
                     </div>
                   </div>
 
@@ -2773,7 +2807,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {siteData.articles.map((a) => (
+              {(siteData.articles || []).map((a) => (
                 <div key={a.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3 flex flex-col justify-between">
                   <div>
                     <div className="relative h-36 rounded-xl overflow-hidden bg-[#e2d5c3] mb-3">
@@ -2850,7 +2884,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {siteData.stories.map((s) => (
+              {(siteData.stories || []).map((s) => (
                 <div key={s.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-2 flex justify-between gap-3">
                   <div>
                     <h4 className="font-bold text-sm text-[#274e23] font-serif">{s.name}</h4>
@@ -2987,6 +3021,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
 
+
                 <div>
                   <label className="font-bold text-[#5c4d43] block mb-1">Danh Mục Món Ăn</label>
                   <select
@@ -3044,13 +3079,10 @@ export const AdminDashboard: React.FC = () => {
               {/* Image Input & Crop Assistant */}
               <div className="space-y-2">
                 <label className="font-bold text-[#5c4d43] block">Hình Ảnh Món Ăn (URL + Chọn Mẫu)</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={editingRecipe.image}
-                    onChange={(e) => setEditingRecipe({ ...editingRecipe, image: formatImageUrl(e.target.value) })}
-                    className="w-full p-2.5 rounded-xl border border-[#dcd0bf]"
-                  />
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    {renderImageInput('recipe', editingRecipe.image, (url) => setEditingRecipe({ ...editingRecipe, image: url }))}
+                  </div>
                 </div>
                 {/* Sample Images Quick Pick */}
                 <div className="flex items-center gap-2 overflow-x-auto py-1">
@@ -3072,7 +3104,7 @@ export const AdminDashboard: React.FC = () => {
               <div className="space-y-2 border-t border-[#f0e6d8] pt-3">
                 <div className="flex items-center justify-between">
                   <label className="font-bold text-[#274e23] uppercase tracking-wider text-xs">
-                    Danh Sách Nguyên Liệu ({editingRecipe.ingredients.length})
+                    Danh Sách Nguyên Liệu ({editingRecipe.ingredients?.length || 0})
                   </label>
                   <button
                     type="button"
@@ -3083,7 +3115,7 @@ export const AdminDashboard: React.FC = () => {
                   </button>
                 </div>
                 <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                  {editingRecipe.ingredients.map((ing, idx) => (
+                  {(editingRecipe.ingredients || []).map((ing, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <span className="w-5 font-bold text-[#274e23] text-center">{idx + 1}.</span>
                       <input
@@ -3115,14 +3147,14 @@ export const AdminDashboard: React.FC = () => {
               <div className="space-y-2 border-t border-[#f0e6d8] pt-3">
                 <div className="flex items-center justify-between">
                   <label className="font-bold text-[#274e23] uppercase tracking-wider text-xs">
-                    Các Bước Hướng Dẫn Thực Hiện ({editingRecipe.instructions.length} bước)
+                    Các Bước Hướng Dẫn Thực Hiện ({editingRecipe.instructions?.length || 0} bước)
                   </label>
                   <button
                     type="button"
                     onClick={() =>
                       setEditingRecipe({
                         ...editingRecipe,
-                        instructions: [...editingRecipe.instructions, `Bước ${editingRecipe.instructions.length + 1}: Thực hiện công đoạn tiếp theo.`],
+                        instructions: [...(editingRecipe.instructions || []), `Bước ${(editingRecipe.instructions?.length || 0) + 1}: Thực hiện công đoạn tiếp theo.`],
                       })
                     }
                     className="px-2.5 py-1 bg-[#274e23] text-white font-bold rounded-lg text-[11px] flex items-center gap-1 cursor-pointer"
@@ -3132,7 +3164,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
-                  {editingRecipe.instructions.map((step, idx) => (
+                  {(editingRecipe.instructions || []).map((step, idx) => (
                     <div key={idx} className="flex items-start gap-2 bg-[#fbf8f3] p-2.5 rounded-xl border border-[#e2d5c3]">
                       <span className="font-bold text-[#274e23] shrink-0 mt-2">Bước {idx + 1}:</span>
                       <textarea
@@ -3291,7 +3323,7 @@ export const AdminDashboard: React.FC = () => {
               <div className="space-y-2 border-t border-[#f0e6d8] pt-3">
                 <div className="flex items-center justify-between">
                   <label className="font-bold text-[#274e23] uppercase tracking-wider text-xs">
-                    Cốt Lõi / Ý Chính Của Bài Viết ({editingArticle.keyTakeaways.length})
+                    Cốt Lõi / Ý Chính Của Bài Viết ({editingArticle.keyTakeaways?.length || 0})
                   </label>
                   <button
                     type="button"
@@ -3304,7 +3336,7 @@ export const AdminDashboard: React.FC = () => {
                   </button>
                 </div>
                 <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                  {editingArticle.keyTakeaways.map((take, idx) => (
+                  {(editingArticle.keyTakeaways || []).map((take, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <span className="w-5 font-bold text-[#274e23] text-center">•</span>
                       <input
@@ -3452,13 +3484,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-semibold block mb-1">URL Hình Ảnh</label>
-                <input
-                  type="text"
-                  value={editingProduct.image}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, image: formatImageUrl(e.target.value) })}
-                  className="w-full p-2 rounded-xl border border-[#dcd0bf]"
-                />
+                {renderImageInput('product', editingProduct.image, (url) => setEditingProduct({ ...editingProduct, image: url }))}
               </div>
 
               <div>
@@ -3623,13 +3649,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-semibold block mb-1">URL Hình Ảnh</label>
-                <input
-                  type="text"
-                  value={editingStation.image}
-                  onChange={(e) => setEditingStation({ ...editingStation, image: formatImageUrl(e.target.value) })}
-                  className="w-full p-2 rounded-xl border border-[#dcd0bf]"
-                />
+                {renderImageInput('station', editingStation.image, (url) => setEditingStation({ ...editingStation, image: url }))}
               </div>
 
               <button
@@ -3795,14 +3815,10 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-semibold block mb-1">URL Hình Ảnh Món Ăn</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={editingDish.image}
-                    onChange={(e) => setEditingDish({ ...editingDish, image: formatImageUrl(e.target.value) })}
-                    className="w-full p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
-                  />
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    {renderImageInput('recipe', editingDish.image, (url) => setEditingDish({ ...editingDish, image: url }))}
+                  </div>
                   <button
                     type="button"
                     onClick={() => {

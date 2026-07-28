@@ -16,7 +16,8 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
   selectedCategory = 'Tất Cả',
 }) => {
   const { siteData } = useSite();
-  const products = siteData?.products || [];
+  const rawProducts = siteData?.products || [];
+  const products = rawProducts.filter(p => !p.is_hidden);
 
   const [activeCategory, setActiveCategory] = useState<string>(selectedCategory);
   const [activeModalProduct, setActiveModalProduct] = useState<Product | null>(

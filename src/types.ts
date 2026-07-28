@@ -138,6 +138,7 @@ export interface Product {
   name: string;
   subtitle: string;
   category: 'Gạo & Nông Sản' | 'Rau Củ Hữu Cơ' | 'Thịt & Hải Sản Sạch' | 'Bữa Ăn Trải Nghiệm' | 'Mật Ong & Tự Nhiên' | 'Chăm Sóc & Gia Dụng' | 'Bộ Sản Phẩm Gia Đình';
+  is_hidden?: boolean;
   price: number;
   originalPrice?: number;
   rating: number;
