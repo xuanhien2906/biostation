@@ -49,7 +49,7 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
               src={imageUrl}
               alt={brandConfig.logoMainText || 'Logo'}
               style={imageTransformStyle}
-              className={isDark ? "h-16 sm:h-20 w-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"}
+              className={isDark ? "h-16 sm:h-20 w-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"} onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
           </div>
         ) : (

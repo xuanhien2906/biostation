@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                   <img 
                     src={brandConfig.certificationLogoUrl} 
                     alt="Logo Footer" 
-                    className="max-h-20 object-contain"
+                    className="max-h-20 object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }}
                   />
                 </div>
               )}
