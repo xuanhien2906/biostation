@@ -204,7 +204,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         <div className="w-full max-w-lg bg-[#fcfaf7] h-full shadow-2xl flex flex-col justify-between border-l border-[#e2d5c3] text-[#2d241e] animate-slide-left">
           
           {/* Top Header Bar */}
-          <div className="p-4 sm:p-5 border-b border-[#e2d5c3] flex items-center justify-between bg-[#f8f5f0] shrink-0">
+          <div className="p-4 pt-12 md:pt-4 sm:p-5 border-b border-[#e2d5c3] flex items-center justify-between bg-[#f8f5f0] shrink-0">
             <div className="flex items-center gap-2">
               {checkoutStep !== 'cart' && checkoutStep !== 'completed' && (
                 <button
