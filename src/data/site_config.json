@@ -1,11 +1,11 @@
 {
   "brandConfig": {
     "logoType": "image",
-    "logoImageUrl": "/logo.png",
+    "logoImageUrl": "https://i.postimg.cc/MTfSVgS3/Thiet-ke-chua-co-ten.png",
     "footerLogoImageUrl": "/footer-logo.png",
-    "logoScale": 290,
-    "logoOffsetX": 60,
-    "logoOffsetY": 0,
+    "logoScale": 210,
+    "logoOffsetX": 82,
+    "logoOffsetY": 3,
     "logoHeight": 60,
     "logoMainText": "BiO",
     "logoSubText": "Station",
@@ -30,7 +30,8 @@
     "organicVegetablesLabel": "Rau Củ Quả Hữu Cơ",
     "cleanMeatLabel": "Thịt & Hải Sản Sạch",
     "bioStationLabel": "Hệ Sinh Thái BiO Station",
-    "mainSaleProductTitle": "Sản Phẩm Bán Lẻ Chủ Lực Trang Chủ"
+    "mainSaleProductTitle": "Sản Phẩm Bán Lẻ Chủ Lực Trang Chủ",
+    "certificationLogoUrl": "https://i.postimg.cc/v89yBRXY/footer-logo-png.jpg"
   },
   "heroConfig": {
     "badgeTag": "Hệ Sinh Thái Nông Sản Hữu Cơ & Sống Xanh Bách Mộc",
@@ -967,7 +968,7 @@
     {
       "id": "bio-cat-1",
       "title": "Gạo & Nông Sản Bách Mộc",
-      "subtitle": "Gạo BÁCH MỘC",
+      "subtitle": "Gạo ST25 Lúa Tôm Túi 5kg • 225.000đ",
       "description": "Nông sản sinh thái hữu cơ chuẩn lúa tôm Bách Mộc, hạt dẻo thơm nguyên cám, ngọt đậm đà.",
       "iconEmoji": "🌾",
       "categoryKey": "Gạo & Nông Sản",
