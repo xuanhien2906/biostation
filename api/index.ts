@@ -40,12 +40,34 @@ app.post("/api/chat", async (req, res) => {
       return;
     }
 
-    // Tự động nạp dữ liệu vào Não AI (Context Injection)
-    const { PRODUCTS } = await import("../src/data/products.ts").catch(() => ({ PRODUCTS: [] }));
-    const { ARTICLES } = await import("../src/data/articles.ts").catch(() => ({ ARTICLES: [] }));
-    const { BUSINESS_MODEL_STAGES } = await import("../src/data/businessModel.ts").catch(() => ({ BUSINESS_MODEL_STAGES: [] }));
+    // Tự động nạp dữ liệu vào Không gian AI (Context Injection) từ Supabase
+    let PRODUCTS = [];
+    let ARTICLES = [];
+    let BUSINESS_MODEL_STAGES = [];
     
-    // Đọc thêm config từ file JSON
+    try {
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+      const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+      
+      if (supabaseUrl && supabaseKey) {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        const [prodRes, artRes, bmRes] = await Promise.all([
+          supabase.from('products').select('*'),
+          supabase.from('articles').select('*'),
+          supabase.from('business_models').select('*')
+        ]);
+        
+        if (prodRes.data) PRODUCTS = prodRes.data;
+        if (artRes.data) ARTICLES = artRes.data;
+        if (bmRes.data) BUSINESS_MODEL_STAGES = bmRes.data;
+      }
+    } catch (err) {
+      console.error("Error fetching from Supabase for AI:", err);
+    }
+    
+    // Đọc thêm config từ file JSON (Vẫn giữ local cho config tĩnh)
     let siteConfig = "BiO Station - Chạm để trở về";
     try {
       const fs = await import('fs');

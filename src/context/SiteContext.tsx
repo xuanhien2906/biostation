@@ -143,6 +143,7 @@ import {
   DEVELOPMENT_PRINCIPLES,
 } from '../data/businessModel';
 import SITE_CONFIG_DATA from '../data/site_config.json';
+import { supabase } from '../utils/supabaseClient';
 
 export const DEFAULT_PAYMENT_CONFIG: PaymentConfig = SITE_CONFIG_DATA.paymentConfig as unknown as PaymentConfig;
 
@@ -406,6 +407,35 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_experience_meal`, JSON.stringify(experienceMealConfig));
   }, [experienceMealConfig]);
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_stories`, JSON.stringify(stories));
+  }, [stories]);
+
+  // FETCH FROM SUPABASE
+  useEffect(() => {
+    const fetchSupabaseData = async () => {
+      try {
+        const { data: prodData, error: prodErr } = await supabase.from('products').select('*');
+        if (!prodErr && prodData && prodData.length > 0) {
+          setProducts(prodData);
+        }
+
+        const { data: artData, error: artErr } = await supabase.from('articles').select('*');
+        if (!artErr && artData && artData.length > 0) {
+          setArticles(artData);
+        }
+
+        const { data: recData, error: recErr } = await supabase.from('recipes').select('*');
+        if (!recErr && recData && recData.length > 0) {
+          setRecipes(recData);
+        }
+      } catch (err) {
+        console.error('Error fetching data from Supabase:', err);
+      }
+    };
+    fetchSupabaseData();
+  }, []);
 
   const updateBrandConfig = (config: Partial<BrandConfig>) => {
     setBrandConfig((prev) => ({ ...prev, ...config }));
