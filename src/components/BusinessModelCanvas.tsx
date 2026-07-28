@@ -115,25 +115,39 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
               </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-[#e2d5c3] shadow-inner text-center shrink-0 w-full md:w-80">
-              {businessMission?.partnershipImageUrl ? (
+            {businessMission?.partnershipImageUrl ? (
+              <div className="flex flex-col items-center justify-center shrink-0 w-full md:w-[400px] lg:w-[480px]">
                 <img 
                   src={businessMission.partnershipImageUrl} 
                   alt="Business Partnership" 
-                  className="w-full h-32 sm:h-40 object-cover rounded-xl mb-3 shadow-sm border border-[#e2d5c3]"
+                  className="w-full h-auto max-h-[400px] object-contain mix-blend-multiply"
+                  style={{
+                    WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)',
+                    maskImage: 'radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)',
+                  }}
                   onError={(e) => { e.currentTarget.style.display = "none"; }}
                 />
-              ) : (
+                <div className="mt-1 text-center">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#274e23]">
+                    Hệ Sinh Thái Bách Mộc
+                  </p>
+                  <p className="text-[11px] text-[#7a6858] mt-1">
+                    VP Bách Mộc – Phú Mỹ Hưng, TP. HCM
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-[#e2d5c3] shadow-inner text-center shrink-0 w-full md:w-80">
                 <BioStationLogo variant="full" className="mb-3" />
-              )}
-              <div className="w-full h-px bg-[#e2d5c3] my-3" />
-              <p className="text-xs font-bold uppercase tracking-wider text-[#274e23]">
-                Hệ Sinh Thái Bách Mộc
-              </p>
-              <p className="text-[11px] text-[#7a6858] mt-1">
-                VP Bách Mộc – Phú Mỹ Hưng, TP. HCM
-              </p>
-            </div>
+                <div className="w-full h-px bg-[#e2d5c3] my-3" />
+                <p className="text-xs font-bold uppercase tracking-wider text-[#274e23]">
+                  Hệ Sinh Thái Bách Mộc
+                </p>
+                <p className="text-[11px] text-[#7a6858] mt-1">
+                  VP Bách Mộc – Phú Mỹ Hưng, TP. HCM
+                </p>
+              </div>
+            )}
           </div>
 
           {/* 3 Core Values Cards */}
