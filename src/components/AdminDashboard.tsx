@@ -69,6 +69,16 @@ import {
   Utensils,
 } from 'lucide-react';
 
+// Helper to automatically convert Google Drive share links to direct image links
+const formatImageUrl = (url: string) => {
+  if (!url) return url;
+  const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+  if (driveMatch && driveMatch[1]) {
+    return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+  }
+  return url;
+};
+
 // Preset sample images for quick selection in admin
 const SAMPLE_IMAGES = [
   {
@@ -293,7 +303,7 @@ const LogoEditorSection: React.FC<{
               type="url"
               placeholder="https://domain.com/logo.png"
               value={logoImageUrl}
-              onChange={(e) => updateBrandConfig({ logoImageUrl: e.target.value })}
+              onChange={(e) => updateBrandConfig({ logoImageUrl: formatImageUrl(e.target.value) })}
               className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
             />
           </div>
@@ -306,7 +316,7 @@ const LogoEditorSection: React.FC<{
               type="url"
               placeholder="https://domain.com/bo-cong-thuong.png"
               value={brandConfig.certificationLogoUrl || ''}
-              onChange={(e) => updateBrandConfig({ certificationLogoUrl: e.target.value })}
+              onChange={(e) => updateBrandConfig({ certificationLogoUrl: formatImageUrl(e.target.value) })}
               className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
             />
           </div>
@@ -3024,7 +3034,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="text"
                     value={editingRecipe.image}
-                    onChange={(e) => setEditingRecipe({ ...editingRecipe, image: e.target.value })}
+                    onChange={(e) => setEditingRecipe({ ...editingRecipe, image: formatImageUrl(e.target.value) })}
                     className="w-full p-2.5 rounded-xl border border-[#dcd0bf]"
                   />
                 </div>
@@ -3258,7 +3268,7 @@ export const AdminDashboard: React.FC = () => {
                 <input
                   type="text"
                   value={editingArticle.image}
-                  onChange={(e) => setEditingArticle({ ...editingArticle, image: e.target.value })}
+                  onChange={(e) => setEditingArticle({ ...editingArticle, image: formatImageUrl(e.target.value) })}
                   className="w-full p-2.5 rounded-xl border border-[#dcd0bf]"
                 />
               </div>
@@ -3432,7 +3442,7 @@ export const AdminDashboard: React.FC = () => {
                 <input
                   type="text"
                   value={editingProduct.image}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, image: formatImageUrl(e.target.value) })}
                   className="w-full p-2 rounded-xl border border-[#dcd0bf]"
                 />
               </div>
@@ -3603,7 +3613,7 @@ export const AdminDashboard: React.FC = () => {
                 <input
                   type="text"
                   value={editingStation.image}
-                  onChange={(e) => setEditingStation({ ...editingStation, image: e.target.value })}
+                  onChange={(e) => setEditingStation({ ...editingStation, image: formatImageUrl(e.target.value) })}
                   className="w-full p-2 rounded-xl border border-[#dcd0bf]"
                 />
               </div>
@@ -3776,7 +3786,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="text"
                     value={editingDish.image}
-                    onChange={(e) => setEditingDish({ ...editingDish, image: e.target.value })}
+                    onChange={(e) => setEditingDish({ ...editingDish, image: formatImageUrl(e.target.value) })}
                     className="w-full p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
                   />
                   <button
