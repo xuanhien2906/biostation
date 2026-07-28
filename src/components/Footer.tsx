@@ -29,6 +29,17 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             <div className="flex flex-col items-center text-center space-y-4 w-full">
               <BioStationLogo variant="dark" showSlogan={true} />
 
+              {/* Certification / Extra Logo */}
+              {brandConfig.certificationLogoUrl && (
+                <div className="pb-1 flex justify-center w-full">
+                  <img 
+                    src={brandConfig.certificationLogoUrl} 
+                    alt="Logo Footer" 
+                    className="max-h-20 object-contain"
+                  />
+                </div>
+              )}
+
               <p className="text-xs text-emerald-200/90 leading-relaxed max-w-sm">
                 {brandConfig.footerDescription || brandConfig.subSlogan}
               </p>
@@ -67,18 +78,6 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 )}
               </div>
             )}
-
-            {/* Certification / Extra Logo */}
-            {brandConfig.certificationLogoUrl && (
-              <div className="pt-4 flex justify-center w-full">
-                <img 
-                  src={brandConfig.certificationLogoUrl} 
-                  alt="Chứng nhận" 
-                  className="max-h-16 object-contain"
-                />
-              </div>
-            )}
-
             </div>
           </div>
 
