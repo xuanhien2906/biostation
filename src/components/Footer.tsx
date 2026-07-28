@@ -25,12 +25,14 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 pb-8 border-b border-emerald-800/80">
           {/* Brand Info */}
-          <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-3 lg:pr-4">
-            <BioStationLogo variant="dark" showSlogan={true} />
+          <div className="lg:col-span-5 flex flex-col items-center text-center space-y-3 lg:pr-4">
+            <div className="lg:-mt-2 w-full flex justify-center">
+              <BioStationLogo variant="dark" showSlogan={true} />
+            </div>
 
             {/* Certification / Extra Logo */}
             {brandConfig.certificationLogoUrl && (
-              <div className="flex justify-center lg:justify-start w-full">
+              <div className="flex justify-center w-full">
                 <img 
                   src={brandConfig.certificationLogoUrl} 
                   alt="Logo Footer" 
@@ -43,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
               {brandConfig.footerDescription || brandConfig.subSlogan}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs text-amber-300 font-bold">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs text-amber-300 font-bold">
               <span>Đúng: Nguồn gốc rõ ràng</span>
               <span>•</span>
               <span>Thật: Thông tin thật</span>
@@ -53,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
 
             {/* Social Links if present */}
             {(brandConfig.socialFacebook || brandConfig.socialZalo || brandConfig.socialYoutube || brandConfig.socialTiktok) && (
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1 text-xs w-full">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 text-xs w-full">
                 <span className="text-emerald-300/80 text-[11px] font-bold">Kênh Truyền Thông:</span>
                 {brandConfig.socialFacebook && (
                   <a href={brandConfig.socialFacebook} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 rounded-md bg-emerald-800/60 hover:bg-emerald-700 text-amber-300 font-bold text-[11px] transition-colors">
