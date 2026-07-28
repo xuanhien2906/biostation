@@ -67,6 +67,18 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 )}
               </div>
             )}
+
+            {/* Certification / Extra Logo */}
+            {brandConfig.certificationLogoUrl && (
+              <div className="pt-4 flex justify-center w-full">
+                <img 
+                  src={brandConfig.certificationLogoUrl} 
+                  alt="Chứng nhận" 
+                  className="max-h-16 object-contain"
+                />
+              </div>
+            )}
+
             </div>
           </div>
 

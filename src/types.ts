@@ -68,6 +68,7 @@ export interface BrandConfig {
   logoOffsetX?: number;                       // horizontal offset position in px (-150 to +150)
   logoOffsetY?: number;                       // vertical offset position in px (-100 to +100)
   logoHeight?: number;                        // base height in px (20 - 150)
+  certificationLogoUrl?: string;              // additional logo (e.g., Bo Cong Thuong)
   logoMainText: string;
   logoSubText: string;
   slogan: string;

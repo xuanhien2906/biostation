@@ -297,6 +297,19 @@ const LogoEditorSection: React.FC<{
               className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
             />
           </div>
+
+          <div className="pt-2 border-t border-[#e8ded1] mt-3">
+            <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
+              URL Logo Phụ dưới chân trang (VD: Logo Bộ Công Thương, Đối Tác...):
+            </label>
+            <input
+              type="url"
+              placeholder="https://domain.com/bo-cong-thuong.png"
+              value={brandConfig.certificationLogoUrl || ''}
+              onChange={(e) => updateBrandConfig({ certificationLogoUrl: e.target.value })}
+              className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
+            />
+          </div>
         </div>
       )}
 
