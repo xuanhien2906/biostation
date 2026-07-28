@@ -14,6 +14,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { sendOrderEmail } from '../utils/emailService';
 
 export const StationNetwork: React.FC = () => {
   const { siteData } = useSite();
@@ -26,16 +27,30 @@ export const StationNetwork: React.FC = () => {
   const [partnerPhone, setPartnerPhone] = useState('');
   const [partnerLocation, setPartnerLocation] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredStations =
     selectedStationCategory === 'all'
       ? stations
       : stations.filter((s) => s.type === selectedStationCategory);
 
-  const handleSubmitPartner = (e: React.FormEvent) => {
+  const handleSubmitPartner = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!partnerName || !partnerPhone) return;
+    
+    setIsSubmitting(true);
+    
+    // Use the same template but structure the order_details as a partner registration request
+    await sendOrderEmail({
+      customer_name: partnerName,
+      customer_phone: partnerPhone,
+      customer_address: `Vị trí mong muốn: ${partnerLocation || 'Không xác định'}`,
+      order_details: "==== ĐĂNG KÝ LÀM ĐỐI TÁC TRẠM CỘNG ĐỒNG ====",
+      total_price: "Đối Tác Trạm"
+    });
+
     setSubmitted(true);
+    setIsSubmitting(false);
   };
 
   return (
@@ -254,10 +269,17 @@ export const StationNetwork: React.FC = () => {
 
                   <button
                     type="submit"
-                    className="w-full py-3 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    disabled={isSubmitting}
+                    className={`w-full py-2.5 rounded-xl bg-[#274e23] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#1f381c] hover:-translate-y-0.5'}`}
                   >
-                    <Send className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Gửi Đăng Ký Đối Tác</span>
+                    {isSubmitting ? (
+                      <span>Đang Gửi Yêu Cầu...</span>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Gửi Yêu Cầu Liên Hệ</span>
+                      </>
+                    )}
                   </button>
                 </form>
               )}

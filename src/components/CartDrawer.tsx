@@ -23,8 +23,10 @@ import {
   ChevronLeft,
   CreditCard,
   Building2,
+import {
   Sparkles,
 } from 'lucide-react';
+import { sendOrderEmail } from '../utils/emailService';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -48,6 +50,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   // Flow step state: 'cart' | 'info' | 'payment' | 'completed'
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'info' | 'payment' | 'completed'>('cart');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Check if cart contains any Experience Meal / Food Order items
   const hasFoodOrder = cartItems.some(
@@ -143,7 +146,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     setCheckoutStep('payment');
   };
 
-  const handleConfirmPaymentSuccess = () => {
+  const handleConfirmPaymentSuccess = async () => {
+    setIsSubmitting(true);
     const currentOrder = {
       cartItems: [...cartItems],
       subtotal,
@@ -154,9 +158,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       recipient: { ...recipient },
       createdAt: new Date().toLocaleString('vi-VN'),
     };
+
+    const orderDetailsText = cartItems.map(item => `- ${item.product.name} (SL: ${item.quantity}) - ${new Intl.NumberFormat('vi-VN').format(item.product.price * item.quantity)} đ`).join('\n');
+    
+    await sendOrderEmail({
+      customer_name: recipient.fullName,
+      customer_phone: recipient.phone,
+      customer_address: recipient.address,
+      order_details: orderDetailsText,
+      total_price: `${new Intl.NumberFormat('vi-VN').format(grandTotal)} đ`
+    });
+
     setSavedOrderSnapshot(currentOrder);
     setCheckoutStep('completed');
     onClearCart();
+    setIsSubmitting(false);
   };
 
   const transferSyntax = `${paymentConfig.transferNotePrefix || 'BIO'} ${orderId || recipient.phone.replace(/\s+/g, '')}`;
