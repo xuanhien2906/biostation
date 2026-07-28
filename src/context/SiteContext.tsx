@@ -142,83 +142,15 @@ import {
   ROADMAP_STAGES,
   DEVELOPMENT_PRINCIPLES,
 } from '../data/businessModel';
+import SITE_CONFIG_DATA from '../data/site_config.json';
 
-export const DEFAULT_PAYMENT_CONFIG: PaymentConfig = {
-  bankName: 'VP Bank',
-  accountNumber: '0813 13 13 85',
-  accountName: 'HE SINH THAI BIO STATION BACH MOC',
-  bankBranch: 'Chi nhánh Phú Mỹ Hưng, TP. Hồ Chí Minh',
-  qrCodeUrl: 'https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?auto=format&fit=crop&w=500&q=80',
-  transferNotePrefix: 'BIO',
-  vatRatePercent: 8,
-  innerCityShippingFee: 20000,
-  outerCityShippingFee: 35000,
-  freeShippingThreshold: 300000,
-  emailSender: 'donhang@biostation.vn',
-  supportPhone: '0813 13 13 85',
-};
+export const DEFAULT_PAYMENT_CONFIG: PaymentConfig = SITE_CONFIG_DATA.paymentConfig as unknown as PaymentConfig;
 
-export const DEFAULT_THEME_CONFIG: ThemeConfig = {
-  primaryColor: '#274e23',
-  accentColor: '#8c521f',
-  bgTone: '#f8f5f0',
-  headerBg: '#1f381c',
-  footerBg: '#1f381c',
-  displayFont: 'Montserrat',
-  bodyFont: 'Montserrat',
-  fontScale: 'standard',
-};
+export const DEFAULT_THEME_CONFIG: ThemeConfig = SITE_CONFIG_DATA.themeConfig as unknown as ThemeConfig;
 
-export const DEFAULT_BRAND_CONFIG: BrandConfig = {
-  logoType: 'image',
-  logoImageUrl: '/logo.png',
-  footerLogoImageUrl: '/footer-logo.png',
-  logoScale: 180,
-  logoOffsetX: 60,
-  logoOffsetY: 0,
-  logoHeight: 60,
-  logoMainText: 'BiO',
-  logoSubText: 'Station',
-  slogan: 'Chạm Để Trở Về',
-  subSlogan: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
-  topBannerText: '🔥 Khai trương Station Cộng Đồng mới tại Vinhomes Central Park & Thảo Điền – Ưu đãi 15% tất cả gạo hữu cơ Bách Mộc!',
-  hotline: '0813 13 13 85',
-  email: 'contact@biostation.vn',
-  address: 'Đường Nguyễn Văn Linh, Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM',
-  websiteUrl: 'biostation.vn',
-  operatingHours: '07:00 - 21:00 Hàng ngày',
-  headquarters: 'VP Bách Mộc – Phú Mỹ Hưng, TP. HCM',
-  familyCountBadge: 'Hơn 10,000+ Gia Đình Sống Xanh',
-  copyrightText: '© 2026 BiO Station – Hệ Sinh Thái Bách Mộc. Chạm để trở về.',
-  footerDescription: 'BiO Station là hệ sinh thái điểm trạm nông sản hữu cơ Bách Mộc, kết nối cộng đồng sống xanh và tiêu dùng tử tế.',
-  socialFacebook: 'https://facebook.com/biostation.vn',
-  socialZalo: 'https://zalo.me/0813131385',
-  socialYoutube: 'https://youtube.com/biostation.official',
-  socialTiktok: 'https://tiktok.com/@biostation.vn',
-  homepageLabel: 'Trang Chủ',
-  agriProductsLabel: 'Nông Sản & Gạo Bách Mộc',
-  organicVegetablesLabel: 'Rau Củ Quả Hữu Cơ',
-  cleanMeatLabel: 'Thịt & Hải Sản Sạch',
-  bioStationLabel: 'Hệ Sinh Thái BiO Station',
-  mainSaleProductTitle: 'Sản Phẩm Bán Lẻ Chủ Lực Trang Chủ',
-};
+export const DEFAULT_BRAND_CONFIG: BrandConfig = SITE_CONFIG_DATA.brandConfig as unknown as BrandConfig;
 
-export const DEFAULT_HERO_CONFIG: HeroConfig = {
-  badgeTag: 'Hệ Sinh Thái Nông Sản Hữu Cơ & Sống Xanh Bách Mộc',
-  titlePart1: 'BiO Station –',
-  titleHighlight: 'Chạm Để Trở Về',
-  subTitle: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
-  descriptionText:
-    'BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, gạo hữu cơ Bách Mộc, sản phẩm tử tế và cộng đồng yêu thiên nhiên.',
-  coreValue1Title: 'Gạo ST25 Bách Mộc',
-  coreValue1Desc: 'Lúa tôm dẻo ngọt',
-  coreValue2Title: 'Thịt & Rau Hữu Cơ',
-  coreValue2Desc: 'Sạch chuẩn BMQ',
-  coreValue3Title: 'Bữa Ăn Trải Nghiệm',
-  coreValue3Desc: 'Chỉ từ 50k / người',
-  ctaPrimaryText: 'Mua Nông Sản & Gạo ST25',
-  ctaSecondaryText: 'Xem Bữa Ăn Trải Nghiệm (50k)',
-};
+export const DEFAULT_HERO_CONFIG: HeroConfig = SITE_CONFIG_DATA.heroConfig as unknown as HeroConfig;
 
 export const DEFAULT_STATIONS: StationItem[] = [
   {
@@ -312,7 +244,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V8';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V9';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
