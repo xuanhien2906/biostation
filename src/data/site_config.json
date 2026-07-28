@@ -3,10 +3,10 @@
     "logoType": "image",
     "logoImageUrl": "https://i.postimg.cc/MTfSVgS3/Thiet-ke-chua-co-ten.png",
     "footerLogoImageUrl": "/footer-logo.png",
-    "logoScale": 210,
+    "logoScale": 300,
     "logoOffsetX": 82,
     "logoOffsetY": 3,
-    "logoHeight": 60,
+    "logoHeight": 59,
     "logoMainText": "BiO",
     "logoSubText": "Station",
     "slogan": "Chạm Để Trở Về",
@@ -56,7 +56,7 @@
     "footerBg": "#1f381c",
     "displayFont": "Montserrat",
     "bodyFont": "Montserrat",
-    "fontScale": "spacious"
+    "fontScale": "standard"
   },
   "paymentConfig": {
     "bankName": "VP Bank",
