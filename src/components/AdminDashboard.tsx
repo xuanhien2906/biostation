@@ -74,7 +74,7 @@ const formatImageUrl = (url: string) => {
   if (!url) return url;
   const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
   if (driveMatch && driveMatch[1]) {
-    return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
   }
   return url;
 };
