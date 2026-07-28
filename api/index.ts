@@ -40,50 +40,77 @@ app.post("/api/chat", async (req, res) => {
       return;
     }
 
+    // Tự động nạp dữ liệu vào Não AI (Context Injection)
+    const { PRODUCTS } = await import("../src/data/products.ts").catch(() => ({ PRODUCTS: [] }));
+    const { ARTICLES } = await import("../src/data/articles.ts").catch(() => ({ ARTICLES: [] }));
+    const { BUSINESS_MODEL_STAGES } = await import("../src/data/businessModel.ts").catch(() => ({ BUSINESS_MODEL_STAGES: [] }));
+    
+    // Đọc thêm config từ file JSON
+    let siteConfig = "BiO Station - Chạm để trở về";
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const configPath = path.resolve(process.cwd(), "src/data/site_config.json");
+      const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      siteConfig = JSON.stringify(configData.brandConfig, null, 2);
+    } catch (e) {
+      console.log("Could not load site_config.json", e);
+    }
+
+    // Tóm tắt dữ liệu sản phẩm để đưa vào prompt
+    const productInfo = PRODUCTS.map((p: any) => `- ${p.name} (Giá: ${p.price}đ): ${p.subtitle}`).join('\n');
+    const articleInfo = ARTICLES.map((a: any) => `- ${a.title}`).join('\n');
+    const businessInfo = BUSINESS_MODEL_STAGES.map((b: any) => `- ${b.title}: ${b.description}`).join('\n');
+
     const systemInstruction = `
-You are the BiO Station AI Advisor (Tư Vấn Viên Hệ Sinh Thái Bách Mộc - BiO Station: Chạm để trở về).
+Mày là Tư Vấn Viên AI của BiO Station (Hệ Sinh Thái Bách Mộc).
+Slogan: "Chạm để trở về". 
 
-Brand Identity & Vision:
-- Brand Name: BiO Station (Hệ Sinh Thái Bách Mộc)
-- Slogan: "Chạm để trở về" | "Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên" | "Bách Mộc - Trồng cây Thuận tự nhiên"
-- Mission: BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, sản phẩm tử tế và cộng đồng yêu thiên nhiên.
-- Core Values (Giá trị cốt lõi):
-  1. Đúng: Nguồn gốc rõ ràng, 100% minh bạch chứng nhận & nhật ký nông hộ.
-  2. Thật: Sản phẩm thật – thông tin thật, không hóa chất, không quảng cáo thổi phồng.
-  3. Thuận tự nhiên: Tôn trọng tự nhiên, canh tác sinh thái, sống hài hòa.
+QUY TẮC CỐT LÕI VÀ BẮT BUỘC (STRICT RULES):
+1. CHỈ ĐƯỢC PHÉP trả lời dựa trên thông tin được cung cấp trong [KNOWLEDGE BASE] bên dưới.
+2. KHÔNG BAO GIỜ được sử dụng kiến thức bên ngoài, không bịa đặt, không tự ý khuyên bảo những thứ không có trong KNOWLEDGE BASE.
+3. Nếu khách hàng hỏi bất cứ điều gì KHÔNG CÓ trong [KNOWLEDGE BASE] (ví dụ: giá vàng, thời tiết, sản phẩm hãng khác, code lập trình, v.v.), mày PHẢI từ chối lịch sự bằng câu: "Dạ, hiện tại em chỉ được huấn luyện để hỗ trợ các thông tin về sản phẩm và dịch vụ của BiO Station. Anh/chị có thể liên hệ Hotline hoặc để lại lời nhắn để được hỗ trợ thêm ạ."
+4. KHÔNG tự ý giảm giá, KHÔNG tự ý thêm khuyến mãi. Chỉ báo giá chính xác như trong [KNOWLEDGE BASE].
+5. Phải luôn xưng hô lịch sự, thân thiện, mang tinh thần "Thuận tự nhiên", xưng "em" và gọi khách là "anh/chị".
 
-Key Offerings:
-1. Gạo hữu cơ Bách Mộc ST25 (lúa tôm sinh thái, thuần tự nhiên, chuẩn BMQ).
-2. Nông sản hữu cơ BMQ (Rau củ quả tươi hái trong ngày từ trang trại Lâm Đồng, Củ Chi).
-3. Mật ong rừng tự nhiên BiO Honey & Trà thảo mộc Bách Mộc Bát Bảo.
-4. Giỏ hàng gia đình BiO Station (gói nông sản sạch trọn tuần cho bữa ăn gia đình).
-5. Mô hình 4 giai đoạn phát triển: Station Trung Tâm -> Station Cộng Đồng -> Điểm Đối Tác -> Mạng Lưới Toàn Quốc.
+=======================
+[KNOWLEDGE BASE BẮT ĐẦU]
 
-Tone & Style:
-- Warm, polite, empathetic, inspiring, knowledgeable about organic agriculture, green lifestyle, and healthy family nutrition.
-- Use Vietnamese language naturally.
-- Provide clear bullet points and actionable advice for organic living, rice choices, vegetable storage, and BiO Station store franchise/partnerships.
+*** THÔNG TIN THƯƠNG HIỆU ***
+${siteConfig}
+
+*** DANH SÁCH SẢN PHẨM ĐANG BÁN ***
+${productInfo}
+
+*** BÀI VIẾT VÀ KIẾN THỨC ***
+${articleInfo}
+
+*** MÔ HÌNH NHƯỢNG QUYỀN/ĐỐI TÁC ***
+${businessInfo}
+
+[KNOWLEDGE BASE KẾT THÚC]
+=======================
     `.trim();
 
     // Construct prompt with history
     const formattedHistory = conversationHistory
-      .map((msg: { role: string; content: string }) => `${msg.role === 'user' ? 'User' : 'Dr. Berg Advisor'}: ${msg.content}`)
+      .map((msg: { role: string; content: string }) => `${msg.role === 'user' ? 'Khách hàng' : 'Tư vấn viên'}: ${msg.content}`)
       .join("\n");
 
     const prompt = formattedHistory
-      ? `${formattedHistory}\nUser: ${message}\nDr. Berg Advisor:`
-      : message;
+      ? `${formattedHistory}\nKhách hàng: ${message}\nTư vấn viên:`
+      : `Khách hàng: ${message}\nTư vấn viên:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         systemInstruction,
-        temperature: 0.7,
+        temperature: 0.2, // Low temperature cho độ chính xác cao, bám sát dữ liệu
       },
     });
 
-    res.json({ reply: response.text || "I apologize, I couldn't generate a response at this time." });
+    res.json({ reply: response.text || "Dạ, em chưa xử lý được câu hỏi này, anh/chị liên hệ Hotline giúp em nhé." });
   } catch (error: any) {
     console.error("Gemini Chat API Error:", error);
     res.status(500).json({
