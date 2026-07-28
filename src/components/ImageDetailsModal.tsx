@@ -87,7 +87,7 @@ export const ImageDetailsModal: React.FC<ImageDetailsModalProps> = ({
   return (
     <div className="fixed inset-0 z-[70] bg-black/95 flex flex-col backdrop-blur-md">
       {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between p-4 border-b border-white/10 gap-4">
+      <div className="flex flex-wrap items-center justify-between p-4 pt-14 md:pt-4 border-b border-white/10 gap-4">
         <button 
           onClick={onClose} 
           className="p-2 hover:bg-white/10 rounded-full transition-colors text-white flex-shrink-0"

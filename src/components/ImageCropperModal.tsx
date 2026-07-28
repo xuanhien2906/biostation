@@ -102,7 +102,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden flex flex-col shadow-2xl">
-        <div className="flex items-center justify-between p-4 border-b border-[#f0e6d8]">
+        <div className="flex items-center justify-between p-4 pt-12 md:pt-4 border-b border-[#f0e6d8]">
           <h3 className="font-bold text-lg text-[#274e23]">Căn Chỉnh Hình Ảnh</h3>
           <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-500">
             <X className="w-5 h-5" />

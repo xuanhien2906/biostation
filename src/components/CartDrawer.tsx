@@ -59,14 +59,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   // Recipient Information Form
   const [recipient, setRecipient] = useState<OrderRecipient>({
-    fullName: 'Nguyễn Văn An',
-    phone: '0912 345 678',
-    email: 'nguyenvanan@gmail.com',
-    address: 'Số 123 Đường Nguyễn Văn Linh, Phường Tân Phong, Quận 7',
+    fullName: '',
+    phone: '',
+    email: '',
+    address: '',
     city: 'TP. Hồ Chí Minh',
     shippingType: 'inner',
     orderType: 'delivery',
-    notes: 'Giao giờ hành chính, gọi trước 15 phút.',
+    notes: '',
   });
 
   // Promo code & Discounts
