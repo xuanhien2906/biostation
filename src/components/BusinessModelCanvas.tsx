@@ -218,7 +218,7 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
 
         {/* Financial Forecast Simulator Interactive Component */}
         <div className="bg-[#274e23] text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
-          <div className="max-w-3xl space-y-6">
+          <div className="max-w-3xl mx-auto space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-wider">
               <Calculator className="w-4 h-4 text-amber-300" />
               Mô Phỏng Doanh Thu & Chi Phí Trạm BiO

@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between py-1 md:py-1.5 gap-4">
           {/* Logo */}
           <div className="cursor-pointer shrink-0" onClick={() => handleNavClick('home')}>
-            <BioStationLogo showSlogan={true} />
+            <BioStationLogo showSlogan={true} isHeader={true} />
           </div>
 
           {/* Universal Search Bar - Prominent & Flexible on 16:9 / Wide Displays */}

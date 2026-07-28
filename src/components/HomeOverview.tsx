@@ -164,21 +164,21 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
-                  onClick={() => setActiveTab('shop')}
+                  onClick={() => setActiveTab('model')}
                   className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all hover:scale-[1.02] cursor-pointer"
                 >
-                  <ShoppingBag className="w-4 h-4 text-amber-300" />
+                  <Store className="w-4 h-4 text-amber-300" />
                   <span>{heroConfig.ctaPrimaryText}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
-                <a
-                  href="#bua-an-trai-nghiem"
+                <button
+                  onClick={() => setActiveTab('shop')}
                   className="flex items-center gap-2 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm transition-all cursor-pointer shadow"
                 >
-                  <Utensils className="w-4 h-4" />
+                  <Sprout className="w-4 h-4" />
                   <span>{heroConfig.ctaSecondaryText}</span>
-                </a>
+                </button>
               </div>
             </div>
 

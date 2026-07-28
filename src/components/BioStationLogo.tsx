@@ -5,12 +5,14 @@ interface BioStationLogoProps {
   variant?: 'full' | 'compact' | 'light' | 'dark' | 'badge';
   className?: string;
   showSlogan?: boolean;
+  isHeader?: boolean;
 }
 
 export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   variant = 'full',
   className = '',
   showSlogan = true,
+  isHeader = false,
 }) => {
   const { siteData } = useSite();
   const brandConfig = siteData?.brandConfig || {
@@ -28,14 +30,16 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   const imageUrl = isDark && brandConfig.footerLogoImageUrl ? brandConfig.footerLogoImageUrl : brandConfig.logoImageUrl;
 
   const isImageMode = (brandConfig.logoType === 'image' || brandConfig.logoType === 'combined') && Boolean(imageUrl);
-  const scale = isDark ? 1.2 : (brandConfig.logoScale ?? 100) / 100;
-  const offsetX = isDark ? 0 : (brandConfig.logoOffsetX ?? 0);
-  const offsetY = isDark ? 0 : (brandConfig.logoOffsetY ?? 0);
+  
+  // Only apply admin config scale and offset if it's the header logo
+  const scale = isHeader ? ((brandConfig.logoScale ?? 100) / 100) : (isDark ? 1.2 : 1);
+  const offsetX = isHeader ? (brandConfig.logoOffsetX ?? 0) : 0;
+  const offsetY = isHeader ? (brandConfig.logoOffsetY ?? 0) : 0;
   const baseHeight = brandConfig.logoHeight ?? 44;
 
-  const imageTransformStyle: React.CSSProperties = isDark ? {} : {
+  const imageTransformStyle: React.CSSProperties = {
     height: `${baseHeight}px`,
-    transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale})`,
+    transform: (scale !== 1 || offsetX !== 0 || offsetY !== 0) ? `translate(${offsetX}px, ${offsetY}px) scale(${scale})` : 'none',
     transformOrigin: 'center center',
     transition: 'transform 0.05s ease-out',
   };

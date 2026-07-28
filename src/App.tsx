@@ -98,7 +98,18 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'model' && <BusinessModelCanvas />}
+        {activeTab === 'model' && (
+          <BusinessModelCanvas 
+            onGoToShop={() => {
+              setActiveTab('shop');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoToNetwork={() => {
+              setActiveTab('network');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
         {activeTab === 'network' && <StationNetwork />}
 
