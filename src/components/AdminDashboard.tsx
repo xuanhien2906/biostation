@@ -3863,6 +3863,17 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {imagePickerTarget && (
+          <ImagePickerModal
+            aspect={imagePickerTarget.type === 'article' ? 16 / 9 : 1}
+            onClose={() => setImagePickerTarget(null)}
+            onSelect={(url) => {
+              imagePickerTarget.callback(url);
+              setImagePickerTarget(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );
