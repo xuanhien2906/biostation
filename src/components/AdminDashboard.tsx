@@ -75,6 +75,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
 import { ImagePickerModal } from './ImagePickerModal';
+import { MediaLibrary } from './MediaLibrary';
 
 // Helper to automatically convert Google Drive share links to direct image links
 const formatImageUrl = (url: string) => {
@@ -948,6 +949,16 @@ export const AdminDashboard: React.FC = () => {
             }`}
           >
             <Heart className="w-4 h-4" /> Câu Chuyện ({siteData.stories.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('media')}
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'media'
+                ? 'bg-[#274e23] text-white shadow-md'
+                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4" /> Kho Ảnh
           </button>
           <button
             onClick={() => setActiveTab('tools')}
@@ -2907,6 +2918,23 @@ export const AdminDashboard: React.FC = () => {
         )}
 
         {/* TAB 9: BACKUP & IMPORT */}
+        {activeTab === 'media' && (
+          <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-[#f0e6d8] pb-4">
+              <div>
+                <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5 text-amber-600" />
+                  Quản Lý Kho Ảnh Đám Mây
+                </h3>
+                <p className="text-xs text-[#5c4d43] mt-1">Tải lên hàng loạt, quản lý và xóa hình ảnh trong hệ thống của bạn.</p>
+              </div>
+            </div>
+            
+            <MediaLibrary standalone={true} />
+          </div>
+        )}
+
+        {/* TAB 10: TOOLS */}
         {activeTab === 'tools' && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
