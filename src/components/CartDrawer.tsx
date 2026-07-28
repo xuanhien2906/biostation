@@ -23,9 +23,9 @@ import {
   ChevronLeft,
   CreditCard,
   Building2,
-import {
   Sparkles,
 } from 'lucide-react';
+
 import { sendOrderEmail } from '../utils/emailService';
 
 interface CartDrawerProps {
