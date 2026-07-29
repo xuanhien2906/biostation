@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Trash2, Edit2, Check, Loader2 } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
+import { deleteStorageFile } from '../utils/storageHelper';
 import { ImageCropperModal } from './ImageCropperModal';
 import imageCompression from 'browser-image-compression';
 
@@ -10,6 +11,7 @@ interface ImageDetailsModalProps {
   onDeleteSuccess: () => void;
   onSelect?: (url: string) => void;
   currentPath?: string;
+  onRefresh?: () => void;
 }
 
 export const ImageDetailsModal: React.FC<ImageDetailsModalProps> = ({
@@ -17,31 +19,69 @@ export const ImageDetailsModal: React.FC<ImageDetailsModalProps> = ({
   onClose,
   onDeleteSuccess,
   onSelect,
-  currentPath = ''
+  currentPath = '',
+  onRefresh,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
 
+  /**
+   * Trích xuất đường dẫn file từ URL Supabase Storage.
+   * URL format: .../storage/v1/object/public/biostation_images/path/to/file.jpg
+   */
+  const extractFilePath = (imageUrl: string): string | null => {
+    try {
+      const urlObj = new URL(imageUrl);
+      // Try multiple split patterns to handle different URL formats
+      const patterns = ['/biostation_images/', 'biostation_images/'];
+      for (const pattern of patterns) {
+        const idx = urlObj.pathname.indexOf(pattern);
+        if (idx !== -1) {
+          const raw = urlObj.pathname.substring(idx + pattern.length);
+          return decodeURIComponent(raw);
+        }
+      }
+      // Fallback: try from the full URL string
+      for (const pattern of patterns) {
+        const idx = imageUrl.indexOf(pattern);
+        if (idx !== -1) {
+          const raw = imageUrl.substring(idx + pattern.length).split('?')[0];
+          return decodeURIComponent(raw);
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const handleDelete = async () => {
     if (!confirm('Bạn có chắc chắn muốn xoá ảnh này? (Không thể hoàn tác)')) return;
     try {
       setIsDeleting(true);
-      // Ensure we properly decode and extract the path after 'biostation_images/'
-      // URL format: .../storage/v1/object/public/biostation_images/path/to/file.jpg
-      const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split('biostation_images/');
-      if (pathParts.length > 1) {
-        const filePath = decodeURIComponent(pathParts[1]);
-        const { error } = await supabase.storage.from('biostation_images').remove([filePath]);
-        if (error) throw error;
+
+      const filePath = extractFilePath(url);
+      if (!filePath) {
+        alert('Không thể xác định đường dẫn ảnh từ URL.');
+        return;
+      }
+
+      console.log('[ImageDetailsModal] Đang xóa file:', filePath);
+
+      // Sử dụng storageHelper với cơ chế fallback đa lớp
+      const result = await deleteStorageFile('biostation_images', filePath);
+
+      if (result.success) {
+        console.log('[ImageDetailsModal] Xóa thành công!');
         onDeleteSuccess();
+        if (typeof onRefresh === 'function') onRefresh();
       } else {
-        alert('Không thể xác định đường dẫn ảnh.');
+        throw new Error(result.error || 'Xóa thất bại không rõ lý do');
       }
     } catch (error) {
       console.error('Lỗi khi xoá:', error);
-      alert('Đã xảy ra lỗi khi xoá ảnh.');
+      alert(`Lỗi khi xoá ảnh: ${(error as any)?.message || JSON.stringify(error)}`);
     } finally {
       setIsDeleting(false);
     }
@@ -74,11 +114,12 @@ export const ImageDetailsModal: React.FC<ImageDetailsModalProps> = ({
 
       if (uploadError) throw uploadError;
 
-      // Force refresh
+      // Refresh list & close modal
+      if (typeof onRefresh === 'function') onRefresh();
       onDeleteSuccess();
     } catch (error) {
       console.error('Lỗi lưu ảnh chỉnh sửa:', error);
-      alert('Không thể lưu ảnh đã chỉnh sửa.');
+      alert(`Không thể lưu ảnh đã chỉnh sửa: ${(error as any)?.message || ''}`);
     } finally {
       setIsUploading(false);
     }

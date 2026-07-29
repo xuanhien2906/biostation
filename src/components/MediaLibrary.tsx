@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../utils/supabaseClient';
+import { deleteStorageFile, deleteMultipleStorageFiles } from '../utils/storageHelper';
 import imageCompression from 'browser-image-compression';
 import { Upload, Trash2, CheckCircle2, Image as ImageIcon, Loader2, X, Folder, FolderPlus, MoveRight, ChevronRight, Home } from 'lucide-react';
 import { ImageDetailsModal } from './ImageDetailsModal';
@@ -157,12 +158,16 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
       filesToRemove.push(`${dirPath}/.emptyFolderPlaceholder`);
       
       if (filesToRemove.length > 0) {
-        await supabase.storage.from('biostation_images').remove(filesToRemove);
+        // Use server API for bulk delete to bypass RLS
+        const result = await deleteMultipleStorageFiles('biostation_images', filesToRemove);
+        if (!result.success) {
+          console.warn('Some files failed to delete:', result.errors);
+        }
       }
       fetchFiles();
     } catch (error) {
       console.error('Error deleting folder:', error);
-      alert('Lỗi khi xoá thư mục.');
+      alert(`Lỗi khi xoá thư mục: ${(error as any)?.message || ''}`);
     } finally {
       setLoading(false);
     }
@@ -184,6 +189,25 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
     } catch (error) {
       console.error('Error moving file:', error);
       alert('Lỗi khi di chuyển file. Lưu ý: Thư mục đích phải tồn tại.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete a single file using storageHelper (bypass RLS)
+  const handleDeleteFile = async (e: React.MouseEvent, file: MediaFile) => {
+    e.stopPropagation();
+    if (!window.confirm('Bạn có chắc muốn xoá ảnh này? Hành động không thể hoàn tác.')) return;
+    try {
+      setLoading(true);
+      const result = await deleteStorageFile('biostation_images', file.fullPath);
+      if (!result.success) {
+        throw new Error(result.error || 'Xóa thất bại');
+      }
+      fetchFiles();
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      alert(`Không thể xoá ảnh: ${(error as any)?.message || JSON.stringify(error)}`);
     } finally {
       setLoading(false);
     }
@@ -332,6 +356,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
                   >
                     <MoveRight className="w-3 h-3" />
                   </button>
+                  <button
+                    onClick={(e) => handleDeleteFile(e, file)}
+                    className="text-white hover:text-red-400 p-1.5 bg-black/40 hover:bg-black/60 rounded-md transition-colors"
+                    title="Xoá ảnh"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -354,6 +385,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
             setSelectedFileForDetails(null);
             if (onClose) onClose();
           } : undefined}
+          onRefresh={() => fetchFiles()}
         />
       )}
     </div>

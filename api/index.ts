@@ -206,4 +206,122 @@ Return a JSON object matching this schema:
   }
 });
 
+// ============================================
+// Storage Delete Endpoint (Bypass RLS via service_role key)
+// ============================================
+app.post("/api/storage/delete", async (req, res) => {
+  try {
+    const { bucket, filePath } = req.body;
+
+    if (!bucket || !filePath) {
+      res.status(400).json({ success: false, error: "Missing bucket or filePath" });
+      return;
+    }
+
+    // Sanitize filePath to prevent directory traversal
+    if (filePath.includes('..') || filePath.startsWith('/')) {
+      res.status(400).json({ success: false, error: "Invalid file path" });
+      return;
+    }
+
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    // Use service_role key if available, otherwise fall back to anon key
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+    const anonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+    const authKey = serviceRoleKey || anonKey;
+
+    if (!supabaseUrl || !authKey) {
+      res.status(500).json({ success: false, error: "Missing Supabase credentials on server" });
+      return;
+    }
+
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseAdmin = createClient(supabaseUrl, authKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      }
+    });
+
+    // Try to remove the file
+    const { data, error } = await supabaseAdmin.storage.from(bucket).remove([filePath]);
+
+    if (error) {
+      console.error("[Storage Delete] Supabase error:", error);
+      res.status(500).json({ success: false, error: error.message });
+      return;
+    }
+
+    // Verify it's actually deleted
+    const pathParts = filePath.split('/');
+    const fileName = pathParts.pop();
+    const folderPath = pathParts.join('/');
+
+    const { data: listData } = await supabaseAdmin.storage.from(bucket).list(folderPath, {
+      limit: 1000,
+      search: fileName,
+    });
+
+    const stillExists = listData?.some((f: any) => f.name === fileName);
+
+    if (stillExists) {
+      // If service_role key is not set, RLS is still blocking
+      if (!serviceRoleKey) {
+        console.error("[Storage Delete] File still exists after delete. SUPABASE_SERVICE_ROLE_KEY not set - RLS is blocking deletes.");
+        res.status(403).json({ 
+          success: false, 
+          error: "RLS đang chặn xóa. Vui lòng thêm SUPABASE_SERVICE_ROLE_KEY vào file .env hoặc cấu hình RLS policy DELETE trên Supabase Dashboard." 
+        });
+        return;
+      }
+      res.status(500).json({ success: false, error: "File vẫn tồn tại sau khi xóa" });
+      return;
+    }
+
+    res.json({ success: true, data });
+  } catch (error: any) {
+    console.error("[Storage Delete] Server error:", error);
+    res.status(500).json({ success: false, error: error.message || "Internal server error" });
+  }
+});
+
+// Storage Delete Multiple Files
+app.post("/api/storage/delete-multiple", async (req, res) => {
+  try {
+    const { bucket, filePaths } = req.body;
+
+    if (!bucket || !filePaths || !Array.isArray(filePaths)) {
+      res.status(400).json({ success: false, error: "Missing bucket or filePaths array" });
+      return;
+    }
+
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+    const anonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+    const authKey = serviceRoleKey || anonKey;
+
+    if (!supabaseUrl || !authKey) {
+      res.status(500).json({ success: false, error: "Missing Supabase credentials" });
+      return;
+    }
+
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseAdmin = createClient(supabaseUrl, authKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+
+    const { data, error } = await supabaseAdmin.storage.from(bucket).remove(filePaths);
+
+    if (error) {
+      res.status(500).json({ success: false, error: error.message });
+      return;
+    }
+
+    res.json({ success: true, data });
+  } catch (error: any) {
+    console.error("[Storage Delete Multiple] Server error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default app;
