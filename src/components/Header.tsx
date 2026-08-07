@@ -46,8 +46,8 @@ export const Header: React.FC<HeaderProps> = ({
   const matchedArticles = searchQuery.trim()
     ? articles.filter(
         (a) =>
-          a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          a.summary.toLowerCase().includes(searchQuery.toLowerCase())
+          (a.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (a.summary || a.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
 

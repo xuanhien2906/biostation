@@ -112,92 +112,112 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ onSelectProduct })
       </div>
 
       {/* Article Detail Modal */}
-      {activeModalArticle && (
-        <div className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setActiveModalArticle(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e]"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      {activeModalArticle && (() => {
+        const keyTakeaways = Array.isArray(activeModalArticle.keyTakeaways)
+          ? activeModalArticle.keyTakeaways
+          : (typeof activeModalArticle.keyTakeaways === 'string'
+              ? (() => { try { return JSON.parse(activeModalArticle.keyTakeaways); } catch { return []; } })()
+              : []);
 
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
-                {activeModalArticle.category}
-              </span>
-              <h3 className="text-2xl font-black font-serif text-[#274e23]">
-                {activeModalArticle.title}
-              </h3>
+        const recommendedProductIds = Array.isArray(activeModalArticle.recommendedProductIds)
+          ? activeModalArticle.recommendedProductIds
+          : (typeof activeModalArticle.recommendedProductIds === 'string'
+              ? (() => { try { return JSON.parse(activeModalArticle.recommendedProductIds); } catch { return []; } })()
+              : []);
 
-              <div className="h-56 rounded-2xl overflow-hidden bg-[#f0e6d8]">
-                <img
-                  src={activeModalArticle.image}
-                  alt={activeModalArticle.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+        const snippet = activeModalArticle.transcriptSnippet || activeModalArticle.summary || activeModalArticle.excerpt || 'Tri thức sống xanh và nông nghiệp sinh thái Bách Mộc.';
 
-              <div className="p-4 bg-[#f4ebe0] rounded-2xl border border-[#e2d5c3]">
-                <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-2 font-serif">
-                  Điểm Cốt Lõi Bài Viết
-                </h4>
-                <ul className="space-y-2 text-xs text-[#3d3229]">
-                  {activeModalArticle.keyTakeaways.map((take, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#274e23] mt-1.5 shrink-0" />
-                      <span className="leading-relaxed">{take}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        return (
+          <div className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+              <button
+                onClick={() => setActiveModalArticle(null)}
+                className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e] cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-              <div>
-                <h4 className="font-bold text-[#274e23] text-sm font-serif mb-1">Trích Đoạn</h4>
-                <p className="text-xs text-[#5c4d43] italic leading-relaxed bg-white p-4 rounded-xl border border-[#e2d5c3]">
-                  "{activeModalArticle.transcriptSnippet}"
-                </p>
-              </div>
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
+                  {activeModalArticle.category || 'Mô Hình BiO Station'}
+                </span>
+                <h3 className="text-2xl font-black font-serif text-[#274e23]">
+                  {activeModalArticle.title}
+                </h3>
 
-              {/* Recommended Products */}
-              {activeModalArticle.recommendedProductIds && (
-                <div className="pt-4 border-t border-[#e2d5c3]">
-                  <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-3 font-serif">
-                    Sản Phẩm Đề Xuất Liên Quan
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {activeModalArticle.recommendedProductIds.map((pId) => {
-                      const prod = products.find((p) => p.id === pId);
-                      if (!prod) return null;
-                      return (
-                        <div
-                          key={prod.id}
-                          onClick={() => {
-                            setActiveModalArticle(null);
-                            onSelectProduct(prod);
-                          }}
-                          className="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-[#e2d5c3] hover:border-[#274e23] cursor-pointer transition-all"
-                        >
-                          <img
-                            src={prod.image}
-                            alt={prod.name}
-                            className="w-10 h-10 object-cover rounded-lg bg-[#f0e6d8]"
-                          />
-                          <div className="flex-1 min-w-0 text-xs">
-                            <p className="font-bold text-[#274e23] truncate">{prod.name}</p>
-                            <p className="text-[#a66e2c] font-black">{prod.price.toLocaleString('vi-VN')}đ</p>
-                          </div>
-                          <ShoppingBag className="w-4 h-4 text-[#274e23]" />
-                        </div>
-                      );
-                    })}
+                {activeModalArticle.image && (
+                  <div className="h-56 rounded-2xl overflow-hidden bg-[#f0e6d8]">
+                    <img
+                      src={activeModalArticle.image}
+                      alt={activeModalArticle.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+                )}
+
+                {keyTakeaways.length > 0 && (
+                  <div className="p-4 bg-[#f4ebe0] rounded-2xl border border-[#e2d5c3]">
+                    <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-2 font-serif">
+                      Điểm Cốt Lõi Bài Viết
+                    </h4>
+                    <ul className="space-y-2 text-xs text-[#3d3229]">
+                      {keyTakeaways.map((take: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#274e23] mt-1.5 shrink-0" />
+                          <span className="leading-relaxed">{take}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="font-bold text-[#274e23] text-sm font-serif mb-1">Trích Đoạn</h4>
+                  <p className="text-xs text-[#5c4d43] italic leading-relaxed bg-white p-4 rounded-xl border border-[#e2d5c3]">
+                    "{snippet}"
+                  </p>
                 </div>
-              )}
+
+                {/* Recommended Products */}
+                {recommendedProductIds.length > 0 && (
+                  <div className="pt-4 border-t border-[#e2d5c3]">
+                    <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-3 font-serif">
+                      Sản Phẩm Đề Xuất Liên Quan
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {recommendedProductIds.map((pId: string) => {
+                        const prod = products.find((p) => p.id === pId);
+                        if (!prod) return null;
+                        return (
+                          <div
+                            key={prod.id}
+                            onClick={() => {
+                              setActiveModalArticle(null);
+                              onSelectProduct(prod);
+                            }}
+                            className="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-[#e2d5c3] hover:border-[#274e23] cursor-pointer transition-all"
+                          >
+                            <img
+                              src={prod.image}
+                              alt={prod.name}
+                              className="w-10 h-10 object-cover rounded-lg bg-[#f0e6d8]"
+                            />
+                            <div className="flex-1 min-w-0 text-xs">
+                              <p className="font-bold text-[#274e23] truncate">{prod.name}</p>
+                              <p className="text-[#a66e2c] font-black">{prod.price ? prod.price.toLocaleString('vi-VN') : 0}đ</p>
+                            </div>
+                            <ShoppingBag className="w-4 h-4 text-[#274e23]" />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

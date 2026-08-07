@@ -105,79 +105,106 @@ export const RecipeDirectory: React.FC = () => {
       </div>
 
       {/* Recipe Modal */}
-      {activeModalRecipe && (
-        <div className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setActiveModalRecipe(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e]"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      {activeModalRecipe && (() => {
+        const ingredients = Array.isArray(activeModalRecipe.ingredients)
+          ? activeModalRecipe.ingredients
+          : (typeof activeModalRecipe.ingredients === 'string'
+              ? (() => { try { return JSON.parse(activeModalRecipe.ingredients); } catch { return []; } })()
+              : []);
 
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
-                {activeModalRecipe.category}
-              </span>
-              <h3 className="text-2xl font-black font-serif text-[#274e23]">
-                {activeModalRecipe.title}
-              </h3>
+        const rawInstructions = activeModalRecipe.instructions || (activeModalRecipe as any).steps;
+        const instructions = Array.isArray(rawInstructions)
+          ? rawInstructions
+          : (typeof rawInstructions === 'string'
+              ? (() => { try { return JSON.parse(rawInstructions); } catch { return []; } })()
+              : []);
 
-              <div className="h-60 rounded-2xl overflow-hidden bg-[#f0e6d8]">
-                <img
-                  src={activeModalRecipe.image}
-                  alt={activeModalRecipe.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+        const prepTime = activeModalRecipe.prepTime || '15 phút';
+        const cookTime = activeModalRecipe.cookTime || '20 phút';
+        const servings = activeModalRecipe.servings || 2;
+        const calories = activeModalRecipe.calories || 300;
+        const bmqTip = activeModalRecipe.bmqTip || 'Nguyên liệu chuẩn kiểm định BMQ 100% Thuận Tự Nhiên.';
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#f4ebe0] p-3 rounded-xl text-center text-xs text-[#274e23] font-bold">
-                <div>
-                  <span className="text-[10px] text-[#7a6858] block font-normal">Sơ chế & Nấu:</span>
-                  {activeModalRecipe.prepTime} + {activeModalRecipe.cookTime}
+        return (
+          <div className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+              <button
+                onClick={() => setActiveModalRecipe(null)}
+                className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e] cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
+                  {activeModalRecipe.category || 'Bữa Ăn Lành'}
+                </span>
+                <h3 className="text-2xl font-black font-serif text-[#274e23]">
+                  {activeModalRecipe.title}
+                </h3>
+
+                {activeModalRecipe.image && (
+                  <div className="h-60 rounded-2xl overflow-hidden bg-[#f0e6d8]">
+                    <img
+                      src={activeModalRecipe.image}
+                      alt={activeModalRecipe.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#f4ebe0] p-3 rounded-xl text-center text-xs text-[#274e23] font-bold">
+                  <div>
+                    <span className="text-[10px] text-[#7a6858] block font-normal">Sơ chế & Nấu:</span>
+                    {prepTime} + {cookTime}
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#7a6858] block font-normal">Khẩu phần:</span>
+                    {servings} người
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#7a6858] block font-normal">Năng lượng:</span>
+                    {calories} kcal
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-[#7a6858] block font-normal">Khẩu phần:</span>
-                  {activeModalRecipe.servings} người
+
+                {ingredients.length > 0 && (
+                  <div>
+                    <h4 className="font-bold text-[#274e23] text-sm font-serif mb-2">Nguyên Liệu Cần Chuẩn Bị</h4>
+                    <ul className="space-y-1.5 text-xs text-[#3d3229]">
+                      {ingredients.map((ing: string, i: number) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#274e23]" />
+                          <span>{ing}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {instructions.length > 0 && (
+                  <div>
+                    <h4 className="font-bold text-[#274e23] text-sm font-serif mb-2">Các Bước Thực Hiện</h4>
+                    <ol className="space-y-2 text-xs text-[#3d3229]">
+                      {instructions.map((step: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="font-bold text-[#274e23] shrink-0">{i + 1}.</span>
+                          <span className="leading-relaxed">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                <div className="p-4 rounded-2xl bg-[#274e23]/10 border border-[#274e23]/20 text-[#274e23] text-xs">
+                  <span className="font-bold uppercase tracking-wider block mb-1">Mẹo Lành Bách Mộc:</span>
+                  <p className="italic">{bmqTip}</p>
                 </div>
-                <div>
-                  <span className="text-[10px] text-[#7a6858] block font-normal">Năng lượng:</span>
-                  {activeModalRecipe.calories} kcal
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-[#274e23] text-sm font-serif mb-2">Nguyên Liệu Cần Chuẩn Bị</h4>
-                <ul className="space-y-1.5 text-xs text-[#3d3229]">
-                  {activeModalRecipe.ingredients.map((ing, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#274e23]" />
-                      <span>{ing}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-[#274e23] text-sm font-serif mb-2">Các Bước Thực Hiện</h4>
-                <ol className="space-y-2 text-xs text-[#3d3229]">
-                  {activeModalRecipe.instructions.map((step, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="font-bold text-[#274e23] shrink-0">{i + 1}.</span>
-                      <span className="leading-relaxed">{step}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#274e23]/10 border border-[#274e23]/20 text-[#274e23] text-xs">
-                <span className="font-bold uppercase tracking-wider block mb-1">Mẹo Lành Bách Mộc:</span>
-                <p className="italic">{activeModalRecipe.bmqTip}</p>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

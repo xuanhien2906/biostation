@@ -413,23 +413,109 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem(`${STORAGE_KEY}_stories`, JSON.stringify(stories));
   }, [stories]);
 
-  // FETCH FROM SUPABASE
+  // Helper to safely parse array or JSON string or fallback
+  const parseArrayField = (val: any, fallback: string[] = []): string[] => {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string' && val.trim().startsWith('[')) {
+      try {
+        const parsed = JSON.parse(val);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        // Fall through
+      }
+    }
+    if (typeof val === 'string' && val.trim().length > 0) {
+      return val.split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    return fallback;
+  };
+
+  // FETCH FROM SUPABASE WITH SMART MERGING & FALLBACKS
   useEffect(() => {
     const fetchSupabaseData = async () => {
       try {
         const { data: prodData, error: prodErr } = await supabase.from('products').select('*');
         if (!prodErr && prodData && prodData.length > 0) {
-          setProducts(prodData);
+          setProducts((prev) => {
+            return prodData.map((sp: any) => {
+              const localMatch = prev.find((p) => p.id === sp.id) || PRODUCTS.find((p) => p.id === sp.id);
+              return { ...localMatch, ...sp };
+            });
+          });
         }
 
         const { data: artData, error: artErr } = await supabase.from('articles').select('*');
         if (!artErr && artData && artData.length > 0) {
-          setArticles(artData);
+          setArticles((prev) => {
+            return artData.map((sa: any) => {
+              const defaultMatch = ARTICLES.find((a) => a.id === sa.id) || prev.find((a) => a.id === sa.id);
+              return {
+                ...defaultMatch,
+                ...sa,
+                category: sa.category || defaultMatch?.category || 'Sống Xanh & Sức Khỏe',
+                duration: sa.duration || defaultMatch?.duration || '5 phút đọc',
+                views: sa.views || defaultMatch?.views || '1.2K lượt xem',
+                summary: sa.summary || sa.excerpt || defaultMatch?.summary || 'Bài viết truyền cảm hứng lối sống xanh và nông nghiệp sinh thái Bách Mộc.',
+                keyTakeaways: parseArrayField(
+                  sa.keyTakeaways,
+                  defaultMatch?.keyTakeaways || [
+                    'Trải nghiệm trực tiếp tại chỗ: Thử nông sản tươi & workshop cộng đồng.',
+                    'Cầu nối trực tiếp nông dân - người tiêu dùng Bách Mộc.',
+                    'Triết lý thương hiệu: Chạm để trở về với giá trị sống tử tế.',
+                  ]
+                ),
+                transcriptSnippet:
+                  sa.transcriptSnippet ||
+                  sa.content ||
+                  defaultMatch?.transcriptSnippet ||
+                  'BiO Station là điểm chạm văn hóa sống xanh, mang nguồn thực phẩm an lành đến mỗi gia đình.',
+                recommendedProductIds: parseArrayField(
+                  sa.recommendedProductIds,
+                  defaultMatch?.recommendedProductIds || ['prod-gao-bach-moc', 'prod-rau-cu-bmq']
+                ),
+              };
+            });
+          });
         }
 
         const { data: recData, error: recErr } = await supabase.from('recipes').select('*');
         if (!recErr && recData && recData.length > 0) {
-          setRecipes(recData);
+          setRecipes((prev) => {
+            return recData.map((sr: any) => {
+              const defaultMatch = RECIPES.find((r) => r.id === sr.id) || prev.find((r) => r.id === sr.id);
+              return {
+                ...defaultMatch,
+                ...sr,
+                category: sr.category || defaultMatch?.category || 'Bữa Ăn Lành',
+                prepTime: sr.prepTime || sr.time || defaultMatch?.prepTime || '15 phút',
+                cookTime: sr.cookTime || defaultMatch?.cookTime || '20 phút',
+                servings: sr.servings || defaultMatch?.servings || 2,
+                calories: sr.calories || defaultMatch?.calories || 300,
+                organicPercent: sr.organicPercent || defaultMatch?.organicPercent || 100,
+                description:
+                  sr.description ||
+                  defaultMatch?.description ||
+                  'Bữa ăn thuần tự nhiên dinh dưỡng chế biến đơn giản từ nguồn nguyên liệu Bách Mộc.',
+                ingredients: parseArrayField(
+                  sr.ingredients,
+                  defaultMatch?.ingredients || [
+                    'Gạo hữu cơ Bách Mộc ST25',
+                    'Rau củ hữu cơ tươi hái trong ngày',
+                    'Gia vị tự nhiên Bách Mộc',
+                  ]
+                ),
+                instructions: parseArrayField(
+                  sr.instructions || sr.steps,
+                  defaultMatch?.instructions || [
+                    'Sơ chế nguyên liệu tươi sạch.',
+                    'Chế biến ở nhiệt độ vừa phải để giữ trọn vi chất.',
+                    'Thưởng thức cùng gia đình.',
+                  ]
+                ),
+                bmqTip: sr.bmqTip || defaultMatch?.bmqTip || 'Nguyên liệu đạt chuẩn kiểm định BMQ 100% Thuận Tự Nhiên.',
+              };
+            });
+          });
         }
       } catch (err) {
         console.error('Error fetching data from Supabase:', err);
