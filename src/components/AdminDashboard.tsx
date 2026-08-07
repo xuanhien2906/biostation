@@ -3843,26 +3843,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <div className="flex gap-2 items-end">
-                  <div className="flex-1">
-                    {renderImageInput('recipe', editingDish.image, (url) => setEditingDish({ ...editingDish, image: url }))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImageToolTarget({
-                        type: 'product',
-                        field: 'image',
-                        currentUrl: editingDish.image,
-                        objectFit: 'cover',
-                        aspectRatio: '16/10',
-                      });
-                    }}
-                    className="px-3 py-2 bg-[#274e23] text-white rounded-xl text-xs font-bold shrink-0 cursor-pointer"
-                  >
-                    Xén Ảnh
-                  </button>
-                </div>
+                {renderImageInput('recipe', editingDish.image, (url) => setEditingDish({ ...editingDish, image: url }))}
               </div>
 
               <button

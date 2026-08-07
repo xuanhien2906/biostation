@@ -78,7 +78,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
     const selectedFiles = event.target.files;
     if (!selectedFiles || selectedFiles.length === 0) return;
 
-    const filesArray = Array.from(selectedFiles).slice(0, 20);
+    const filesArray = (Array.from(selectedFiles) as File[]).slice(0, 20);
     setUploading(true);
     setUploadProgress(0);
 
@@ -93,7 +93,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
         };
         const compressedFile = await imageCompression(file, options);
         
-        const fileExt = compressedFile.name.split('.').pop();
+        const fileExt = compressedFile.name.split('.').pop() || 'jpg';
         const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
         const fullPath = currentPath ? `${currentPath}/${fileName}` : fileName;
 

@@ -20,7 +20,7 @@ const ai = new GoogleGenAI({
 
 // API Routes
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", app: "Dr. Berg Health & Keto Center" });
+  res.json({ status: "ok", app: "BiO Station - Hệ Sinh Thái Nông Sản Hữu Cơ Bách Mộc" });
 });
 
 // BiO Station AI Advisor Endpoint
@@ -188,7 +188,7 @@ Return a JSON object matching this schema:
     `.trim();
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
       config: {
         systemInstruction,
