@@ -8,12 +8,14 @@ interface ProductStoreProps {
   onAddToCart: (product: Product) => void;
   selectedProductId?: string;
   selectedCategory?: string;
+  onClearSelectedProductId?: () => void;
 }
 
 export const ProductStore: React.FC<ProductStoreProps> = ({
   onAddToCart,
   selectedProductId,
   selectedCategory = 'Tất Cả',
+  onClearSelectedProductId,
 }) => {
   const { siteData } = useSite();
   const rawProducts = siteData?.products || [];
@@ -23,6 +25,13 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
   const [activeModalProduct, setActiveModalProduct] = useState<Product | null>(
     selectedProductId ? products.find((p) => p.id === selectedProductId) || null : null
   );
+
+  const handleCloseModal = () => {
+    setActiveModalProduct(null);
+    if (onClearSelectedProductId) {
+      onClearSelectedProductId();
+    }
+  };
 
   React.useEffect(() => {
     if (selectedCategory) {
@@ -37,7 +46,7 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
         setActiveModalProduct(found);
       }
     }
-  }, [selectedProductId, products]);
+  }, [selectedProductId]);
 
   const categories = [
     'Tất Cả',
@@ -149,7 +158,7 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
               <div className="pt-3 border-t border-[#f0e6d8] flex items-center justify-between gap-2">
                 <div>
                   <span className="text-lg font-black text-[#274e23]">
-                    {product.price.toLocaleString('vi-VN')}đ
+                    {product.price ? product.price.toLocaleString('vi-VN') : 0}đ
                   </span>
                   {product.originalPrice && (
                     <span className="text-xs text-[#9e8b7b] line-through ml-1.5">
@@ -171,120 +180,142 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
       </div>
 
       {/* Product Detail Modal */}
-      {activeModalProduct && (
-        <div className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setActiveModalProduct(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e]"
+      {activeModalProduct && (() => {
+        const dishSampleList = Array.isArray(activeModalProduct.dishSampleList)
+          ? activeModalProduct.dishSampleList
+          : (typeof activeModalProduct.dishSampleList === 'string'
+              ? (() => { try { return JSON.parse(activeModalProduct.dishSampleList); } catch { return []; } })()
+              : []);
+
+        const keyBenefits = Array.isArray(activeModalProduct.keyBenefits)
+          ? activeModalProduct.keyBenefits
+          : (typeof activeModalProduct.keyBenefits === 'string'
+              ? (() => { try { return JSON.parse(activeModalProduct.keyBenefits); } catch { return []; } })()
+              : []);
+
+        return (
+          <div
+            onClick={handleCloseModal}
+            className="fixed inset-0 z-50 bg-[#2d241e]/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
-              <X className="w-5 h-5" />
-            </button>
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e] cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-              <div className="sm:col-span-5 h-56 rounded-2xl overflow-hidden bg-[#f0e6d8]">
-                <img
-                  src={activeModalProduct.image}
-                  alt={activeModalProduct.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="sm:col-span-7 space-y-3">
-                <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
-                  {activeModalProduct.category}
-                </span>
-                <h3 className="text-2xl font-black font-serif text-[#274e23]">
-                  {activeModalProduct.name}
-                </h3>
-                <p className="text-xs text-[#5c4d43] font-medium">{activeModalProduct.subtitle}</p>
-
-                <div className="flex items-center gap-2 text-sm text-amber-600 font-bold">
-                  <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-                  <span>{activeModalProduct.rating} / 5</span>
-                  <span className="text-[#8c7868]">({activeModalProduct.reviewCount} đánh giá)</span>
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+                <div className="sm:col-span-5 h-56 rounded-2xl overflow-hidden bg-[#f0e6d8]">
+                  <img
+                    src={activeModalProduct.image}
+                    alt={activeModalProduct.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
-                <div className="text-2xl font-black text-[#274e23] pt-1">
-                  {activeModalProduct.price.toLocaleString('vi-VN')} VNĐ
+                <div className="sm:col-span-7 space-y-3">
+                  <span className="text-xs font-bold text-[#274e23] uppercase tracking-wider">
+                    {activeModalProduct.category || 'Nông Sản Hữu Cơ'}
+                  </span>
+                  <h3 className="text-2xl font-black font-serif text-[#274e23]">
+                    {activeModalProduct.name}
+                  </h3>
+                  <p className="text-xs text-[#5c4d43] font-medium">{activeModalProduct.subtitle}</p>
+
+                  <div className="flex items-center gap-2 text-sm text-amber-600 font-bold">
+                    <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+                    <span>{activeModalProduct.rating || 5} / 5</span>
+                    <span className="text-[#8c7868]">({activeModalProduct.reviewCount || 10} đánh giá)</span>
+                  </div>
+
+                  <div className="text-2xl font-black text-[#274e23] pt-1">
+                    {activeModalProduct.price ? activeModalProduct.price.toLocaleString('vi-VN') : 0} VNĐ
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      onAddToCart(activeModalProduct);
+                      handleCloseModal();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-sm tracking-wide transition-all shadow cursor-pointer"
+                  >
+                    <ShoppingBag className="w-4 h-4 text-amber-300" /> Thêm Vào Giỏ Hàng
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => {
-                    onAddToCart(activeModalProduct);
-                    setActiveModalProduct(null);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-sm tracking-wide transition-all shadow cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4 text-amber-300" /> Thêm Vào Giỏ Hàng
-                </button>
-              </div>
-            </div>
-
-            {/* Description & Key Benefits */}
-            <div className="space-y-4 pt-4 border-t border-[#e2d5c3] text-xs text-[#3d3229]">
-              <div>
-                <h4 className="font-bold text-[#274e23] text-sm mb-1 font-serif">Mô Tả Sản Phẩm</h4>
-                <p className="leading-relaxed">{activeModalProduct.description}</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-[#f4ebe0] p-3 rounded-xl border border-[#e2d5c3]">
+              {/* Description & Key Benefits */}
+              <div className="space-y-4 pt-4 border-t border-[#e2d5c3] text-xs text-[#3d3229]">
                 <div>
-                  <span className="font-bold text-[#274e23] block text-[11px]">Nguồn Gốc Xuất Xứ:</span>
-                  <span className="text-[11px] text-[#5c4d43]">{activeModalProduct.origin}</span>
+                  <h4 className="font-bold text-[#274e23] text-sm mb-1 font-serif">Mô Tả Sản Phẩm</h4>
+                  <p className="leading-relaxed">{activeModalProduct.description || 'Sản phẩm hữu cơ Bách Mộc đạt chuẩn kiểm định BMQ Standard.'}</p>
                 </div>
-                <div>
-                  <span className="font-bold text-[#274e23] block text-[11px]">Tiêu Chuẩn Kiểm Định:</span>
-                  <span className="text-[11px] text-[#5c4d43]">{activeModalProduct.certification}</span>
-                </div>
-              </div>
 
-              {activeModalProduct.dishSampleList && (
-                <div className="bg-[#f2e9dc] p-3.5 rounded-2xl border border-[#dcd0bf] space-y-2">
-                  <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider font-serif">
-                    Gợi Ý Các Món Trong Combo Bữa Ăn Trải Nghiệm:
-                  </h4>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[#5c4d43]">
-                    {activeModalProduct.dishSampleList.map((dish, i) => (
-                      <li key={i} className="flex items-start gap-1.5">
-                        <span className="text-[#a66e2c] font-bold">▪</span>
-                        <span>{dish}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {activeModalProduct.flavorProfile && (
-                    <div className="pt-2 border-t border-[#dcd0bf] text-[11px] text-[#7a6858] italic">
-                      <span className="font-bold text-[#274e23] not-italic">Hương vị & Phong cách:</span> {activeModalProduct.flavorProfile}
-                    </div>
-                  )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-[#f4ebe0] p-3 rounded-xl border border-[#e2d5c3]">
+                  <div>
+                    <span className="font-bold text-[#274e23] block text-[11px]">Nguồn Gốc Xuất Xứ:</span>
+                    <span className="text-[11px] text-[#5c4d43]">{activeModalProduct.origin || 'Trang trại Bách Mộc'}</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#274e23] block text-[11px]">Tiêu Chuẩn Kiểm Định:</span>
+                    <span className="text-[11px] text-[#5c4d43]">{activeModalProduct.certification || 'BMQ Qualified'}</span>
+                  </div>
                 </div>
-              )}
 
-              <div>
-                <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-2 font-serif">
-                  Lợi Ích Sức Khỏe & Điểm Nổi Bật
-                </h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {activeModalProduct.keyBenefits.map((b, i) => (
-                    <li key={i} className="flex items-start gap-2 text-[#3d3229]">
-                      <CheckCircle className="w-4 h-4 text-[#274e23] shrink-0 mt-0.5" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                {dishSampleList.length > 0 && (
+                  <div className="bg-[#f2e9dc] p-3.5 rounded-2xl border border-[#dcd0bf] space-y-2">
+                    <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider font-serif">
+                      Gợi Ý Các Món Trong Combo Bữa Ăn Trải Nghiệm:
+                    </h4>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[#5c4d43]">
+                      {dishSampleList.map((dish: string, i: number) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-[#a66e2c] font-bold">▪</span>
+                          <span>{dish}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {activeModalProduct.flavorProfile && (
+                      <div className="pt-2 border-t border-[#dcd0bf] text-[11px] text-[#7a6858] italic">
+                        <span className="font-bold text-[#274e23] not-italic">Hương vị & Phong cách:</span> {activeModalProduct.flavorProfile}
+                      </div>
+                    )}
+                  </div>
+                )}
 
-              {/* BMQ Note */}
-              <div className="p-4 rounded-2xl bg-[#274e23]/10 border border-[#274e23]/20 text-[#274e23] space-y-1">
-                <div className="font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-amber-600" /> Cam Kết Bách Mộc (BMQ Standard)
+                {keyBenefits.length > 0 && (
+                  <div>
+                    <h4 className="font-bold text-[#274e23] text-xs uppercase tracking-wider mb-2 font-serif">
+                      Lợi Ích Sức Khỏe & Điểm Nổi Bật
+                    </h4>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {keyBenefits.map((b: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 text-[#3d3229]">
+                          <CheckCircle className="w-4 h-4 text-[#274e23] shrink-0 mt-0.5" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* BMQ Note */}
+                <div className="p-4 rounded-2xl bg-[#274e23]/10 border border-[#274e23]/20 text-[#274e23] space-y-1">
+                  <div className="font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-amber-600" /> Cam Kết Bách Mộc (BMQ Standard)
+                  </div>
+                  <p className="italic leading-relaxed">{activeModalProduct.bmqNote || '100% Thuận Tự Nhiên, Không Chất Bảo Quản.'}</p>
                 </div>
-                <p className="italic leading-relaxed">{activeModalProduct.bmqNote}</p>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };

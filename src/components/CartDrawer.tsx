@@ -200,8 +200,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-[#2d241e]/60 backdrop-blur-sm flex justify-end">
-        <div className="w-full max-w-lg bg-[#fcfaf7] h-full shadow-2xl flex flex-col justify-between border-l border-[#e2d5c3] text-[#2d241e] animate-slide-left">
+      <div onClick={onClose} className="fixed inset-0 z-50 bg-[#2d241e]/60 backdrop-blur-sm flex justify-end cursor-pointer">
+        <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg bg-[#fcfaf7] h-full shadow-2xl flex flex-col justify-between border-l border-[#e2d5c3] text-[#2d241e] animate-slide-left cursor-default">
           
           {/* Top Header Bar */}
           <div className="p-4 pt-12 md:pt-4 sm:p-5 border-b border-[#e2d5c3] flex items-center justify-between bg-[#f8f5f0] shrink-0">

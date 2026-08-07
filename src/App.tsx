@@ -118,6 +118,7 @@ export default function App() {
             onAddToCart={handleAddToCart}
             selectedProductId={selectedProductId}
             selectedCategory={selectedCategory}
+            onClearSelectedProductId={() => setSelectedProductId(undefined)}
           />
         )}
 
