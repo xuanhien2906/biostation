@@ -4,6 +4,7 @@ import { deleteStorageFile, deleteMultipleStorageFiles } from '../utils/storageH
 import imageCompression from 'browser-image-compression';
 import { Upload, Trash2, CheckCircle2, Image as ImageIcon, Loader2, X, Folder, FolderPlus, MoveRight, ChevronRight, Home, Copy, Link as LinkIcon } from 'lucide-react';
 import { ImageDetailsModal } from './ImageDetailsModal';
+import { logAuditEvent } from './AdminDashboard';
 
 interface MediaLibraryProps {
   onSelectImage?: (url: string) => void;
@@ -113,6 +114,7 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     fetchFiles();
+    logAuditEvent(null, 'media', 'UPLOAD', 'Kho Ảnh Media', `Tải lên thành công ${filesArray.length} hình ảnh mới (${currentPath || 'Thư mục gốc'})`);
   };
 
   const handleCreateFolder = async () => {

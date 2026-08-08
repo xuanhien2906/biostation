@@ -17,11 +17,14 @@ import {
   AdminUser,
   AdminTabId,
   AdminUserPermissions,
+  AuditLogEntry,
 } from '../types';
 import {
   Settings,
   Store,
   MapPin,
+  History,
+  Activity,
   ShoppingBag,
   Package,
   Search,
@@ -1242,6 +1245,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
   { id: 'stories', label: 'Câu Chuyện Trải Nghiệm', icon: '💖' },
   { id: 'media', label: 'Kho Ảnh Media', icon: '🖼️' },
   { id: 'tools', label: 'Sao Lưu & Import', icon: '⚙️' },
+  { id: 'logs', label: 'Nhật Ký & Audit Logs', icon: '📜' },
 ];
 
 const StaffManagerSection: React.FC<{
@@ -1953,6 +1957,371 @@ const StaffManagerSection: React.FC<{
   );
 };
 
+export const logAuditEvent = async (
+  user: AdminUser | null,
+  category: 'login' | 'content' | 'media' | 'settings' | 'order',
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD',
+  target: string,
+  details?: string
+) => {
+  const newEntry: AuditLogEntry = {
+    id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+    timestamp: new Date().toISOString(),
+    username: user ? user.username : 'admin',
+    fullName: user ? user.fullName : 'Chủ Tịch Quản Trị (Super Admin)',
+    role: user ? user.role : 'super_admin',
+    category,
+    action,
+    target,
+    details: details || '',
+    ipDevice: typeof window !== 'undefined' ? `${window.navigator.userAgent.slice(0, 40)}...` : '',
+  };
+
+  try {
+    const { data: blob } = await supabase.storage
+      .from('biostation_images')
+      .download('config/audit_logs.json');
+
+    let currentLogs: AuditLogEntry[] = [];
+    if (blob) {
+      const text = await blob.text();
+      try {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) currentLogs = parsed;
+      } catch (e) {}
+    }
+
+    const updatedLogs = [newEntry, ...currentLogs].slice(0, 500);
+
+    const uploadBlob = new Blob([JSON.stringify(updatedLogs, null, 2)], {
+      type: 'application/json',
+    });
+    await supabase.storage
+      .from('biostation_images')
+      .upload('config/audit_logs.json', uploadBlob, { upsert: true });
+  } catch (e) {
+    console.warn('Notice writing audit log:', e);
+  }
+};
+
+const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () => {
+  const [logs, setLogs] = useState<AuditLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [actionFilter, setActionFilter] = useState<string>('all');
+
+  const fetchLogs = async () => {
+    setLoading(true);
+    try {
+      const { data: blob, error } = await supabase.storage
+        .from('biostation_images')
+        .download('config/audit_logs.json');
+
+      if (blob && !error) {
+        const text = await blob.text();
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setLogs(parsed);
+          return;
+        }
+      }
+
+      // Default sample logs if empty
+      const defaultLogs: AuditLogEntry[] = [
+        {
+          id: 'log-sample-1',
+          timestamp: new Date().toISOString(),
+          username: 'admin',
+          fullName: 'Chủ Tịch Quản Trị (Super Admin)',
+          role: 'super_admin',
+          category: 'login',
+          action: 'LOGIN',
+          target: 'Hệ thống Admin BiO Station',
+          details: 'Đăng nhập hệ thống quản trị',
+          ipDevice: 'Chrome Browser (Windows 11)',
+        },
+        {
+          id: 'log-sample-2',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          username: 'nhansu_bepan',
+          fullName: 'Nguyễn Thị Hồng (Bộ phận Bếp & Đơn)',
+          role: 'staff',
+          category: 'order',
+          action: 'UPDATE',
+          target: 'Đơn hàng BIO-1786153817121',
+          details: 'Cập nhật trạng thái đơn hàng thành "Đã Xác Nhận"',
+          ipDevice: 'Safari Mobile (iOS)',
+        },
+      ];
+      setLogs(defaultLogs);
+    } catch (e) {
+      console.warn('Notice fetching audit logs:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  const handleClearLogs = async () => {
+    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử hoạt động cũ trên Đám mây?')) {
+      setLogs([]);
+      try {
+        const blob = new Blob([JSON.stringify([], null, 2)], { type: 'application/json' });
+        await supabase.storage
+          .from('biostation_images')
+          .upload('config/audit_logs.json', blob, { upsert: true });
+        alert('Đã xóa sạch nhật ký hệ thống thành công!');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  const handleExportLogs = () => {
+    const jsonStr = JSON.stringify(logs, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `biostation-audit-logs-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+  };
+
+  // Filtering
+  const filteredLogs = logs.filter((log) => {
+    const matchesSearch =
+      log.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.target.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (log.details && log.details.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const matchesCat = categoryFilter === 'all' || log.category === categoryFilter;
+    const matchesAct = actionFilter === 'all' || log.action === actionFilter;
+
+    return matchesSearch && matchesCat && matchesAct;
+  });
+
+  // Calculate Metrics
+  const totalLogs = logs.length;
+  const loginCount = logs.filter((l) => l.category === 'login').length;
+  const contentUpdates = logs.filter((l) => l.category === 'content' || l.category === 'media').length;
+  const settingChanges = logs.filter((l) => l.category === 'settings').length;
+
+  return (
+    <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#f0e6d8] pb-4">
+        <div>
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+            Giám Sát & Kiểm Soát Thay Đổi Hệ Thống (Audit Logging)
+          </span>
+          <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
+            <History className="w-5 h-5 text-amber-600" />
+            Nhật Ký Hoạt Động & Lịch Sử Cập Nhật Website ({filteredLogs.length}/{totalLogs} Nhật ký)
+          </h3>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={fetchLogs}
+            className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all border border-stone-300"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-amber-700" /> Làm Mới Logs
+          </button>
+
+          <button
+            onClick={handleExportLogs}
+            className="px-3.5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs rounded-xl shadow flex items-center gap-1.5 cursor-pointer transition-all"
+          >
+            <Download className="w-3.5 h-3.5 text-amber-300" /> Xuất File JSON
+          </button>
+
+          <button
+            onClick={handleClearLogs}
+            className="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl border border-rose-200 flex items-center gap-1.5 cursor-pointer"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-600" /> Xóa Nhật Ký
+          </button>
+        </div>
+      </div>
+
+      {/* Overview Metrics Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Tổng Nhật Ký</span>
+            <Activity className="w-4 h-4 text-emerald-700" />
+          </div>
+          <p className="text-2xl font-black text-[#274e23]">{totalLogs}</p>
+          <span className="text-[10px] text-stone-400">Ghi nhận mọi thao tác</span>
+        </div>
+
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Lượt Truy Cập / Đăng Nhập</span>
+            <Lock className="w-4 h-4 text-blue-700" />
+          </div>
+          <p className="text-2xl font-black text-blue-900">{loginCount}</p>
+          <span className="text-[10px] text-stone-400">Tài khoản Admin & Nhân sự</span>
+        </div>
+
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Cập Nhật Bài & Sản Phẩm</span>
+            <FileText className="w-4 h-4 text-purple-700" />
+          </div>
+          <p className="text-2xl font-black text-purple-900">{contentUpdates}</p>
+          <span className="text-[10px] text-stone-400">Bài viết, công thức & ảnh</span>
+        </div>
+
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Thay Đổi Giao Diện/Cấu Hình</span>
+            <Settings className="w-4 h-4 text-amber-700" />
+          </div>
+          <p className="text-2xl font-black text-amber-900">{settingChanges}</p>
+          <span className="text-[10px] text-stone-400">Thương hiệu, phông chữ, QR</span>
+        </div>
+      </div>
+
+      {/* Filter & Search Bar */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#f2e9dc]/50 p-3 rounded-2xl border border-[#e2d5c3]">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 absolute left-3 top-3 text-stone-400" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Tìm theo Tên nhân sự, Username, Mục thay đổi hoặc chi tiết..."
+            className="w-full text-xs pl-9 pr-3 py-2 rounded-xl border border-[#dcd0bf] bg-white outline-none focus:ring-2 focus:ring-[#274e23]"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 text-xs">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="p-2 rounded-xl border border-[#dcd0bf] bg-white font-bold text-stone-700 outline-none"
+          >
+            <option value="all">📂 Tất Cả Phân Loại</option>
+            <option value="login">🔐 Truy Cập / Đăng Nhập</option>
+            <option value="content">📝 Bài Viết & Sản Phẩm</option>
+            <option value="media">🖼️ Kho Ảnh Media</option>
+            <option value="settings">⚙️ Cấu Hình Website</option>
+            <option value="order">📦 Đơn Hàng & Mâm Cơm</option>
+          </select>
+
+          <select
+            value={actionFilter}
+            onChange={(e) => setActionFilter(e.target.value)}
+            className="p-2 rounded-xl border border-[#dcd0bf] bg-white font-bold text-stone-700 outline-none"
+          >
+            <option value="all">⚡ Tất Cả Thao Tác</option>
+            <option value="CREATE">🟢 Thêm Mới (CREATE)</option>
+            <option value="UPDATE">🔵 Chỉnh Sửa (UPDATE)</option>
+            <option value="DELETE">🔴 Xóa (DELETE)</option>
+            <option value="LOGIN">🔐 Đăng Nhập (LOGIN)</option>
+            <option value="UPLOAD">🖼️ Upload Ảnh (UPLOAD)</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Logs Table */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-40 text-stone-400">
+          <Loader2 className="w-7 h-7 animate-spin text-[#274e23] mb-2" />
+          <p className="text-xs font-semibold">Đang tải nhật ký hoạt động hệ thống...</p>
+        </div>
+      ) : filteredLogs.length === 0 ? (
+        <div className="text-center py-12 bg-[#fbf8f3] rounded-2xl border border-dashed border-[#e2d5c3] text-stone-500 text-xs">
+          <History className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+          <p className="font-bold">Không tìm thấy nhật ký hoạt động nào phù hợp với bộ lọc.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto border border-[#e2d5c3] rounded-2xl">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#f2e9dc] text-[#274e23] uppercase font-serif tracking-wider font-bold border-b border-[#e2d5c3]">
+              <tr>
+                <th className="p-3 whitespace-nowrap">Thời Gian Ghi Nhận</th>
+                <th className="p-3 whitespace-nowrap">Người Thực Hiện</th>
+                <th className="p-3 whitespace-nowrap">Hành Động</th>
+                <th className="p-3 whitespace-nowrap">Mục Thay Đổi (Target)</th>
+                <th className="p-3">Nội Dung Chi Tiết Ghi Nhận</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f0e6d8]">
+              {filteredLogs.map((log) => {
+                const dateObj = new Date(log.timestamp);
+                const timeStr = dateObj.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const dateStr = dateObj.toLocaleDateString('vi-VN');
+
+                let actionBadge = 'bg-stone-100 text-stone-800';
+                if (log.action === 'CREATE') actionBadge = 'bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold';
+                if (log.action === 'UPDATE') actionBadge = 'bg-blue-100 text-blue-900 border border-blue-300 font-bold';
+                if (log.action === 'DELETE') actionBadge = 'bg-red-100 text-red-900 border border-red-300 font-bold';
+                if (log.action === 'LOGIN') actionBadge = 'bg-amber-100 text-amber-900 border border-amber-300 font-bold';
+                if (log.action === 'UPLOAD') actionBadge = 'bg-purple-100 text-purple-900 border border-purple-300 font-bold';
+
+                return (
+                  <tr key={log.id} className="hover:bg-[#fbf8f3] transition-colors">
+                    <td className="p-3 whitespace-nowrap">
+                      <div className="font-bold text-stone-900 flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-amber-700" /> {timeStr}
+                      </div>
+                      <div className="text-[10px] text-stone-400">{dateStr}</div>
+                    </td>
+
+                    <td className="p-3 whitespace-nowrap">
+                      <div className="font-bold text-sm text-stone-900">{log.fullName}</div>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="font-mono text-[10px] bg-stone-100 px-1.5 py-0.5 rounded text-stone-600">
+                          @{log.username}
+                        </span>
+                        {log.role === 'super_admin' ? (
+                          <span className="px-1.5 py-0.5 bg-amber-500 text-slate-950 rounded font-black text-[9px] uppercase">
+                            👑 Admin
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 bg-stone-200 text-stone-800 rounded font-bold text-[9px]">
+                            Staff
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="p-3 whitespace-nowrap">
+                      <span className={`px-2.5 py-1 rounded-md text-[10px] ${actionBadge}`}>
+                        {log.action}
+                      </span>
+                    </td>
+
+                    <td className="p-3 whitespace-nowrap font-bold text-[#274e23]">
+                      {log.target}
+                    </td>
+
+                    <td className="p-3 text-stone-700 leading-relaxed">
+                      <div>{log.details || '—'}</div>
+                      {log.ipDevice && (
+                        <div className="text-[10px] text-stone-400 font-mono mt-0.5 truncate max-w-xs">
+                          📱 {log.ipDevice}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const AdminDashboard: React.FC = () => {
   const {
     siteData,
@@ -2076,6 +2445,7 @@ export const AdminDashboard: React.FC = () => {
       setIsAuthenticated(true);
       setActiveTab('orders');
       showNotification('Đăng nhập thành công với quyền Super Admin!');
+      logAuditEvent(superAdminObj, 'login', 'LOGIN', 'Hệ thống Admin BiO Station', 'Đăng nhập thành công quyền Super Admin');
       return;
     }
 
@@ -2110,6 +2480,7 @@ export const AdminDashboard: React.FC = () => {
         setActiveTab(firstTab);
 
         showNotification(`Xin chào ${matchUser.fullName}! Đăng nhập phân quyền thành công.`);
+        logAuditEvent(matchUser, 'login', 'LOGIN', 'Hệ thống Admin BiO Station', `Đăng nhập phân quyền nhân sự (${matchUser.fullName})`);
         return;
       }
     } catch (err) {
@@ -2625,7 +2996,23 @@ export const AdminDashboard: React.FC = () => {
               <Settings className="w-4 h-4" /> Sao Lưu & Import
             </button>
           )}
+
+          {isTabAllowed('logs') && (
+            <button
+              onClick={() => setActiveTab('logs')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'logs'
+                  ? 'bg-amber-700 text-white shadow-md font-extrabold'
+                  : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
+              }`}
+            >
+              <History className="w-4 h-4 text-amber-700" /> 📜 Nhật Ký & Audit Logs
+            </button>
+          )}
         </div>
+
+        {/* TAB AUDIT LOGS */}
+        {activeTab === 'logs' && <AuditLogsSection currentAdminUser={currentAdminUser} />}
 
         {/* TAB STAFF MANAGEMENT & RBAC */}
         {activeTab === 'users' && <StaffManagerSection currentAdminUser={currentAdminUser} />}

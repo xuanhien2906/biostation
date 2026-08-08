@@ -247,7 +247,21 @@ export type AdminTabId =
   | 'stories'
   | 'media'
   | 'tools'
-  | 'users';
+  | 'users'
+  | 'logs';
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  username: string;
+  fullName: string;
+  role: 'super_admin' | 'staff' | 'system' | 'guest';
+  category: 'login' | 'content' | 'media' | 'settings' | 'order';
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD';
+  target: string;
+  details?: string;
+  ipDevice?: string;
+}
 
 export interface AdminUserPermissions {
   allowedTabs: AdminTabId[];
