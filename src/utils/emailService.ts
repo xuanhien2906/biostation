@@ -24,13 +24,38 @@ export const sendOrderEmail = async (orderData: OrderData): Promise<boolean> => 
     const customerEmailClean = orderData.customer_email?.trim() || '';
     const hasCustomerEmail = Boolean(customerEmailClean && customerEmailClean.includes('@'));
 
-    // 1. ALWAYS Backup Order JSON to Supabase Cloud Storage so NO order is EVER lost!
+    // 1. ALWAYS Backup Order JSON to Supabase Cloud Storage AND LocalStorage so NO order is EVER lost!
     try {
       const orderIdClean = orderData.order_id || `BIO-${Date.now()}`;
-      const jsonContent = JSON.stringify({
-        ...orderData,
-        created_at: new Date().toISOString()
-      }, null, 2);
+      const newOrderObj = {
+        id: orderIdClean,
+        orderType: orderData.order_details?.includes('MÂM CƠM') ? 'experience_meal' : 'product',
+        fulfillmentType: orderData.customer_address?.includes('Ăn tại') ? 'dine_in' : orderData.customer_address?.includes('Mang về') ? 'takeaway' : 'delivery',
+        status: 'new',
+        customerName: orderData.customer_name || 'Khách hàng',
+        customerPhone: orderData.customer_phone || '',
+        customerEmail: orderData.customer_email || '',
+        customerAddress: orderData.customer_address || '',
+        items: [],
+        subtotal: typeof orderData.total_price === 'string' ? Number(orderData.total_price.replace(/[^\d]/g, '')) : Number(orderData.total_price || 0),
+        grandTotal: typeof orderData.total_price === 'string' ? Number(orderData.total_price.replace(/[^\d]/g, '')) : Number(orderData.total_price || 0),
+        paidAmount: typeof orderData.paid_amount === 'string' ? Number(orderData.paid_amount.replace(/[^\d]/g, '')) : Number(orderData.paid_amount || 0),
+        remainingAmount: typeof orderData.remaining_amount === 'string' ? Number(orderData.remaining_amount.replace(/[^\d]/g, '')) : Number(orderData.remaining_amount || 0),
+        notes: orderData.order_details || '',
+        createdAt: new Date().toISOString()
+      };
+
+      // Save to localStorage so F5 refresh or offline mode never loses order
+      try {
+        const local = localStorage.getItem('BIO_STATION_LOCAL_ORDERS');
+        let arr = local ? JSON.parse(local) : [];
+        if (!Array.isArray(arr)) arr = [];
+        arr = [newOrderObj, ...arr.filter((item: any) => item.id !== orderIdClean)];
+        localStorage.setItem('BIO_STATION_LOCAL_ORDERS', JSON.stringify(arr));
+      } catch (err) {}
+
+      // Upload to Supabase Cloud Storage
+      const jsonContent = JSON.stringify(newOrderObj, null, 2);
       const blob = new Blob([jsonContent], { type: 'application/json' });
       await supabase.storage
         .from('biostation_images')
