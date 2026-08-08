@@ -430,10 +430,57 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return fallback;
   };
 
+  // Helper to sync brand & site config to Supabase Cloud Storage for real-time multi-device sync
+  const syncCloudConfig = async (overrides?: any) => {
+    try {
+      const dataToSave = {
+        brandConfig: overrides?.brandConfig || brandConfig,
+        heroConfig: overrides?.heroConfig || heroConfig,
+        themeConfig: overrides?.themeConfig || themeConfig,
+        paymentConfig: overrides?.paymentConfig || paymentConfig,
+        experienceMealConfig: overrides?.experienceMealConfig || experienceMealConfig,
+        businessMission: overrides?.businessMission || businessMission,
+        stations: overrides?.stations || stations,
+        bioCategories: overrides?.bioCategories || bioCategories,
+        updatedAt: new Date().toISOString(),
+      };
+      const jsonString = JSON.stringify(dataToSave, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      await supabase.storage.from('biostation_images').upload('config/site_config.json', blob, {
+        upsert: true,
+        contentType: 'application/json',
+      });
+    } catch (err) {
+      console.error('Error syncing site_config to Supabase cloud storage:', err);
+    }
+  };
+
   // FETCH FROM SUPABASE WITH SMART MERGING & FALLBACKS
   useEffect(() => {
     const fetchSupabaseData = async () => {
       try {
+        // Fetch Cloud Config (Brand, Logo, Banners, Stations, Theme) from Supabase Cloud Storage
+        try {
+          const { data: cloudBlob, error: cloudErr } = await supabase.storage
+            .from('biostation_images')
+            .download('config/site_config.json');
+
+          if (!cloudErr && cloudBlob) {
+            const text = await cloudBlob.text();
+            const parsed = JSON.parse(text);
+            if (parsed.brandConfig) setBrandConfig(parsed.brandConfig);
+            if (parsed.heroConfig) setHeroConfig(parsed.heroConfig);
+            if (parsed.themeConfig) setThemeConfig(parsed.themeConfig);
+            if (parsed.paymentConfig) setPaymentConfig(parsed.paymentConfig);
+            if (parsed.experienceMealConfig) setExperienceMealConfig(parsed.experienceMealConfig);
+            if (parsed.businessMission) setBusinessMissionState(parsed.businessMission);
+            if (parsed.stations) setStations(parsed.stations);
+            if (parsed.bioCategories) setBioCategories(parsed.bioCategories);
+          }
+        } catch (e) {
+          console.warn('Could not fetch cloud site_config from Supabase:', e);
+        }
+
         const { data: prodData, error: prodErr } = await supabase.from('products').select('*');
         if (!prodErr && prodData && prodData.length > 0) {
           setProducts((prev) => {
@@ -525,19 +572,35 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const updateBrandConfig = (config: Partial<BrandConfig>) => {
-    setBrandConfig((prev) => ({ ...prev, ...config }));
+    setBrandConfig((prev) => {
+      const next = { ...prev, ...config };
+      syncCloudConfig({ brandConfig: next });
+      return next;
+    });
   };
 
   const updateHeroConfig = (config: Partial<HeroConfig>) => {
-    setHeroConfig((prev) => ({ ...prev, ...config }));
+    setHeroConfig((prev) => {
+      const next = { ...prev, ...config };
+      syncCloudConfig({ heroConfig: next });
+      return next;
+    });
   };
 
   const updateThemeConfig = (config: Partial<ThemeConfig>) => {
-    setThemeConfig((prev) => ({ ...prev, ...config }));
+    setThemeConfig((prev) => {
+      const next = { ...prev, ...config };
+      syncCloudConfig({ themeConfig: next });
+      return next;
+    });
   };
 
   const updatePaymentConfig = (config: Partial<PaymentConfig>) => {
-    setPaymentConfig((prev) => ({ ...prev, ...config }));
+    setPaymentConfig((prev) => {
+      const next = { ...prev, ...config };
+      syncCloudConfig({ paymentConfig: next });
+      return next;
+    });
   };
 
   const updateExperienceMealConfig = (config: Partial<ExperienceMealConfig>) => {
@@ -663,6 +726,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (parsed.articles) setArticles(parsed.articles);
       if (parsed.stories) setStories(parsed.stories);
       if (parsed.bioCategories) setBioCategories(parsed.bioCategories);
+      syncCloudConfig(parsed);
       return true;
     } catch (e) {
       console.error('Failed to import JSON data:', e);
