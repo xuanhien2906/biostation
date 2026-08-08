@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import {
   BrandConfig,
   HeroConfig,
@@ -413,6 +413,13 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem(`${STORAGE_KEY}_stories`, JSON.stringify(stories));
   }, [stories]);
 
+  // ===== AUTO-SYNC & BACKUP SYSTEM =====
+  // Track whether the initial data load from Supabase has completed.
+  // This prevents creating spurious backup snapshots when the page first loads
+  // and state is populated from the cloud/Supabase fetch.
+  const isInitialLoadDone = useRef(false);
+  const syncDebounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Helper to safely parse array or JSON string or fallback
   const parseArrayField = (val: any, fallback: string[] = []): string[] => {
     if (Array.isArray(val)) return val;
@@ -430,28 +437,28 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return fallback;
   };
 
-  // Helper to sync brand & site config to Supabase Cloud Storage for real-time multi-device sync + Auto Snapshot Backup
-  const syncCloudConfig = async (overrides?: any) => {
+  // Core function: sync current state to Supabase Cloud Storage + create timestamped backup snapshot
+  const syncCloudConfig = useCallback(async (dataOverride?: Record<string, any>) => {
     try {
       const dataToSave = {
-        brandConfig: overrides?.brandConfig || brandConfig,
-        heroConfig: overrides?.heroConfig || heroConfig,
-        themeConfig: overrides?.themeConfig || themeConfig,
-        paymentConfig: overrides?.paymentConfig || paymentConfig,
-        experienceMealConfig: overrides?.experienceMealConfig || experienceMealConfig,
-        businessMission: overrides?.businessMission || businessMission,
-        stations: overrides?.stations || stations,
-        bioCategories: overrides?.bioCategories || bioCategories,
-        products: overrides?.products || products,
-        recipes: overrides?.recipes || recipes,
-        articles: overrides?.articles || articles,
-        stories: overrides?.stories || stories,
+        brandConfig: dataOverride?.brandConfig || brandConfig,
+        heroConfig: dataOverride?.heroConfig || heroConfig,
+        themeConfig: dataOverride?.themeConfig || themeConfig,
+        paymentConfig: dataOverride?.paymentConfig || paymentConfig,
+        experienceMealConfig: dataOverride?.experienceMealConfig || experienceMealConfig,
+        businessMission: dataOverride?.businessMission || businessMission,
+        stations: dataOverride?.stations || stations,
+        bioCategories: dataOverride?.bioCategories || bioCategories,
+        products: dataOverride?.products || products,
+        recipes: dataOverride?.recipes || recipes,
+        articles: dataOverride?.articles || articles,
+        stories: dataOverride?.stories || stories,
         updatedAt: new Date().toISOString(),
       };
       const jsonString = JSON.stringify(dataToSave, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
       
-      // 1. Primary Live Config
+      // 1. Primary Live Config — always overwrite
       await supabase.storage.from('biostation_images').upload('config/site_config.json', blob, {
         upsert: true,
         contentType: 'application/json',
@@ -468,13 +475,40 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
           upsert: true,
           contentType: 'application/json',
         });
+        console.log(`[AutoBackup] ✅ Snapshot saved: ${backupFilename}`);
       } catch (backupErr) {
-        console.warn('Notice creating automated cloud snapshot backup:', backupErr);
+        console.warn('[AutoBackup] ⚠️ Could not create snapshot:', backupErr);
       }
     } catch (err) {
-      console.error('Error syncing site_config to Supabase cloud storage:', err);
+      console.error('[AutoBackup] ❌ Error syncing site_config to Supabase:', err);
     }
-  };
+  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, stories]);
+
+  // ===== MASTER AUTO-SYNC useEffect =====
+  // This effect watches ALL primary state variables. Whenever ANY state changes
+  // (after the initial page load is complete), it debounces and calls syncCloudConfig
+  // to save the live config AND create a timestamped backup snapshot on Supabase Cloud.
+  // This ensures that even raw setState calls (setProducts, setRecipes, etc.) from
+  // AdminDashboard components will trigger a cloud sync + backup.
+  useEffect(() => {
+    // Skip auto-sync during initial page load (Supabase fetch populates state)
+    if (!isInitialLoadDone.current) return;
+
+    // Debounce: wait 2 seconds after the last state change before syncing.
+    // This prevents creating dozens of backups during rapid sequential edits.
+    if (syncDebounceTimer.current) {
+      clearTimeout(syncDebounceTimer.current);
+    }
+    syncDebounceTimer.current = setTimeout(() => {
+      syncCloudConfig();
+    }, 2000);
+
+    return () => {
+      if (syncDebounceTimer.current) {
+        clearTimeout(syncDebounceTimer.current);
+      }
+    };
+  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, stories, syncCloudConfig]);
 
   // FETCH FROM SUPABASE WITH SMART MERGING & FALLBACKS
   useEffect(() => {
@@ -588,40 +622,32 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (err) {
         console.error('Error fetching data from Supabase:', err);
       }
+
+      // Mark initial load as complete after a brief delay.
+      // This delay ensures all React setState batches from the fetch above
+      // have settled before we start watching for user-initiated changes.
+      setTimeout(() => {
+        isInitialLoadDone.current = true;
+        console.log('[AutoBackup] ✅ Initial load complete. Auto-sync & backup now ACTIVE.');
+      }, 3000);
     };
     fetchSupabaseData();
   }, []);
 
   const updateBrandConfig = (config: Partial<BrandConfig>) => {
-    setBrandConfig((prev) => {
-      const next = { ...prev, ...config };
-      syncCloudConfig({ brandConfig: next });
-      return next;
-    });
+    setBrandConfig((prev) => ({ ...prev, ...config }));
   };
 
   const updateHeroConfig = (config: Partial<HeroConfig>) => {
-    setHeroConfig((prev) => {
-      const next = { ...prev, ...config };
-      syncCloudConfig({ heroConfig: next });
-      return next;
-    });
+    setHeroConfig((prev) => ({ ...prev, ...config }));
   };
 
   const updateThemeConfig = (config: Partial<ThemeConfig>) => {
-    setThemeConfig((prev) => {
-      const next = { ...prev, ...config };
-      syncCloudConfig({ themeConfig: next });
-      return next;
-    });
+    setThemeConfig((prev) => ({ ...prev, ...config }));
   };
 
   const updatePaymentConfig = (config: Partial<PaymentConfig>) => {
-    setPaymentConfig((prev) => {
-      const next = { ...prev, ...config };
-      syncCloudConfig({ paymentConfig: next });
-      return next;
-    });
+    setPaymentConfig((prev) => ({ ...prev, ...config }));
   };
 
   const updateExperienceMealConfig = (config: Partial<ExperienceMealConfig>) => {
