@@ -529,8 +529,12 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (parsed.paymentConfig) setPaymentConfig(parsed.paymentConfig);
             if (parsed.experienceMealConfig) setExperienceMealConfig(parsed.experienceMealConfig);
             if (parsed.businessMission) setBusinessMissionState(parsed.businessMission);
-            if (parsed.stations) setStations(parsed.stations);
-            if (parsed.bioCategories) setBioCategories(parsed.bioCategories);
+            if (parsed.stations && Array.isArray(parsed.stations)) setStations(parsed.stations);
+            if (parsed.bioCategories && Array.isArray(parsed.bioCategories)) setBioCategories(parsed.bioCategories);
+            if (parsed.products && Array.isArray(parsed.products) && parsed.products.length > 0) setProducts(parsed.products);
+            if (parsed.recipes && Array.isArray(parsed.recipes) && parsed.recipes.length > 0) setRecipes(parsed.recipes);
+            if (parsed.articles && Array.isArray(parsed.articles) && parsed.articles.length > 0) setArticles(parsed.articles);
+            if (parsed.stories && Array.isArray(parsed.stories) && parsed.stories.length > 0) setStories(parsed.stories);
           }
         } catch (e) {
           console.warn('Could not fetch cloud site_config from Supabase:', e);

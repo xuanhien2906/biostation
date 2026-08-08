@@ -156,6 +156,7 @@ export interface Product {
   dishSampleList?: string[]; // list of dishes included
   flavorProfile?: string; // flavor description
   isMainSaleProduct?: boolean; // Flagged in admin to display on homepage as Main Sales Product
+  unit?: string; // e.g. "Túi 5kg", "Gói 1kg", "Chai 500ml", "Phần"
 }
 
 export interface CartItem {
@@ -200,6 +201,7 @@ export interface OrderRecipient {
   email: string;
   address: string;
   city: string;
+  district?: string;
   shippingType: 'inner' | 'outer';
   orderType: 'delivery' | 'takeaway' | 'dine-in';
   notes?: string;
@@ -257,8 +259,8 @@ export interface AuditLogEntry {
   username: string;
   fullName: string;
   role: 'super_admin' | 'staff' | 'system' | 'guest';
-  category: 'login' | 'content' | 'media' | 'settings' | 'order';
-  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD';
+  category: 'login' | 'content' | 'media' | 'settings' | 'order' | 'user' | 'backup' | 'config';
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD' | 'RESTORE';
   target: string;
   details?: string;
   ipDevice?: string;

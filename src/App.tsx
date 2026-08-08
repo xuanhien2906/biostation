@@ -17,9 +17,24 @@ import { PRODUCTS } from './data/products';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('home');
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    { product: PRODUCTS[0], quantity: 1 }, // Pre-load Gạo ST25 Bách Mộc for instant cart preview
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('BIO_STATION_CART');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Sync cart to localStorage whenever it changes
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('BIO_STATION_CART', JSON.stringify(cartItems));
+    } catch (e) {
+      console.warn('Could not save cart to localStorage:', e);
+    }
+  }, [cartItems]);
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string>('Tất Cả');

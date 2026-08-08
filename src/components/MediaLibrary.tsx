@@ -114,7 +114,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     fetchFiles();
-    logAuditEvent(null, 'media', 'UPLOAD', 'Kho Ảnh Media', `Tải lên thành công ${filesArray.length} hình ảnh mới (${currentPath || 'Thư mục gốc'})`);
+    let currentUser = null;
+    try {
+      const raw = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+      if (raw) currentUser = JSON.parse(raw);
+    } catch (e) {}
+    logAuditEvent(currentUser, 'media', 'UPLOAD', 'Kho Ảnh Media', `Tải lên thành công ${filesArray.length} hình ảnh mới (${currentPath || 'Thư mục gốc'})`);
   };
 
   const handleCreateFolder = async () => {
@@ -136,6 +141,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
       const { error } = await supabase.storage.from('biostation_images').upload(fullPath, dummyBlob);
       if (error) throw error;
       fetchFiles();
+      let currentUser = null;
+      try {
+        const raw = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (e) {}
+      logAuditEvent(currentUser, 'media', 'CREATE', `Thư mục ${cleanName}`, `Tạo thư mục ảnh mới (${fullPath})`);
     } catch (error) {
       console.error('Lỗi tạo thư mục:', error);
       alert('Không thể tạo thư mục.');
@@ -167,6 +178,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
         }
       }
       fetchFiles();
+      let currentUser = null;
+      try {
+        const raw = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (e) {}
+      logAuditEvent(currentUser, 'media', 'DELETE', `Thư mục ${dirName}`, `Xóa thư mục ảnh và toàn bộ tệp bên trong`);
     } catch (error) {
       console.error('Error deleting folder:', error);
       alert(`Lỗi khi xoá thư mục: ${(error as any)?.message || ''}`);
@@ -188,6 +205,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
       const { error } = await supabase.storage.from('biostation_images').move(file.fullPath, newPath);
       if (error) throw error;
       fetchFiles();
+      let currentUser = null;
+      try {
+        const raw = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (e) {}
+      logAuditEvent(currentUser, 'media', 'UPDATE', `Ảnh ${file.name}`, `Di chuyển ảnh tới thư mục ${cleanDestDir || 'Gốc'}`);
     } catch (error) {
       console.error('Error moving file:', error);
       alert('Lỗi khi di chuyển file. Lưu ý: Thư mục đích phải tồn tại.');
@@ -207,6 +230,12 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
         throw new Error(result.error || 'Xóa thất bại');
       }
       fetchFiles();
+      let currentUser = null;
+      try {
+        const raw = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (e) {}
+      logAuditEvent(currentUser, 'media', 'DELETE', `Ảnh ${file.name}`, `Xóa ảnh khỏi kho lưu trữ (${file.fullPath})`);
     } catch (error) {
       console.error('Error deleting file:', error);
       alert(`Không thể xoá ảnh: ${(error as any)?.message || JSON.stringify(error)}`);

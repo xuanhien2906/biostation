@@ -235,11 +235,11 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                         <div className="text-xs font-bold text-[#274e23] group-hover:text-amber-800 transition-colors truncate">
                           {product.name}
                         </div>
-                        <div className="text-[11px] font-medium text-[#7a6858] flex items-center gap-2 mt-0.5">
+                        <div className="text-[11px] text-[#7a6858] flex items-center gap-1">
                           <span className="font-bold text-amber-700">
-                            {product.price.toLocaleString('vi-VN')}đ
+                            {product.price ? product.price.toLocaleString('vi-VN') : 0}đ
                           </span>
-                          <span>/ {product.unit}</span>
+                          {product.unit && <span>/ {product.unit}</span>}
                         </div>
                         {product.badge && (
                           <span className="inline-block mt-1 text-[9px] font-bold text-[#274e23] bg-[#274e23]/10 px-1.5 py-0.5 rounded">

@@ -536,7 +536,9 @@ const LogoEditorSection: React.FC<{
   );
 };
 
-const OrdersManagerSection: React.FC = () => {
+const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = ({
+  currentAdminUser,
+}) => {
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -597,88 +599,6 @@ const OrdersManagerSection: React.FC = () => {
         }
       }
 
-      // Default sample orders if no orders exist at all in Supabase Cloud
-      if (fetchedList.length === 0) {
-        const seedOrders: OrderRecord[] = [
-          {
-            id: 'BIO-20260808-8821',
-            orderType: 'experience_meal',
-            fulfillmentType: 'dine_in',
-            status: 'new',
-            customerName: 'Chị Mai Lan',
-            customerPhone: '0908 123 456',
-            customerEmail: 'mailan@gmail.com',
-            customerAddress: 'Thưởng thức tại Station Trung Tâm - Phú Mỹ Hưng',
-            stationName: 'Station Trung Tâm Phú Mỹ Hưng',
-            items: [
-              { name: 'Mâm Cơm Trải Nghiệm Bách Mộc (2 người)', quantity: 2, price: 50000 },
-              { name: 'Canh Chua Cá Lóc Đồng', quantity: 1, price: 35000 },
-            ],
-            subtotal: 135000,
-            grandTotal: 135000,
-            paidAmount: 67500,
-            remainingAmount: 67500,
-            notes: 'Ăn tại chỗ lúc 12:00 trưa nay, xin chuẩn bị rau củ tươi luộc.',
-            createdAt: new Date(Date.now() - 3600000).toISOString(),
-          },
-          {
-            id: 'BIO-20260808-7412',
-            orderType: 'product',
-            fulfillmentType: 'delivery',
-            status: 'confirmed',
-            customerName: 'Anh Trần Quốc Bảo',
-            customerPhone: '0912 888 999',
-            customerEmail: 'baotran@gmail.com',
-            customerAddress: 'Tòa Landmark 81, Vinhomes Central Park, Bình Thạnh, TP.HCM',
-            items: [
-              { name: 'Gạo Hữu Cơ Bách Mộc ST25 (5kg)', quantity: 2, price: 225000 },
-              { name: 'Combo Rau Củ Quả Hữu Cơ Tươi Mới', quantity: 1, price: 185000 },
-            ],
-            subtotal: 635000,
-            shippingFee: 20000,
-            grandTotal: 655000,
-            paidAmount: 655000,
-            remainingAmount: 0,
-            notes: 'Giao giờ hành chính, gọi điện trước khi giao 15 phút.',
-            createdAt: new Date(Date.now() - 7200000).toISOString(),
-          },
-          {
-            id: 'BIO-20260808-5109',
-            orderType: 'experience_meal',
-            fulfillmentType: 'takeaway',
-            status: 'completed',
-            customerName: 'Chị Hoàng Yến',
-            customerPhone: '0933 555 777',
-            customerEmail: 'hoangyen@gmail.com',
-            customerAddress: 'Lấy tại Station Thảo Điền, TP. Thủ Đức',
-            stationName: 'Station Thảo Điền',
-            items: [
-              { name: 'Mâm Cơm Sinh Thái 50k (1 người)', quantity: 3, price: 50000 },
-            ],
-            subtotal: 150000,
-            grandTotal: 150000,
-            paidAmount: 150000,
-            remainingAmount: 0,
-            notes: 'Đem về lúc 17:30 chiều, đóng gói trong hộp giấy phân hủy sinh học.',
-            createdAt: new Date(Date.now() - 14400000).toISOString(),
-          },
-        ];
-
-        fetchedList.push(...seedOrders);
-
-        // Upload seed orders to Supabase Cloud Storage so each order has a real individual file on Cloud
-        for (const sOrd of seedOrders) {
-          try {
-            const blob = new Blob([JSON.stringify(sOrd, null, 2)], { type: 'application/json' });
-            await supabase.storage
-              .from('biostation_images')
-              .upload(`orders/${sOrd.id}.json`, blob, { upsert: true });
-          } catch (err) {
-            console.warn('Seeding order notice:', sOrd.id, err);
-          }
-        }
-      }
-
       setOrders(fetchedList);
     } catch (err) {
       console.error('Error fetching cloud orders:', err);
@@ -697,6 +617,22 @@ const OrdersManagerSection: React.FC = () => {
     if (selectedOrder && selectedOrder.id === orderId) {
       setSelectedOrder({ ...selectedOrder, status: newStatus });
     }
+
+    const statusLabel =
+      newStatus === 'confirmed'
+        ? 'Đã Xác Nhận'
+        : newStatus === 'completed'
+        ? 'Đã Hoàn Thành'
+        : newStatus === 'cancelled'
+        ? 'Đã Hủy'
+        : 'Đơn Mới';
+    logAuditEvent(
+      currentAdminUser || null,
+      'order',
+      'UPDATE',
+      `Đơn hàng ${orderId}`,
+      `Cập nhật trạng thái thành "${statusLabel}"`
+    );
 
     try {
       const match = updated.find((o) => o.id === orderId);
@@ -730,14 +666,21 @@ const OrdersManagerSection: React.FC = () => {
       console.warn('Cloud delete notice:', e);
     }
 
+    const deletedId = deleteTargetOrder.id;
     setOrders(orders.filter((o) => o.id !== deleteTargetOrder.id));
     if (selectedOrder && selectedOrder.id === deleteTargetOrder.id) {
       setSelectedOrder(null);
     }
-    const deletedId = deleteTargetOrder.id;
     setDeleteTargetOrder(null);
     setAdminPassInput('');
     setDeleteError('');
+    logAuditEvent(
+      currentAdminUser || null,
+      'order',
+      'DELETE',
+      `Đơn hàng ${deletedId}`,
+      'Xóa vĩnh viễn đơn hàng khỏi hệ thống'
+    );
     alert(`Đã xóa vĩnh viễn đơn hàng ${deletedId} thành công!`);
   };
 
@@ -1335,21 +1278,6 @@ const StaffManagerSection: React.FC<{
               canDelete: true,
             },
           },
-          {
-            id: 'usr-bep-an',
-            username: 'nhansu_bepan',
-            fullName: 'Nguyễn Thị Hồng (Bộ phận Bếp & Đơn)',
-            phone: '0912 345 678',
-            role: 'staff',
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            permissions: {
-              allowedTabs: ['orders', 'experience_meal', 'recipes', 'products'],
-              canCreate: true,
-              canEdit: true,
-              canDelete: false,
-            },
-          },
         ];
       }
 
@@ -1474,6 +1402,13 @@ const StaffManagerSection: React.FC<{
         return u;
       });
       saveUsersToCloud(updatedList);
+      logAuditEvent(
+        currentAdminUser,
+        'user',
+        'UPDATE',
+        `Nhân sự ${fullName}`,
+        `Cập nhật thông tin và phân quyền (${username})`
+      );
       alert(`Đã cập nhật thông tin nhân sự "${fullName}" thành công!`);
     } else {
       const newUser: AdminUser = {
@@ -1493,6 +1428,13 @@ const StaffManagerSection: React.FC<{
         },
       };
       saveUsersToCloud([newUser, ...users]);
+      logAuditEvent(
+        currentAdminUser,
+        'user',
+        'CREATE',
+        `Nhân sự ${fullName}`,
+        `Tạo mới tài khoản nhân viên (username: ${username})`
+      );
       alert(`Đã tạo thành công tài khoản nhân sự mới "${fullName}"!`);
     }
 
@@ -1520,6 +1462,13 @@ const StaffManagerSection: React.FC<{
     });
 
     saveUsersToCloud(updatedList);
+    logAuditEvent(
+      currentAdminUser,
+      'user',
+      'UPDATE',
+      `Nhân sự ${resetUserTarget.fullName}`,
+      `Đặt lại mật khẩu cho tài khoản ${resetUserTarget.username}`
+    );
     alert(`Đã đổi và cấp lại mật khẩu mới cho nhân sự ${resetUserTarget.fullName} thành công!`);
     setResetUserTarget(null);
     setNewPassInput('');
@@ -1534,6 +1483,13 @@ const StaffManagerSection: React.FC<{
     if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản nhân sự "${u.fullName}"?`)) {
       const updated = users.filter((item) => item.id !== u.id);
       saveUsersToCloud(updated);
+      logAuditEvent(
+        currentAdminUser,
+        'user',
+        'DELETE',
+        `Nhân sự ${u.fullName}`,
+        `Xóa tài khoản nhân viên (${u.username})`
+      );
     }
   };
 
@@ -1979,8 +1935,8 @@ const StaffManagerSection: React.FC<{
 
 export const logAuditEvent = async (
   user: AdminUser | null,
-  category: 'login' | 'content' | 'media' | 'settings' | 'order',
-  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD',
+  category: 'login' | 'content' | 'media' | 'settings' | 'order' | 'user' | 'backup' | 'config',
+  action: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN' | 'LOGOUT' | 'UPLOAD' | 'RESTORE',
   target: string,
   details?: string
 ) => {
@@ -2047,36 +2003,6 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
         }
       }
 
-      // Default sample logs if empty
-      if (fetchedLogs.length === 0) {
-        fetchedLogs = [
-          {
-            id: 'log-sample-1',
-            timestamp: new Date().toISOString(),
-            username: 'admin',
-            fullName: 'Chủ Tịch Quản Trị (Super Admin)',
-            role: 'super_admin',
-            category: 'login',
-            action: 'LOGIN',
-            target: 'Hệ thống Admin BiO Station',
-            details: 'Đăng nhập hệ thống quản trị',
-            ipDevice: 'Chrome Browser (Windows 11)',
-          },
-          {
-            id: 'log-sample-2',
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-            username: 'nhansu_bepan',
-            fullName: 'Nguyễn Thị Hồng (Bộ phận Bếp & Đơn)',
-            role: 'staff',
-            category: 'order',
-            action: 'UPDATE',
-            target: 'Đơn hàng BIO-1786153817121',
-            details: 'Cập nhật trạng thái đơn hàng thành "Đã Xác Nhận"',
-            ipDevice: 'Safari Mobile (iOS)',
-          },
-        ];
-      }
-
       setLogs(fetchedLogs);
     } catch (e) {
       console.warn('Notice fetching audit logs:', e);
@@ -2132,7 +2058,7 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
   const totalLogs = logs.length;
   const loginCount = logs.filter((l) => l.category === 'login').length;
   const contentUpdates = logs.filter((l) => l.category === 'content' || l.category === 'media').length;
-  const settingChanges = logs.filter((l) => l.category === 'settings').length;
+  const settingChanges = logs.filter((l) => l.category === 'settings' || l.category === 'config' || l.category === 'backup').length;
 
   return (
     <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
@@ -2224,7 +2150,7 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
           />
         </div>
 
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs flex-wrap">
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -2232,10 +2158,12 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
           >
             <option value="all">📂 Tất Cả Phân Loại</option>
             <option value="login">🔐 Truy Cập / Đăng Nhập</option>
-            <option value="content">📝 Bài Viết & Sản Phẩm</option>
+            <option value="content">📝 Bài Viết, Món Ăn & Sản Phẩm</option>
             <option value="media">🖼️ Kho Ảnh Media</option>
             <option value="settings">⚙️ Cấu Hình Website</option>
             <option value="order">📦 Đơn Hàng & Mâm Cơm</option>
+            <option value="user">👥 Phân Quyền Nhân Sự</option>
+            <option value="backup">📦 Sao Lưu & Khôi Phục</option>
           </select>
 
           <select
@@ -2248,7 +2176,9 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
             <option value="UPDATE">🔵 Chỉnh Sửa (UPDATE)</option>
             <option value="DELETE">🔴 Xóa (DELETE)</option>
             <option value="LOGIN">🔐 Đăng Nhập (LOGIN)</option>
+            <option value="LOGOUT">🚪 Đăng Xuất (LOGOUT)</option>
             <option value="UPLOAD">🖼️ Upload Ảnh (UPLOAD)</option>
+            <option value="RESTORE">♻️ Khôi Phục (RESTORE)</option>
           </select>
         </div>
       </div>
@@ -2287,7 +2217,9 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
                 if (log.action === 'UPDATE') actionBadge = 'bg-blue-100 text-blue-900 border border-blue-300 font-bold';
                 if (log.action === 'DELETE') actionBadge = 'bg-red-100 text-red-900 border border-red-300 font-bold';
                 if (log.action === 'LOGIN') actionBadge = 'bg-amber-100 text-amber-900 border border-amber-300 font-bold';
+                if (log.action === 'LOGOUT') actionBadge = 'bg-stone-200 text-stone-800 border border-stone-300 font-bold';
                 if (log.action === 'UPLOAD') actionBadge = 'bg-purple-100 text-purple-900 border border-purple-300 font-bold';
+                if (log.action === 'RESTORE') actionBadge = 'bg-teal-100 text-teal-900 border border-teal-300 font-bold';
 
                 return (
                   <tr key={log.id} className="hover:bg-[#fbf8f3] transition-colors">
@@ -2905,10 +2837,12 @@ export const AdminDashboard: React.FC = () => {
     sessionStorage.setItem('BIO_STATION_ADMIN_AUTH', 'true');
     setIsAuthenticated(true);
     setActiveTab('orders');
+    logAuditEvent(superAdminObj, 'login', 'LOGIN', 'Tài khoản Quản Trị Viên admin', 'Đăng nhập nhanh quyền Super Admin');
     showNotification('Đã tự động đăng nhập quyền Super Admin!');
   };
 
   const handleLogout = () => {
+    logAuditEvent(currentAdminUser, 'login', 'LOGOUT', `Tài khoản ${currentAdminUser ? currentAdminUser.username : 'admin'}`, 'Đăng xuất khỏi hệ thống quản trị');
     setIsAuthenticated(false);
     sessionStorage.removeItem('BIO_STATION_ADMIN_AUTH');
     sessionStorage.removeItem('BIO_STATION_CURRENT_USER');
@@ -2924,6 +2858,7 @@ export const AdminDashboard: React.FC = () => {
     }
     localStorage.setItem('BIO_STATION_ADMIN_USER', newAdminUser.trim());
     localStorage.setItem('BIO_STATION_ADMIN_PASS', newAdminPass.trim());
+    logAuditEvent(currentAdminUser, 'user', 'UPDATE', 'Tài khoản Quản Trị Viên Master', `Đổi thông tin đăng nhập: username "${newAdminUser.trim()}"`);
     showNotification('Đã cập nhật thông tin đăng nhập Admin thành công!');
   };
 
@@ -2933,6 +2868,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleSaveAndRefresh = (msg: string) => {
+    logAuditEvent(currentAdminUser, 'config', 'UPDATE', 'Cấu hình Website Toàn Hệ Thống', msg);
     setSaveSuccess(`${msg} Đang làm mới và cập nhật giao diện toàn trang...`);
     setTimeout(() => {
       window.location.reload();
@@ -2947,6 +2883,7 @@ export const AdminDashboard: React.FC = () => {
     a.href = url;
     a.download = `biostation-site-config-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
+    logAuditEvent(currentAdminUser, 'backup', 'CREATE', 'Xuất File Cấu Hình Website', 'Tải về máy file JSON cấu hình toàn bộ website');
     showNotification('Đã xuất file cấu hình JSON thành công!');
   };
 
@@ -2954,6 +2891,7 @@ export const AdminDashboard: React.FC = () => {
     if (!jsonInput.trim()) return;
     const ok = importJSON(jsonInput);
     if (ok) {
+      logAuditEvent(currentAdminUser, 'backup', 'RESTORE', 'Cấu hình Website', 'Nhập và phục hồi dữ liệu website từ văn bản JSON');
       setJsonError('');
       setJsonInput('');
       showNotification('Đã nhập dữ liệu cấu hình mới thành công!');
@@ -2975,6 +2913,7 @@ export const AdminDashboard: React.FC = () => {
       items: ['Nội dung chi tiết 1...', 'Nội dung chi tiết 2...'],
     };
     setBusinessBlocks((prev) => [...(prev || []), newBlock]);
+    logAuditEvent(currentAdminUser, 'content', 'CREATE', `Trụ cột sứ mệnh ${newBlock.title}`, 'Thêm mới trụ cột sứ mệnh kinh doanh');
     showNotification('Đã thêm trụ cột mới!');
   };
 
@@ -2987,6 +2926,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteBlock = (blockId: number, title: string) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa trụ cột "${title}"?`)) {
       setBusinessBlocks((prev) => (prev || []).filter((blk) => blk.id !== blockId));
+      logAuditEvent(currentAdminUser, 'content', 'DELETE', `Trụ cột sứ mệnh ${title}`, 'Xóa trụ cột sứ mệnh kinh doanh');
       showNotification('Đã xóa trụ cột!');
     }
   };
@@ -3426,7 +3366,7 @@ export const AdminDashboard: React.FC = () => {
         {activeTab === 'users' && <StaffManagerSection currentAdminUser={currentAdminUser} />}
 
         {/* TAB ORDERS & MEAL HISTORY */}
-        {activeTab === 'orders' && <OrdersManagerSection />}
+        {activeTab === 'orders' && <OrdersManagerSection currentAdminUser={currentAdminUser} />}
 
         {/* TAB 1: BRAND & FOOTER CONFIG */}
         {activeTab === 'brand' && (
@@ -5052,6 +4992,13 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       onClick={() => {
                         toggleMainSaleProduct(p.id);
+                        logAuditEvent(
+                          currentAdminUser,
+                          'content',
+                          'UPDATE',
+                          `Sản phẩm ${p.name}`,
+                          p.isMainSaleProduct ? 'Bỏ làm sản phẩm bán chính ở Trang chủ' : 'Chọn làm sản phẩm bán chính ở Trang chủ'
+                        );
                         showNotification(p.isMainSaleProduct ? `Đã bỏ SP bán chính: ${p.name}` : `Đã chọn làm SP bán chính: ${p.name}`);
                       }}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all flex items-center gap-1 ${
@@ -5067,6 +5014,13 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       onClick={() => {
                         toggleProductVisibility(p.id);
+                        logAuditEvent(
+                          currentAdminUser,
+                          'content',
+                          'UPDATE',
+                          `Sản phẩm ${p.name}`,
+                          p.is_hidden ? 'Bật hiển thị sản phẩm' : 'Ẩn sản phẩm khỏi cửa hàng'
+                        );
                         showNotification(p.is_hidden ? `Đã BẬT hiển thị: ${p.name}` : `Đã ẨN: ${p.name}`);
                       }}
                       className={`px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all flex items-center gap-1 ${
@@ -5083,6 +5037,7 @@ export const AdminDashboard: React.FC = () => {
                       onClick={() => {
                         if (window.confirm(`Xóa sản phẩm "${p.name}"?`)) {
                           setProducts((prev) => prev.filter((item) => item.id !== p.id));
+                          logAuditEvent(currentAdminUser, 'content', 'DELETE', `Sản phẩm ${p.name}`, `Xóa sản phẩm ${p.name} khỏi danh sách`);
                           showNotification('Đã xóa sản phẩm!');
                         }
                       }}
@@ -5103,8 +5058,8 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex items-center justify-between border-b border-[#f0e6d8] pb-4">
               <div>
                 <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-amber-600" />
-                  Mạng Lưới Điểm Trạm BiO Station ({siteData.stations.length})
+                  <Store className="w-5 h-5 text-amber-600" />
+                  Mạng Lưới Điểm Trạm BiO Station ({siteData.stations?.length || 0})
                 </h3>
               </div>
               <button
@@ -5139,16 +5094,30 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs text-[#5c4d43]">{st.address}</p>
                     <p className="text-xs text-[#7a6858]">Hotline: {st.phone}</p>
                   </div>
-                  <div className="flex flex-col items-end justify-between">
-                    <button
-                      onClick={() => {
-                        setEditingStation(st);
-                        setIsAddingStation(false);
-                      }}
-                      className="px-3 py-1.5 bg-[#274e23] text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer"
-                    >
-                      <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa
-                    </button>
+                  <div className="flex flex-col items-end justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => {
+                          setEditingStation(st);
+                          setIsAddingStation(false);
+                        }}
+                        className="px-3 py-1.5 bg-[#274e23] text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer"
+                      >
+                        <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Xóa điểm trạm "${st.name}"?`)) {
+                            setStations((prev) => prev.filter((item) => item.id !== st.id));
+                            logAuditEvent(currentAdminUser, 'content', 'DELETE', `Điểm trạm ${st.name}`, `Xóa điểm trạm ${st.name}`);
+                            showNotification('Đã xóa điểm trạm!');
+                          }
+                        }}
+                        className="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 text-xs font-bold rounded-lg cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -5230,6 +5199,7 @@ export const AdminDashboard: React.FC = () => {
                       onClick={() => {
                         if (window.confirm(`Xóa công thức "${r.title}"?`)) {
                           setRecipes((prev) => prev.filter((item) => item.id !== r.id));
+                          logAuditEvent(currentAdminUser, 'content', 'DELETE', `Công thức ${r.title}`, 'Xóa công thức nấu ăn');
                           showNotification('Đã xóa công thức!');
                         }
                       }}
@@ -5311,6 +5281,7 @@ export const AdminDashboard: React.FC = () => {
                       onClick={() => {
                         if (window.confirm(`Xóa bài viết "${a.title}"?`)) {
                           setArticles((prev) => prev.filter((item) => item.id !== a.id));
+                          logAuditEvent(currentAdminUser, 'content', 'DELETE', `Bài viết ${a.title}`, 'Xóa bài viết thư viện');
                           showNotification('Đã xóa bài viết!');
                         }
                       }}
@@ -5368,15 +5339,29 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-xs text-[#7a6858]">{s.role} • {s.location}</p>
                     <p className="text-xs italic text-[#5c4d43] mt-1">"{s.quote}"</p>
                   </div>
-                  <button
-                    onClick={() => {
-                      setEditingStory(s);
-                      setIsAddingStory(false);
-                    }}
-                    className="px-3 py-1.5 bg-[#274e23] text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer self-start"
-                  >
-                    <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa
-                  </button>
+                  <div className="flex items-center gap-1.5 self-start">
+                    <button
+                      onClick={() => {
+                        setEditingStory(s);
+                        setIsAddingStory(false);
+                      }}
+                      className="px-3 py-1.5 bg-[#274e23] text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Xóa câu chuyện "${s.name}"?`)) {
+                          setStories((prev) => prev.filter((item) => item.id !== s.id));
+                          logAuditEvent(currentAdminUser, 'content', 'DELETE', `Câu chuyện ${s.name}`, 'Xóa câu chuyện khách hàng');
+                          showNotification('Đã xóa câu chuyện!');
+                        }
+                      }}
+                      className="px-2.5 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
