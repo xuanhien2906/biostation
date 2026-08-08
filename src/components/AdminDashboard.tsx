@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSite } from '../context/SiteContext';
 import { BioStationLogo } from './BioStationLogo';
 import {
@@ -13,12 +13,17 @@ import {
   ThemeConfig,
   BrandConfig,
   DishOption,
+  OrderRecord,
 } from '../types';
 import {
   Settings,
   Store,
   MapPin,
   ShoppingBag,
+  Package,
+  Search,
+  Loader2,
+  Printer,
   BookOpen,
   Heart,
   Plus,
@@ -519,6 +524,561 @@ const LogoEditorSection: React.FC<{
   );
 };
 
+const OrdersManagerSection: React.FC = () => {
+  const [orders, setOrders] = useState<OrderRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'product' | 'experience_meal'>('all');
+  const [filterFulfillment, setFilterFulfillment] = useState<'all' | 'dine_in' | 'takeaway' | 'delivery'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'new' | 'confirmed' | 'completed' | 'cancelled'>('all');
+  const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null);
+
+  const fetchCloudOrders = async () => {
+    try {
+      setLoading(true);
+      const { data: fileList, error: listErr } = await supabase.storage
+        .from('biostation_images')
+        .list('orders', { limit: 100, sortBy: { column: 'name', order: 'desc' } });
+
+      const fetchedList: OrderRecord[] = [];
+
+      if (!listErr && fileList && fileList.length > 0) {
+        for (const file of fileList) {
+          if (file.name.endsWith('.json')) {
+            try {
+              const { data: blob } = await supabase.storage
+                .from('biostation_images')
+                .download(`orders/${file.name}`);
+              if (blob) {
+                const text = await blob.text();
+                const parsed = JSON.parse(text);
+                if (parsed.customer_name || parsed.customerName) {
+                  const ord: OrderRecord = {
+                    id: parsed.order_id || parsed.id || file.name.replace('.json', ''),
+                    orderType: parsed.orderType || (parsed.order_details?.includes('MÂM CƠM') ? 'experience_meal' : 'product'),
+                    fulfillmentType: parsed.fulfillmentType || (parsed.customer_address?.includes('Ăn tại') ? 'dine_in' : parsed.customer_address?.includes('Mang về') ? 'takeaway' : 'delivery'),
+                    status: parsed.status || 'new',
+                    customerName: parsed.customerName || parsed.customer_name || 'Khách hàng',
+                    customerPhone: parsed.customerPhone || parsed.customer_phone || '',
+                    customerEmail: parsed.customerEmail || parsed.customer_email || '',
+                    customerAddress: parsed.customerAddress || parsed.customer_address || '',
+                    items: parsed.items || [],
+                    subtotal: parsed.subtotal || 0,
+                    grandTotal: parsed.grandTotal || (typeof parsed.total_price === 'string' ? Number(parsed.total_price.replace(/[^\d]/g, '')) : 0),
+                    paidAmount: parsed.paidAmount || (typeof parsed.paid_amount === 'string' ? Number(parsed.paid_amount.replace(/[^\d]/g, '')) : 0),
+                    remainingAmount: parsed.remainingAmount || 0,
+                    notes: parsed.notes || parsed.order_details || '',
+                    createdAt: parsed.createdAt || parsed.created_at || new Date().toISOString(),
+                  };
+                  fetchedList.push(ord);
+                }
+              }
+            } catch (e) {
+              console.warn('Error reading order file:', file.name, e);
+            }
+          }
+        }
+      }
+
+      // Default sample orders if no orders exist yet
+      if (fetchedList.length === 0) {
+        fetchedList.push(
+          {
+            id: 'BIO-20260808-8821',
+            orderType: 'experience_meal',
+            fulfillmentType: 'dine_in',
+            status: 'new',
+            customerName: 'Chị Mai Lan',
+            customerPhone: '0908 123 456',
+            customerEmail: 'mailan@gmail.com',
+            customerAddress: 'Thưởng thức tại Station Trung Tâm - Phú Mỹ Hưng',
+            stationName: 'Station Trung Tâm Phú Mỹ Hưng',
+            items: [
+              { name: 'Mâm Cơm Trải Nghiệm Bách Mộc (2 người)', quantity: 2, price: 50000 },
+              { name: 'Canh Chua Cá Lóc Đồng', quantity: 1, price: 35000 },
+            ],
+            subtotal: 135000,
+            grandTotal: 135000,
+            paidAmount: 67500,
+            remainingAmount: 67500,
+            notes: 'Ăn tại chỗ lúc 12:00 trưa nay, xin chuẩn bị rau củ tươi luộc.',
+            createdAt: new Date(Date.now() - 3600000).toISOString(),
+          },
+          {
+            id: 'BIO-20260808-7412',
+            orderType: 'product',
+            fulfillmentType: 'delivery',
+            status: 'confirmed',
+            customerName: 'Anh Trần Quốc Bảo',
+            customerPhone: '0912 888 999',
+            customerEmail: 'baotran@gmail.com',
+            customerAddress: 'Tòa Landmark 81, Vinhomes Central Park, Bình Thạnh, TP.HCM',
+            items: [
+              { name: 'Gạo Hữu Cơ Bách Mộc ST25 (5kg)', quantity: 2, price: 225000 },
+              { name: 'Combo Rau Củ Quả Hữu Cơ Tươi Mới', quantity: 1, price: 185000 },
+            ],
+            subtotal: 635000,
+            shippingFee: 20000,
+            grandTotal: 655000,
+            paidAmount: 655000,
+            remainingAmount: 0,
+            notes: 'Giao giờ hành chính, gọi điện trước khi giao 15 phút.',
+            createdAt: new Date(Date.now() - 7200000).toISOString(),
+          },
+          {
+            id: 'BIO-20260808-5109',
+            orderType: 'experience_meal',
+            fulfillmentType: 'takeaway',
+            status: 'completed',
+            customerName: 'Chị Hoàng Yến',
+            customerPhone: '0933 555 777',
+            customerEmail: 'hoangyen@gmail.com',
+            customerAddress: 'Lấy tại Station Thảo Điền, TP. Thủ Đức',
+            stationName: 'Station Thảo Điền',
+            items: [
+              { name: 'Mâm Cơm Sinh Thái 50k (1 người)', quantity: 3, price: 50000 },
+            ],
+            subtotal: 150000,
+            grandTotal: 150000,
+            paidAmount: 150000,
+            remainingAmount: 0,
+            notes: 'Đem về lúc 17:30 chiều, đóng gói trong hộp giấy phân hủy sinh học.',
+            createdAt: new Date(Date.now() - 14400000).toISOString(),
+          }
+        );
+      }
+
+      setOrders(fetchedList);
+    } catch (err) {
+      console.error('Error fetching cloud orders:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCloudOrders();
+  }, []);
+
+  const updateOrderStatus = async (orderId: string, newStatus: OrderRecord['status']) => {
+    const updated = orders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o));
+    setOrders(updated);
+    if (selectedOrder && selectedOrder.id === orderId) {
+      setSelectedOrder({ ...selectedOrder, status: newStatus });
+    }
+
+    try {
+      const match = updated.find((o) => o.id === orderId);
+      if (match) {
+        const blob = new Blob([JSON.stringify(match, null, 2)], { type: 'application/json' });
+        await supabase.storage.from('biostation_images').upload(`orders/${orderId}.json`, blob, { upsert: true });
+      }
+    } catch (e) {
+      console.warn('Could not sync updated order status to cloud:', e);
+    }
+  };
+
+  const filteredOrders = orders.filter((o) => {
+    const matchesSearch =
+      !searchQuery.trim() ||
+      o.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      o.customerPhone.includes(searchQuery) ||
+      o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (o.customerAddress && o.customerAddress.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesType = filterType === 'all' || o.orderType === filterType;
+    const matchesFulfillment = filterFulfillment === 'all' || o.fulfillmentType === filterFulfillment;
+    const matchesStatus = filterStatus === 'all' || o.status === filterStatus;
+
+    return matchesSearch && matchesType && matchesFulfillment && matchesStatus;
+  });
+
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+  const totalPaid = orders.reduce((sum, o) => sum + (o.paidAmount || 0), 0);
+  const countMeal = orders.filter((o) => o.orderType === 'experience_meal').length;
+  const countDineIn = orders.filter((o) => o.fulfillmentType === 'dine_in').length;
+  const countTakeaway = orders.filter((o) => o.fulfillmentType === 'takeaway').length;
+  const countDelivery = orders.filter((o) => o.fulfillmentType === 'delivery').length;
+
+  return (
+    <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#f0e6d8] pb-4">
+        <div>
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+            Quản Lý & Kiểm Tra Đơn Hàng / Mâm Cơm Real-time
+          </span>
+          <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
+            <Package className="w-5 h-5 text-amber-600" />
+            Lịch Sử Đặt Hàng Khách Hàng ({orders.length} Đơn)
+          </h3>
+        </div>
+
+        <button
+          onClick={fetchCloudOrders}
+          className="px-4 py-2 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs rounded-xl shadow flex items-center gap-2 cursor-pointer"
+        >
+          <RotateCcw className="w-4 h-4 text-amber-300" /> Cập Nhật / Tải Lại Đơn
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+          <span className="text-[11px] font-bold text-amber-800 uppercase block">Tổng Doanh Thu</span>
+          <span className="text-lg font-black text-[#274e23] block mt-0.5">
+            {totalRevenue.toLocaleString('vi-VN')} đ
+          </span>
+          <span className="text-[10px] text-stone-500 mt-1 block">Đã thu cọc: {totalPaid.toLocaleString('vi-VN')} đ</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <span className="text-[11px] font-bold text-emerald-800 uppercase block">Mâm Cơm 50k</span>
+          <span className="text-lg font-black text-emerald-900 block mt-0.5">{countMeal} Đơn</span>
+          <span className="text-[10px] text-emerald-700 mt-1 block">Cá nhân hóa mâm cơm</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
+          <span className="text-[11px] font-bold text-purple-800 uppercase block">🍽️ Ăn Tại Trạm</span>
+          <span className="text-lg font-black text-purple-900 block mt-0.5">{countDineIn} Đơn</span>
+          <span className="text-[10px] text-purple-700 mt-1 block">Phục vụ tại chỗ</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-300">
+          <span className="text-[11px] font-bold text-amber-900 uppercase block">🛍️ Mang Về</span>
+          <span className="text-lg font-black text-amber-950 block mt-0.5">{countTakeaway} Đơn</span>
+          <span className="text-[10px] text-amber-800 mt-1 block">Khách tự ghé lấy</span>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 col-span-2 sm:col-span-1">
+          <span className="text-[11px] font-bold text-blue-800 uppercase block">🚚 Giao Tận Nhà</span>
+          <span className="text-lg font-black text-blue-900 block mt-0.5">{countDelivery} Đơn</span>
+          <span className="text-[10px] text-blue-700 mt-1 block">Ship tận nơi</span>
+        </div>
+      </div>
+
+      <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm theo Tên KH, SĐT, Mã đơn..."
+              className="w-full text-xs p-2.5 pl-8 rounded-xl border border-[#dcd0bf] bg-white outline-none focus:ring-2 focus:ring-[#274e23]"
+            />
+            <Search className="w-4 h-4 text-stone-400 absolute left-2.5 top-3" />
+          </div>
+
+          <select
+            value={filterFulfillment}
+            onChange={(e) => setFilterFulfillment(e.target.value as any)}
+            className="text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-[#274e23]"
+          >
+            <option value="all">🌐 Tất Cả (Ăn tại chỗ / Mang về / Giao hàng)</option>
+            <option value="dine_in">🍽️ Ăn Tại Trạm (Dine-in)</option>
+            <option value="takeaway">🛍️ Mang Về (Takeaway)</option>
+            <option value="delivery">🚚 Giao Tận Nhà (Delivery)</option>
+          </select>
+
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value as any)}
+            className="text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold"
+          >
+            <option value="all">📋 Tất Cả Loại Đơn</option>
+            <option value="experience_meal">🍱 Mâm Cơm Trải Nghiệm 50k</option>
+            <option value="product">🛒 Đơn Nông Sản & Bán Lẻ</option>
+          </select>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value as any)}
+            className="text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold"
+          >
+            <option value="all">⚡ Tất Cả Trạng Thái</option>
+            <option value="new">🟡 Mới Đặt (Chờ duyệt)</option>
+            <option value="confirmed">🔵 Đã Duyệt (Đang chuẩn bị)</option>
+            <option value="completed">🟢 Hoàn Thành / Đã Giao</option>
+            <option value="cancelled">🔴 Đã Hủy</option>
+          </select>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-48 text-stone-400">
+          <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#274e23]" />
+          <p className="text-xs font-bold">Đang tải lịch sử đơn hàng từ Đám mây...</p>
+        </div>
+      ) : filteredOrders.length === 0 ? (
+        <div className="text-center py-12 border-2 border-dashed border-[#e2d5c3] rounded-2xl text-stone-400">
+          <Package className="w-10 h-10 mx-auto mb-2 opacity-50" />
+          <p className="font-bold text-sm text-stone-600">Không tìm thấy đơn hàng phù hợp</p>
+          <p className="text-xs mt-1">Hãy thử đổi từ khóa tìm kiếm hoặc chọn bộ lọc khác.</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto border border-[#e2d5c3] rounded-2xl">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#f2e9dc] text-[#274e23] uppercase font-serif tracking-wider font-bold border-b border-[#e2d5c3]">
+              <tr>
+                <th className="p-3">Mã Đơn</th>
+                <th className="p-3">Khách Hàng & Contact</th>
+                <th className="p-3">Hình Thức Thưởng Thức</th>
+                <th className="p-3">Loại Đơn</th>
+                <th className="p-3 text-right">Tổng Tiền</th>
+                <th className="p-3 text-center">Trạng Thái</th>
+                <th className="p-3 text-right">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f0e6d8]">
+              {filteredOrders.map((ord) => (
+                <tr key={ord.id} className="hover:bg-[#fbf8f3] transition-colors">
+                  <td className="p-3 font-mono font-bold text-[#274e23] whitespace-nowrap">
+                    {ord.id}
+                    <span className="block text-[10px] text-stone-400 font-sans font-normal mt-0.5">
+                      {new Date(ord.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} - {new Date(ord.createdAt).toLocaleDateString('vi-VN')}
+                    </span>
+                  </td>
+
+                  <td className="p-3">
+                    <div className="font-bold text-stone-900">{ord.customerName}</div>
+                    <div className="text-[11px] text-amber-800 font-semibold">{ord.customerPhone}</div>
+                    {ord.customerAddress && (
+                      <div className="text-[10px] text-stone-500 line-clamp-1" title={ord.customerAddress}>
+                        📍 {ord.customerAddress}
+                      </div>
+                    )}
+                  </td>
+
+                  <td className="p-3 whitespace-nowrap">
+                    {ord.fulfillmentType === 'dine_in' && (
+                      <span className="px-2.5 py-1 rounded-full bg-purple-100 text-purple-900 border border-purple-300 font-bold text-[10px]">
+                        🍽️ Ăn Tại Trạm
+                      </span>
+                    )}
+                    {ord.fulfillmentType === 'takeaway' && (
+                      <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[10px]">
+                        🛍️ Mang Về
+                      </span>
+                    )}
+                    {ord.fulfillmentType === 'delivery' && (
+                      <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-900 border border-blue-300 font-bold text-[10px]">
+                        🚚 Giao Tận Nhà
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="p-3 whitespace-nowrap">
+                    {ord.orderType === 'experience_meal' ? (
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10px]">
+                        🍱 Mâm Cơm 50k
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-300 font-bold text-[10px]">
+                        🛒 Đơn Nông Sản
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="p-3 text-right whitespace-nowrap">
+                    <div className="font-black text-sm text-[#274e23]">
+                      {(ord.grandTotal || 0).toLocaleString('vi-VN')} đ
+                    </div>
+                    {ord.paidAmount > 0 && (
+                      <div className="text-[10px] text-amber-700 font-bold">
+                        Đã cọc: {ord.paidAmount.toLocaleString('vi-VN')} đ
+                      </div>
+                    )}
+                  </td>
+
+                  <td className="p-3 text-center whitespace-nowrap">
+                    <select
+                      value={ord.status}
+                      onChange={(e) => updateOrderStatus(ord.id, e.target.value as any)}
+                      className={`text-[11px] font-bold p-1.5 rounded-xl border outline-none cursor-pointer ${
+                        ord.status === 'new'
+                          ? 'bg-amber-100 text-amber-900 border-amber-300'
+                          : ord.status === 'confirmed'
+                          ? 'bg-blue-100 text-blue-900 border-blue-300'
+                          : ord.status === 'completed'
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                          : 'bg-red-100 text-red-900 border-red-300'
+                      }`}
+                    >
+                      <option value="new">🟡 Mới Đặt</option>
+                      <option value="confirmed">🔵 Đã Duyệt</option>
+                      <option value="completed">🟢 Hoàn Thành</option>
+                      <option value="cancelled">🔴 Đã Hủy</option>
+                    </select>
+                  </td>
+
+                  <td className="p-3 text-right whitespace-nowrap">
+                    <button
+                      onClick={() => setSelectedOrder(ord)}
+                      className="px-3 py-1.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold rounded-lg text-xs flex items-center gap-1 ml-auto cursor-pointer shadow-sm"
+                    >
+                      <Eye className="w-3.5 h-3.5 text-amber-300" /> Xem Chi Tiết
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto text-xs text-[#2d241e]">
+            <button
+              onClick={() => setSelectedOrder(null)}
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e] cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="border-b border-[#e2d5c3] pb-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-[#274e23] text-white font-mono font-bold text-xs">
+                  {selectedOrder.id}
+                </span>
+                <span className="text-stone-500 text-xs">
+                  Ngày đặt: {new Date(selectedOrder.createdAt).toLocaleString('vi-VN')}
+                </span>
+              </div>
+              <h3 className="text-xl font-bold font-serif text-[#274e23] pt-1">
+                Chi Tiết Đơn Hàng & Phân Loại Phục Vụ
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4ebe0] p-4 rounded-2xl border border-[#e2d5c3]">
+              <div className="space-y-1.5">
+                <span className="font-bold text-[#274e23] uppercase text-[11px] block">Thông Tin Khách Hàng:</span>
+                <div className="font-bold text-sm text-stone-900">{selectedOrder.customerName}</div>
+                <div className="font-bold text-amber-800">📞 SĐT: {selectedOrder.customerPhone}</div>
+                {selectedOrder.customerEmail && (
+                  <div className="text-stone-600">✉️ Email: {selectedOrder.customerEmail}</div>
+                )}
+                <div className="text-stone-600">📍 Địa chỉ: {selectedOrder.customerAddress || 'Không xác định'}</div>
+              </div>
+
+              <div className="space-y-2 border-t sm:border-t-0 sm:border-l border-[#e2d5c3] pt-2 sm:pt-0 sm:pl-4">
+                <span className="font-bold text-[#274e23] uppercase text-[11px] block">Phân Loại Phục Vụ:</span>
+                <div>
+                  {selectedOrder.fulfillmentType === 'dine_in' && (
+                    <span className="px-3 py-1.5 rounded-xl bg-purple-200 text-purple-900 font-bold text-xs inline-block">
+                      🍽️ ĂN TẠI TRẠM (Dine-in)
+                    </span>
+                  )}
+                  {selectedOrder.fulfillmentType === 'takeaway' && (
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-bold text-xs inline-block">
+                      🛍️ KHÁCH ĐẾN LẤY MANG VỀ (Takeaway)
+                    </span>
+                  )}
+                  {selectedOrder.fulfillmentType === 'delivery' && (
+                    <span className="px-3 py-1.5 rounded-xl bg-blue-200 text-blue-900 font-bold text-xs inline-block">
+                      🚚 GIAO TẬN NHÀ (Home Delivery)
+                    </span>
+                  )}
+                </div>
+
+                <div className="pt-1">
+                  <span className="font-bold text-[#274e23] text-[11px] block">Loại hình:</span>
+                  <span className="font-semibold text-stone-700">
+                    {selectedOrder.orderType === 'experience_meal' ? '🍱 Mâm Cơm Trải Nghiệm 50k' : '🛒 Đơn Bán Lẻ Nông Sản'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-bold text-sm text-[#274e23] font-serif">Danh Sách Món / Sản Phẩm Đặt:</h4>
+              <div className="border border-[#e2d5c3] rounded-2xl overflow-hidden bg-white">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#f8f5f0] text-[#5c4d43] font-bold border-b border-[#e2d5c3]">
+                    <tr>
+                      <th className="p-2.5">STT</th>
+                      <th className="p-2.5">Tên Sản Phẩm / Món</th>
+                      <th className="p-2.5 text-center">Số Lượng</th>
+                      <th className="p-2.5 text-right">Đơn Giá</th>
+                      <th className="p-2.5 text-right">Thành Tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#f0e6d8]">
+                    {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                      selectedOrder.items.map((it, idx) => (
+                        <tr key={idx}>
+                          <td className="p-2.5 text-center text-stone-400">{idx + 1}</td>
+                          <td className="p-2.5 font-bold text-[#274e23]">{it.name}</td>
+                          <td className="p-2.5 text-center font-bold">{it.quantity}</td>
+                          <td className="p-2.5 text-right text-stone-600">{(it.price || 0).toLocaleString('vi-VN')} đ</td>
+                          <td className="p-2.5 text-right font-bold text-amber-800">
+                            {((it.price || 0) * (it.quantity || 1)).toLocaleString('vi-VN')} đ
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="p-4 text-center text-stone-400 italic">
+                          {selectedOrder.notes || 'Chi tiết đơn hàng lưu theo phiếu'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="p-3 bg-[#fbf8f3] rounded-2xl border border-[#e2d5c3] space-y-1">
+                <span className="font-bold text-[#274e23] block text-[11px]">Ghi Chú Khách Hàng:</span>
+                <p className="italic text-stone-600 text-xs">{selectedOrder.notes || 'Không có ghi chú thêm'}</p>
+              </div>
+
+              <div className="p-3 bg-[#274e23]/10 rounded-2xl border border-[#274e23]/20 space-y-1.5 text-right">
+                <div className="flex justify-between text-xs">
+                  <span className="text-stone-600 font-semibold">Tổng Tiền Đơn Hàng:</span>
+                  <span className="font-black text-sm text-[#274e23]">
+                    {(selectedOrder.grandTotal || 0).toLocaleString('vi-VN')} đ
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-amber-800 font-semibold">Đã Cọc / Thanh Toán:</span>
+                  <span className="font-bold text-amber-800">
+                    {(selectedOrder.paidAmount || 0).toLocaleString('vi-VN')} đ
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs pt-1 border-t border-[#274e23]/20 font-bold">
+                  <span>Còn Phải Thu:</span>
+                  <span className="text-red-700 font-black text-sm">
+                    {(selectedOrder.remainingAmount || 0).toLocaleString('vi-VN')} đ
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-[#e2d5c3] flex items-center justify-between gap-3">
+              <button
+                onClick={() => {
+                  window.print();
+                }}
+                className="px-4 py-2.5 bg-white border border-[#dcd0bf] hover:bg-[#f0e6d8] text-[#2d241e] font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-sm"
+              >
+                <Printer className="w-4 h-4 text-amber-600" /> In Phiếu Đơn Hàng
+              </button>
+
+              <button
+                onClick={() => setSelectedOrder(null)}
+                className="px-6 py-2.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold rounded-xl text-xs shadow cursor-pointer"
+              >
+                Đóng Bảng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const AdminDashboard: React.FC = () => {
   const {
     siteData,
@@ -556,8 +1116,8 @@ export const AdminDashboard: React.FC = () => {
   const [newAdminPass, setNewAdminPass] = useState(localStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123');
 
   const [activeTab, setActiveTab] = useState<
-    'brand' | 'theme' | 'payment' | 'experience_meal' | 'business' | 'products' | 'stations' | 'recipes' | 'articles' | 'stories' | 'tools'
-  >('brand');
+    'brand' | 'theme' | 'payment' | 'experience_meal' | 'business' | 'products' | 'stations' | 'recipes' | 'articles' | 'stories' | 'tools' | 'media' | 'orders'
+  >('orders');
 
   const [saveSuccess, setSaveSuccess] = useState('');
   const [jsonInput, setJsonInput] = useState('');
@@ -979,6 +1539,16 @@ export const AdminDashboard: React.FC = () => {
             <Store className="w-4 h-4" /> Mô Hình 7 Trụ Cột
           </button>
           <button
+            onClick={() => setActiveTab('orders')}
+            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+              activeTab === 'orders'
+                ? 'bg-amber-600 text-white shadow-md font-extrabold'
+                : 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
+            }`}
+          >
+            <Package className="w-4 h-4 text-slate-950" /> 📦 Đơn Hàng & Mâm Cơm
+          </button>
+          <button
             onClick={() => setActiveTab('products')}
             className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'products'
@@ -1049,6 +1619,9 @@ export const AdminDashboard: React.FC = () => {
             <Settings className="w-4 h-4" /> Sao Lưu & Import
           </button>
         </div>
+
+        {/* TAB ORDERS & MEAL HISTORY */}
+        {activeTab === 'orders' && <OrdersManagerSection />}
 
         {/* TAB 1: BRAND & FOOTER CONFIG */}
         {activeTab === 'brand' && (

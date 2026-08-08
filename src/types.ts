@@ -205,6 +205,34 @@ export interface OrderRecipient {
   notes?: string;
 }
 
+export interface OrderRecord {
+  id: string;
+  orderType: 'product' | 'experience_meal';
+  fulfillmentType: 'dine_in' | 'takeaway' | 'delivery';
+  status: 'new' | 'confirmed' | 'completed' | 'cancelled';
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  customerAddress?: string;
+  city?: string;
+  district?: string;
+  stationName?: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    extraNote?: string;
+  }>;
+  subtotal: number;
+  discountAmount?: number;
+  shippingFee?: number;
+  grandTotal: number;
+  paidAmount: number;
+  remainingAmount: number;
+  notes?: string;
+  createdAt: string;
+}
+
 export interface Article {
   id: string;
   title: string;

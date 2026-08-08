@@ -358,6 +358,48 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     {hasFoodOrder ? '1. Thông Tin Khách Hàng Đặt Món' : '1. Thông Tin Người Nhận Hàng'}
                   </h3>
 
+                  {/* Selection for Dine-in / Takeaway / Delivery */}
+                  <div>
+                    <label className="text-[11px] font-bold text-[#274e23] block mb-1.5 uppercase tracking-wider">
+                      Hình Thức Nhận Hàng & Thưởng Thức:
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setRecipient({ ...recipient, orderType: 'dine-in' })}
+                        className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                          recipient.orderType === 'dine-in'
+                            ? 'bg-[#274e23] text-white border-[#274e23] shadow-sm'
+                            : 'bg-[#fbf8f3] text-[#5c4d43] border-[#dcd0bf] hover:bg-[#f0e6d8]'
+                        }`}
+                      >
+                        <span>🍽️ Ăn Tại Trạm</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRecipient({ ...recipient, orderType: 'takeaway' })}
+                        className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                          recipient.orderType === 'takeaway'
+                            ? 'bg-[#274e23] text-white border-[#274e23] shadow-sm'
+                            : 'bg-[#fbf8f3] text-[#5c4d43] border-[#dcd0bf] hover:bg-[#f0e6d8]'
+                        }`}
+                      >
+                        <span>🛍️ Mang Về</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRecipient({ ...recipient, orderType: 'delivery' })}
+                        className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                          recipient.orderType === 'delivery'
+                            ? 'bg-[#274e23] text-white border-[#274e23] shadow-sm'
+                            : 'bg-[#fbf8f3] text-[#5c4d43] border-[#dcd0bf] hover:bg-[#f0e6d8]'
+                        }`}
+                      >
+                        <span>🚚 Giao Tận Nhà</span>
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
