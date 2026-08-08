@@ -173,20 +173,49 @@ const LogoEditorSection: React.FC<{
   const logoHeight = brandConfig.logoHeight ?? 44;
   const logoImageUrl = brandConfig.logoImageUrl || '';
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        if (result) {
+      try {
+        const fileExt = file.name.split('.').pop() || 'png';
+        const fileName = `logo/brand-logo-${Date.now()}.${fileExt}`;
+
+        // Upload file to Supabase Storage bucket 'biostation_images'
+        const { error: uploadErr } = await supabase.storage
+          .from('biostation_images')
+          .upload(fileName, file, { upsert: true, cacheControl: '0' });
+
+        if (uploadErr) {
+          console.error('Failed to upload logo to Supabase:', uploadErr);
+          // Fallback to Data URL if storage upload fails
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const result = event.target?.result as string;
+            if (result) {
+              updateBrandConfig({
+                logoImageUrl: result,
+                logoType: logoType === 'vector' ? 'image' : logoType,
+              });
+            }
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+
+        // Get Public URL
+        const { data: publicUrlData } = supabase.storage
+          .from('biostation_images')
+          .getPublicUrl(fileName);
+
+        if (publicUrlData?.publicUrl) {
           updateBrandConfig({
-            logoImageUrl: result,
+            logoImageUrl: publicUrlData.publicUrl,
             logoType: logoType === 'vector' ? 'image' : logoType,
           });
         }
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        console.error('Error uploading logo file to Supabase:', err);
+      }
     }
   };
 
