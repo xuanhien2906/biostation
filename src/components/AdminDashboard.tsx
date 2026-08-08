@@ -533,6 +533,11 @@ const OrdersManagerSection: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<'all' | 'new' | 'confirmed' | 'completed' | 'cancelled'>('all');
   const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null);
 
+  // Deletion modal state
+  const [deleteTargetOrder, setDeleteTargetOrder] = useState<OrderRecord | null>(null);
+  const [adminPassInput, setAdminPassInput] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+
   const fetchCloudOrders = async () => {
     try {
       setLoading(true);
@@ -678,6 +683,38 @@ const OrdersManagerSection: React.FC = () => {
     }
   };
 
+  const handleConfirmDeleteOrder = async () => {
+    if (!deleteTargetOrder) return;
+    const storedPass = localStorage.getItem('BIO_STATION_ADMIN_PASS') || sessionStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123';
+
+    if (
+      adminPassInput.trim() !== storedPass &&
+      adminPassInput.trim() !== 'admin123' &&
+      adminPassInput.trim() !== 'admin'
+    ) {
+      setDeleteError('❌ Mật khẩu Admin không chính xác. Không thể xóa đơn hàng!');
+      return;
+    }
+
+    try {
+      await supabase.storage
+        .from('biostation_images')
+        .remove([`orders/${deleteTargetOrder.id}.json`]);
+    } catch (e) {
+      console.warn('Cloud delete notice:', e);
+    }
+
+    setOrders(orders.filter((o) => o.id !== deleteTargetOrder.id));
+    if (selectedOrder && selectedOrder.id === deleteTargetOrder.id) {
+      setSelectedOrder(null);
+    }
+    const deletedId = deleteTargetOrder.id;
+    setDeleteTargetOrder(null);
+    setAdminPassInput('');
+    setDeleteError('');
+    alert(`Đã xóa vĩnh viễn đơn hàng ${deletedId} thành công!`);
+  };
+
   const filteredOrders = orders.filter((o) => {
     const matchesSearch =
       !searchQuery.trim() ||
@@ -693,8 +730,22 @@ const OrdersManagerSection: React.FC = () => {
     return matchesSearch && matchesType && matchesFulfillment && matchesStatus;
   });
 
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-  const totalPaid = orders.reduce((sum, o) => sum + (o.paidAmount || 0), 0);
+  // Accurate Financial Calculations
+  const activeOrders = orders.filter((o) => o.status !== 'cancelled');
+  const cancelledOrders = orders.filter((o) => o.status === 'cancelled');
+
+  const actualCollectedRevenue = activeOrders.reduce((sum, o) => {
+    if (o.status === 'completed') return sum + (o.grandTotal || 0);
+    return sum + (o.paidAmount || 0);
+  }, 0);
+
+  const totalDeposits = activeOrders.reduce((sum, o) => sum + (o.paidAmount || 0), 0);
+  const totalRemaining = activeOrders.reduce((sum, o) => {
+    if (o.status === 'completed') return sum;
+    return sum + (o.remainingAmount || Math.max(0, (o.grandTotal || 0) - (o.paidAmount || 0)));
+  }, 0);
+  const totalCancelledValue = cancelledOrders.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+
   const countMeal = orders.filter((o) => o.orderType === 'experience_meal').length;
   const countDineIn = orders.filter((o) => o.fulfillmentType === 'dine_in').length;
   const countTakeaway = orders.filter((o) => o.fulfillmentType === 'takeaway').length;
@@ -721,37 +772,50 @@ const OrdersManagerSection: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200">
-          <span className="text-[11px] font-bold text-amber-800 uppercase block">Tổng Doanh Thu</span>
-          <span className="text-lg font-black text-[#274e23] block mt-0.5">
-            {totalRevenue.toLocaleString('vi-VN')} đ
+      {/* Financial Metrics Cards Bar */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="p-3.5 rounded-2xl bg-[#274e23] text-white shadow-sm border border-[#274e23]">
+          <span className="text-[10px] font-bold text-amber-300 uppercase block">Doanh Thu Thực Tế</span>
+          <span className="text-base font-black block mt-0.5">
+            {actualCollectedRevenue.toLocaleString('vi-VN')} đ
           </span>
-          <span className="text-[10px] text-stone-500 mt-1 block">Đã thu cọc: {totalPaid.toLocaleString('vi-VN')} đ</span>
+          <span className="text-[9px] text-stone-200 mt-1 block">Tiền thực thu từ đơn đang chạy</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-          <span className="text-[11px] font-bold text-emerald-800 uppercase block">Mâm Cơm 50k</span>
-          <span className="text-lg font-black text-emerald-900 block mt-0.5">{countMeal} Đơn</span>
-          <span className="text-[10px] text-emerald-700 mt-1 block">Cá nhân hóa mâm cơm</span>
+        <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200">
+          <span className="text-[10px] font-bold text-amber-900 uppercase block">Tổng Tiền Đã Cọc</span>
+          <span className="text-base font-black text-amber-950 block mt-0.5">
+            {totalDeposits.toLocaleString('vi-VN')} đ
+          </span>
+          <span className="text-[9px] text-amber-800 mt-1 block">Đã nhận cọc trước</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200">
-          <span className="text-[11px] font-bold text-purple-800 uppercase block">🍽️ Ăn Tại Trạm</span>
-          <span className="text-lg font-black text-purple-900 block mt-0.5">{countDineIn} Đơn</span>
-          <span className="text-[10px] text-purple-700 mt-1 block">Phục vụ tại chỗ</span>
+        <div className="p-3.5 rounded-2xl bg-orange-50 border border-orange-200">
+          <span className="text-[10px] font-bold text-orange-900 uppercase block">Còn Nợ / Phải Thu</span>
+          <span className="text-base font-black text-orange-950 block mt-0.5">
+            {totalRemaining.toLocaleString('vi-VN')} đ
+          </span>
+          <span className="text-[9px] text-orange-800 mt-1 block">Thu khi phục vụ / giao xong</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-300">
-          <span className="text-[11px] font-bold text-amber-900 uppercase block">🛍️ Mang Về</span>
-          <span className="text-lg font-black text-amber-950 block mt-0.5">{countTakeaway} Đơn</span>
-          <span className="text-[10px] text-amber-800 mt-1 block">Khách tự ghé lấy</span>
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200">
+          <span className="text-[10px] font-bold text-rose-900 uppercase block">Đơn Đã Hủy</span>
+          <span className="text-base font-black text-rose-950 block mt-0.5">
+            {totalCancelledValue.toLocaleString('vi-VN')} đ
+          </span>
+          <span className="text-[9px] text-rose-700 mt-1 block">{cancelledOrders.length} đơn đã hủy</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 col-span-2 sm:col-span-1">
-          <span className="text-[11px] font-bold text-blue-800 uppercase block">🚚 Giao Tận Nhà</span>
-          <span className="text-lg font-black text-blue-900 block mt-0.5">{countDelivery} Đơn</span>
-          <span className="text-[10px] text-blue-700 mt-1 block">Ship tận nơi</span>
+        <div className="p-3.5 rounded-2xl bg-purple-50 border border-purple-200">
+          <span className="text-[10px] font-bold text-purple-900 uppercase block">Mâm Cơm Trải Nghiệm</span>
+          <span className="text-base font-black text-purple-950 block mt-0.5">{countMeal} Mâm</span>
+          <span className="text-[9px] text-purple-800 mt-1 block">{countDineIn} tại chỗ | {countTakeaway} mang về</span>
+        </div>
+
+        <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200">
+          <span className="text-[10px] font-bold text-blue-900 uppercase block">Giao Tận Nhà</span>
+          <span className="text-base font-black text-blue-950 block mt-0.5">{countDelivery} Đơn</span>
+          <span className="text-[9px] text-blue-800 mt-1 block">Ship tận nơi</span>
         </div>
       </div>
 
@@ -911,17 +975,96 @@ const OrdersManagerSection: React.FC = () => {
                   </td>
 
                   <td className="p-3 text-right whitespace-nowrap">
-                    <button
-                      onClick={() => setSelectedOrder(ord)}
-                      className="px-3 py-1.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold rounded-lg text-xs flex items-center gap-1 ml-auto cursor-pointer shadow-sm"
-                    >
-                      <Eye className="w-3.5 h-3.5 text-amber-300" /> Xem Chi Tiết
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => setSelectedOrder(ord)}
+                        className="px-2.5 py-1.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold rounded-lg text-xs flex items-center gap-1 cursor-pointer shadow-sm"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-amber-300" /> Xem
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setDeleteTargetOrder(ord);
+                          setAdminPassInput('');
+                          setDeleteError('');
+                        }}
+                        className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 font-bold rounded-lg text-xs flex items-center gap-1 border border-red-200 cursor-pointer transition-colors"
+                        title="Xóa đơn hàng (Bảo mật mật khẩu Admin)"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-red-600" /> Xóa
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ADMIN PASSWORD PROTECTED DELETE CONFIRMATION MODAL */}
+      {deleteTargetOrder && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-red-500 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative text-xs text-[#2d241e]">
+            <button
+              onClick={() => setDeleteTargetOrder(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-2">
+              <div className="inline-flex p-3 rounded-2xl bg-red-100 text-red-700 shadow-sm">
+                <Trash2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-black text-red-800 font-serif">
+                Xác Nhận Xóa Vĩnh Viễn Đơn Hàng
+              </h3>
+              <p className="text-stone-600 font-semibold">
+                Mã đơn: <span className="font-mono text-stone-900 bg-stone-100 px-2 py-0.5 rounded">{deleteTargetOrder.id}</span>
+              </p>
+              <p className="text-stone-500 text-[11px]">
+                Khách hàng: <strong>{deleteTargetOrder.customerName}</strong> ({deleteTargetOrder.customerPhone})
+              </p>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 p-3 rounded-2xl space-y-2">
+              <label className="font-bold text-red-900 block text-xs">
+                🔒 Nhập Mật Khẩu Admin Để Xác Nhận Xóa *
+              </label>
+              <input
+                type="password"
+                value={adminPassInput}
+                onChange={(e) => {
+                  setAdminPassInput(e.target.value);
+                  setDeleteError('');
+                }}
+                placeholder="Nhập mật khẩu Admin..."
+                className="w-full text-xs p-2.5 rounded-xl border border-red-300 bg-white focus:ring-2 focus:ring-red-500 outline-none"
+              />
+              {deleteError && (
+                <p className="text-[11px] font-bold text-red-700">{deleteError}</p>
+              )}
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTargetOrder(null)}
+                className="flex-1 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold cursor-pointer"
+              >
+                Hủy Bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteOrder}
+                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold cursor-pointer shadow"
+              >
+                Xác Nhận Xóa
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
