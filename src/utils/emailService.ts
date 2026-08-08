@@ -24,7 +24,7 @@ export const sendOrderEmail = async (orderData: OrderData): Promise<boolean> => 
     const customerEmailClean = orderData.customer_email?.trim() || '';
     const hasCustomerEmail = Boolean(customerEmailClean && customerEmailClean.includes('@'));
 
-    // 1. ALWAYS Backup Order JSON to Supabase Cloud Storage AND LocalStorage so NO order is EVER lost!
+    // 1. ALWAYS Backup Order JSON 100% ONLINE to Supabase Cloud Storage (No LocalStorage)
     try {
       const orderIdClean = orderData.order_id || `BIO-${Date.now()}`;
       const newOrderObj = {
@@ -45,16 +45,7 @@ export const sendOrderEmail = async (orderData: OrderData): Promise<boolean> => 
         createdAt: new Date().toISOString()
       };
 
-      // Save to localStorage so F5 refresh or offline mode never loses order
-      try {
-        const local = localStorage.getItem('BIO_STATION_LOCAL_ORDERS');
-        let arr = local ? JSON.parse(local) : [];
-        if (!Array.isArray(arr)) arr = [];
-        arr = [newOrderObj, ...arr.filter((item: any) => item.id !== orderIdClean)];
-        localStorage.setItem('BIO_STATION_LOCAL_ORDERS', JSON.stringify(arr));
-      } catch (err) {}
-
-      // Upload to Supabase Cloud Storage
+      // Upload directly to Supabase Cloud Storage
       const jsonContent = JSON.stringify(newOrderObj, null, 2);
       const blob = new Blob([jsonContent], { type: 'application/json' });
       await supabase.storage

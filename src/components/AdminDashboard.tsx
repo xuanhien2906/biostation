@@ -594,22 +594,7 @@ const OrdersManagerSection: React.FC = () => {
         }
       }
 
-      // Merge with localStorage cached orders so F5 refresh or code update NEVER wipes order history
-      try {
-        const localSaved = localStorage.getItem('BIO_STATION_LOCAL_ORDERS');
-        if (localSaved) {
-          const localParsed: OrderRecord[] = JSON.parse(localSaved);
-          if (Array.isArray(localParsed)) {
-            for (const locOrd of localParsed) {
-              if (!fetchedList.some((o) => o.id === locOrd.id)) {
-                fetchedList.push(locOrd);
-              }
-            }
-          }
-        }
-      } catch (e) {}
-
-      // Default sample orders if no orders exist at all
+      // Default sample orders if no orders exist at all in Supabase Cloud
       if (fetchedList.length === 0) {
         fetchedList.push(
           {
@@ -676,11 +661,6 @@ const OrdersManagerSection: React.FC = () => {
           }
         );
       }
-
-      // Save merged list to localStorage
-      try {
-        localStorage.setItem('BIO_STATION_LOCAL_ORDERS', JSON.stringify(fetchedList));
-      } catch (e) {}
 
       setOrders(fetchedList);
     } catch (err) {
@@ -1314,27 +1294,12 @@ const StaffManagerSection: React.FC<{
       if (blob && !error) {
         const text = await blob.text();
         const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
           fetchedUsers = parsed;
         }
       }
 
-      // Merge with localStorage cached users so F5 refresh or code update NEVER wipes staff accounts
-      try {
-        const localSaved = localStorage.getItem('BIO_STATION_ADMIN_USERS');
-        if (localSaved) {
-          const localParsed: AdminUser[] = JSON.parse(localSaved);
-          if (Array.isArray(localParsed)) {
-            for (const locUsr of localParsed) {
-              if (!fetchedUsers.some((u) => u.id === locUsr.id || u.username.toLowerCase() === locUsr.username.toLowerCase())) {
-                fetchedUsers.push(locUsr);
-              }
-            }
-          }
-        }
-      } catch (e) {}
-
-      // Default sample users if no users exist at all
+      // Default sample users if cloud file doesn't exist yet
       if (fetchedUsers.length === 0) {
         fetchedUsers = [
           {
@@ -1370,10 +1335,6 @@ const StaffManagerSection: React.FC<{
         ];
       }
 
-      try {
-        localStorage.setItem('BIO_STATION_ADMIN_USERS', JSON.stringify(fetchedUsers));
-      } catch (e) {}
-
       setUsers(fetchedUsers);
     } catch (e) {
       console.warn('Notice loading admin users:', e);
@@ -1388,9 +1349,6 @@ const StaffManagerSection: React.FC<{
 
   const saveUsersToCloud = async (updatedList: AdminUser[]) => {
     setUsers(updatedList);
-    try {
-      localStorage.setItem('BIO_STATION_ADMIN_USERS', JSON.stringify(updatedList));
-    } catch (e) {}
     try {
       const blob = new Blob([JSON.stringify(updatedList, null, 2)], {
         type: 'application/json',
@@ -2035,25 +1993,7 @@ export const logAuditEvent = async (
       } catch (e) {}
     }
 
-    try {
-      const local = localStorage.getItem('BIO_STATION_AUDIT_LOGS');
-      if (local) {
-        const localParsed = JSON.parse(local);
-        if (Array.isArray(localParsed)) {
-          for (const item of localParsed) {
-            if (!currentLogs.some((l) => l.id === item.id)) {
-              currentLogs.push(item);
-            }
-          }
-        }
-      }
-    } catch (e) {}
-
     const updatedLogs = [newEntry, ...currentLogs].slice(0, 500);
-
-    try {
-      localStorage.setItem('BIO_STATION_AUDIT_LOGS', JSON.stringify(updatedLogs));
-    } catch (e) {}
 
     const uploadBlob = new Blob([JSON.stringify(updatedLogs, null, 2)], {
       type: 'application/json',
@@ -2084,25 +2024,10 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
       if (blob && !error) {
         const text = await blob.text();
         const parsed = JSON.parse(text);
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
           fetchedLogs = parsed;
         }
       }
-
-      // Merge with localStorage cached logs so F5 refresh or code update NEVER wipes audit history
-      try {
-        const localSaved = localStorage.getItem('BIO_STATION_AUDIT_LOGS');
-        if (localSaved) {
-          const localParsed: AuditLogEntry[] = JSON.parse(localSaved);
-          if (Array.isArray(localParsed)) {
-            for (const locLog of localParsed) {
-              if (!fetchedLogs.some((l) => l.id === locLog.id)) {
-                fetchedLogs.push(locLog);
-              }
-            }
-          }
-        }
-      } catch (e) {}
 
       // Default sample logs if empty
       if (fetchedLogs.length === 0) {
@@ -2133,10 +2058,6 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
           },
         ];
       }
-
-      try {
-        localStorage.setItem('BIO_STATION_AUDIT_LOGS', JSON.stringify(fetchedLogs));
-      } catch (e) {}
 
       setLogs(fetchedLogs);
     } catch (e) {
