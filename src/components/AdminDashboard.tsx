@@ -596,7 +596,7 @@ const OrdersManagerSection: React.FC = () => {
 
       // Default sample orders if no orders exist at all in Supabase Cloud
       if (fetchedList.length === 0) {
-        fetchedList.push(
+        const seedOrders: OrderRecord[] = [
           {
             id: 'BIO-20260808-8821',
             orderType: 'experience_meal',
@@ -658,8 +658,22 @@ const OrdersManagerSection: React.FC = () => {
             remainingAmount: 0,
             notes: 'Đem về lúc 17:30 chiều, đóng gói trong hộp giấy phân hủy sinh học.',
             createdAt: new Date(Date.now() - 14400000).toISOString(),
+          },
+        ];
+
+        fetchedList.push(...seedOrders);
+
+        // Upload seed orders to Supabase Cloud Storage so each order has a real individual file on Cloud
+        for (const sOrd of seedOrders) {
+          try {
+            const blob = new Blob([JSON.stringify(sOrd, null, 2)], { type: 'application/json' });
+            await supabase.storage
+              .from('biostation_images')
+              .upload(`orders/${sOrd.id}.json`, blob, { upsert: true });
+          } catch (err) {
+            console.warn('Seeding order notice:', sOrd.id, err);
           }
-        );
+        }
       }
 
       setOrders(fetchedList);
