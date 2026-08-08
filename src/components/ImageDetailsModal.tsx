@@ -176,6 +176,29 @@ export const ImageDetailsModal: React.FC<ImageDetailsModalProps> = ({
         />
       </div>
 
+      {/* Bottom Bar with Direct URL & Copy Link */}
+      <div className="bg-stone-900/90 border-t border-white/10 p-4 flex flex-wrap items-center justify-between gap-3 text-white">
+        <div className="flex-1 min-w-[280px] flex items-center gap-2 bg-white/10 p-2 px-3 rounded-xl border border-white/20">
+          <span className="text-xs text-amber-300 font-bold whitespace-nowrap">Link Ảnh Direct:</span>
+          <input
+            type="text"
+            readOnly
+            value={url}
+            className="w-full bg-transparent text-xs text-stone-200 outline-none select-all"
+          />
+        </div>
+
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(url);
+            alert('Đã sao chép link ảnh thành công! Bạn có thể dán vào bất kỳ bài viết hay ô nhập nào.');
+          }}
+          className="flex items-center gap-2 px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-bold text-xs shadow-md transition-colors"
+        >
+          📋 Copy Link Ảnh
+        </button>
+      </div>
+
       {showCropper && (
         <ImageCropperModal
           imageSrc={url}

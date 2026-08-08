@@ -160,7 +160,8 @@ const THEME_PRESETS = [
 const LogoEditorSection: React.FC<{
   brandConfig: BrandConfig;
   updateBrandConfig: (updated: Partial<BrandConfig>) => void;
-}> = ({ brandConfig, updateBrandConfig }) => {
+  onOpenPicker?: (callback: (url: string) => void) => void;
+}> = ({ brandConfig, updateBrandConfig, onOpenPicker }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [initialOffset, setInitialOffset] = useState({ x: 0, y: 0 });
@@ -334,28 +335,46 @@ const LogoEditorSection: React.FC<{
 
           <div>
             <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
-              Hoặc dán Đường Dẫn (URL) Logo:
+              Hoặc chọn / dán Đường Dẫn (URL) Logo:
             </label>
-            <input
-              type="url"
-              placeholder="https://domain.com/logo.png"
-              value={logoImageUrl}
-              onChange={(e) => updateBrandConfig({ logoImageUrl: formatImageUrl(e.target.value) })}
-              className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
-            />
+            <div className="flex gap-2">
+              <input
+                type="url"
+                placeholder="https://domain.com/logo.png"
+                value={logoImageUrl}
+                onChange={(e) => updateBrandConfig({ logoImageUrl: formatImageUrl(e.target.value) })}
+                className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
+              />
+              <button
+                type="button"
+                onClick={() => onOpenPicker?.((url) => updateBrandConfig({ logoImageUrl: url }))}
+                className="px-3.5 py-2.5 rounded-xl bg-[#274e23] text-white font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer whitespace-nowrap"
+              >
+                <ImageIcon className="w-4 h-4 text-amber-300" /> Từ Kho Ảnh
+              </button>
+            </div>
           </div>
 
           <div className="pt-2 border-t border-[#e8ded1] mt-3">
             <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
               URL Logo Phụ dưới chân trang (VD: Logo Bộ Công Thương, Đối Tác...):
             </label>
-            <input
-              type="url"
-              placeholder="https://domain.com/bo-cong-thuong.png"
-              value={brandConfig.certificationLogoUrl || ''}
-              onChange={(e) => updateBrandConfig({ certificationLogoUrl: formatImageUrl(e.target.value) })}
-              className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
-            />
+            <div className="flex gap-2">
+              <input
+                type="url"
+                placeholder="https://domain.com/bo-cong-thuong.png"
+                value={brandConfig.certificationLogoUrl || ''}
+                onChange={(e) => updateBrandConfig({ certificationLogoUrl: formatImageUrl(e.target.value) })}
+                className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:ring-2 focus:ring-[#274e23]"
+              />
+              <button
+                type="button"
+                onClick={() => onOpenPicker?.((url) => updateBrandConfig({ certificationLogoUrl: url }))}
+                className="px-3.5 py-2.5 rounded-xl bg-[#274e23] text-white font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer whitespace-nowrap"
+              >
+                <ImageIcon className="w-4 h-4 text-amber-300" /> Từ Kho Ảnh
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -744,22 +763,52 @@ export const AdminDashboard: React.FC = () => {
     );
   };
 
-  const renderImageInput = (type: 'product' | 'article' | 'recipe' | 'station' | 'story' | 'brand', currentValue: string, onUpdate: (url: string) => void) => (
-    <div>
-      <label className="font-bold text-[#5c4d43] block mb-2">Đường Link Hình Ảnh *</label>
-      <div className="flex gap-3">
+  const renderImageInput = (
+    type: 'product' | 'article' | 'recipe' | 'station' | 'story' | 'brand',
+    currentValue: string,
+    onUpdate: (url: string) => void
+  ) => (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <label className="font-bold text-[#5c4d43] text-xs">Đường Dẫn Hình Ảnh *</label>
         {currentValue && (
-          <div className="w-12 h-12 rounded-lg bg-stone-100 border border-stone-200 overflow-hidden shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(currentValue);
+              alert('Đã sao chép link ảnh thành công!');
+            }}
+            className="text-[11px] text-amber-700 hover:text-amber-800 font-bold flex items-center gap-1 cursor-pointer"
+          >
+            📋 Copy Link
+          </button>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        {currentValue && (
+          <div className="w-11 h-11 rounded-xl bg-stone-100 border border-stone-300 overflow-hidden shrink-0 shadow-sm">
             <img src={currentValue} alt="Preview" className="w-full h-full object-cover" />
           </div>
         )}
-        <div className="flex-1 flex flex-col justify-center">
+
+        <div className="flex-1 flex items-center gap-2">
+          <input
+            type="text"
+            value={currentValue || ''}
+            onChange={(e) => onUpdate(e.target.value)}
+            placeholder="Dán URL ảnh hoặc chọn từ kho..."
+            className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white outline-none focus:ring-2 focus:ring-[#274e23]"
+          />
+
           <button
             type="button"
             onClick={() => setImagePickerTarget({ type, callback: onUpdate })}
-            className="w-full p-2.5 rounded-xl border-2 border-dashed border-[#274e23] text-[#274e23] hover:bg-[#274e23] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+            className="px-3.5 py-2.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow shrink-0 cursor-pointer whitespace-nowrap"
+            title="Mở Kho Ảnh để chọn hoặc tải ảnh mới"
           >
-            <ImageIcon className="w-4 h-4" /> Chọn Hoặc Tải Hình Ảnh Lên
+            <ImageIcon className="w-4 h-4 text-amber-300" />
+            <span>Kho Ảnh</span>
           </button>
         </div>
       </div>
@@ -1008,6 +1057,7 @@ export const AdminDashboard: React.FC = () => {
             <LogoEditorSection
               brandConfig={siteData.brandConfig}
               updateBrandConfig={updateBrandConfig}
+              onOpenPicker={(cb) => setImagePickerTarget({ type: 'brand', callback: cb })}
             />
 
             {/* Brand General Info & Footer Contact */}
@@ -1968,15 +2018,24 @@ export const AdminDashboard: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Đường Dẫn URL Ảnh QR Code (Hoặc Dán URL Trực Tiếp)
+                      Đường Dẫn URL Ảnh QR Code (Hoặc Chọn Từ Kho):
                     </label>
-                    <input
-                      type="text"
-                      value={siteData.paymentConfig?.qrCodeUrl || ''}
-                      onChange={(e) => updatePaymentConfig({ qrCodeUrl: e.target.value })}
-                      placeholder="https://..."
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-mono"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={siteData.paymentConfig?.qrCodeUrl || ''}
+                        onChange={(e) => updatePaymentConfig({ qrCodeUrl: e.target.value })}
+                        placeholder="https://..."
+                        className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImagePickerTarget({ type: 'brand', callback: (url) => updatePaymentConfig({ qrCodeUrl: url }) })}
+                        className="px-3.5 py-2.5 rounded-xl bg-[#274e23] text-white font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer whitespace-nowrap"
+                      >
+                        <ImageIcon className="w-4 h-4 text-amber-300" /> Từ Kho Ảnh
+                      </button>
+                    </div>
                   </div>
 
                   {/* Preset Sample QR Selectors */}

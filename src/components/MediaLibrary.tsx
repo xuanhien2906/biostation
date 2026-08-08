@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { deleteStorageFile, deleteMultipleStorageFiles } from '../utils/storageHelper';
 import imageCompression from 'browser-image-compression';
-import { Upload, Trash2, CheckCircle2, Image as ImageIcon, Loader2, X, Folder, FolderPlus, MoveRight, ChevronRight, Home } from 'lucide-react';
+import { Upload, Trash2, CheckCircle2, Image as ImageIcon, Loader2, X, Folder, FolderPlus, MoveRight, ChevronRight, Home, Copy, Link as LinkIcon } from 'lucide-react';
 import { ImageDetailsModal } from './ImageDetailsModal';
 
 interface MediaLibraryProps {
@@ -329,7 +329,13 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
             {files.map((file) => (
               <div
                 key={file.name}
-                onClick={() => setSelectedFileForDetails(file)}
+                onClick={() => {
+                  if (onSelectImage) {
+                    onSelectImage(file.url);
+                  } else {
+                    setSelectedFileForDetails(file);
+                  }
+                }}
                 className="relative group rounded-xl overflow-hidden border-2 border-transparent hover:border-[#274e23] hover:shadow-md transition-all bg-white cursor-pointer h-36"
               >
                 <div className="w-full h-full bg-stone-100 flex items-center justify-center relative">
@@ -340,15 +346,27 @@ export const MediaLibrary: React.FC<MediaLibraryProps> = ({ onSelectImage, onClo
                     loading="lazy"
                   />
                   {onSelectImage && (
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                      <CheckCircle2 className="w-8 h-8 text-white drop-shadow-md" />
+                    <div className="absolute inset-0 bg-[#274e23]/30 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center pointer-events-none text-white">
+                      <CheckCircle2 className="w-8 h-8 drop-shadow-md mb-1" />
+                      <span className="text-[10px] font-bold bg-[#274e23] px-2 py-0.5 rounded-full shadow">Chọn ảnh này</span>
                     </div>
                   )}
                 </div>
                 
-                {/* Overlay actions (Move / Select) */}
+                {/* Overlay actions (Move / Copy Link / Delete) */}
                 <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity flex justify-between items-end gap-1">
                   <span className="truncate text-[10px] text-white/90 flex-1 font-medium pb-0.5" title={file.name}>{file.name}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(file.url);
+                      alert('Đã sao chép link ảnh thành công!');
+                    }}
+                    className="text-white hover:text-amber-400 p-1.5 bg-black/40 hover:bg-black/60 rounded-md transition-colors"
+                    title="Sao chép Link ảnh"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
                   <button
                     onClick={(e) => handleMoveFile(e, file)}
                     className="text-white hover:text-amber-400 p-1.5 bg-black/40 hover:bg-black/60 rounded-md transition-colors"
