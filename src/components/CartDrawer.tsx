@@ -144,8 +144,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         return;
       }
     } else {
-      if (!recipient.fullName || !recipient.phone || !recipient.email || !recipient.address) {
-        alert('Vui lòng điền đầy đủ Họ tên, Số điện thoại, Email và Địa chỉ nhận hàng.');
+      if (!recipient.fullName || !recipient.phone || !recipient.address) {
+        alert('Vui lòng điền đầy đủ Họ tên, Số điện thoại và Địa chỉ nhận hàng.');
         return;
       }
     }
@@ -179,15 +179,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       </tr>
     `).join('');
     
+    const brandTargetEmail = siteData.brandConfig?.email || siteData.paymentConfig?.emailSender || 'contact@biostation.vn';
+
     await sendOrderEmail({
       customer_name: recipient.fullName,
       customer_phone: recipient.phone,
-      customer_email: recipient.email,
-      customer_address: recipient.address,
+      customer_email: recipient.email ? recipient.email.trim() : '',
+      customer_address: recipient.address || (recipient.city ? `${recipient.district || ''}, ${recipient.city}` : 'Địa chỉ theo đơn hàng'),
       order_details: orderDetailsText,
       total_price: `${new Intl.NumberFormat('vi-VN').format(grandTotal)} đ`,
       paid_amount: `${new Intl.NumberFormat('vi-VN').format(amountToPay)} đ`,
       remaining_amount: `${new Intl.NumberFormat('vi-VN').format(remainingAmount)} đ`,
+      brand_email: brandTargetEmail,
+      order_id: orderId || `BIO-${Date.now()}`
     });
 
     setSavedOrderSnapshot(currentOrder);
@@ -386,7 +390,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                   <div>
                     <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
-                      Email (Nhận Email Xác Nhận Đơn Hàng & Hóa Đơn)
+                      Email Nhận Xác Nhận Đơn Hàng & Hóa Đơn (Không bắt buộc)
                     </label>
                     <input
                       type="email"
