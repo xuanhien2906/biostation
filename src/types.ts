@@ -233,6 +233,41 @@ export interface OrderRecord {
   createdAt: string;
 }
 
+export type AdminTabId =
+  | 'brand'
+  | 'theme'
+  | 'payment'
+  | 'experience_meal'
+  | 'business'
+  | 'orders'
+  | 'products'
+  | 'stations'
+  | 'recipes'
+  | 'articles'
+  | 'stories'
+  | 'media'
+  | 'tools'
+  | 'users';
+
+export interface AdminUserPermissions {
+  allowedTabs: AdminTabId[];
+  canCreate: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+}
+
+export interface AdminUser {
+  id: string;
+  username: string;
+  fullName: string;
+  phone: string;
+  password?: string;
+  role: 'super_admin' | 'staff';
+  permissions: AdminUserPermissions;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface Article {
   id: string;
   title: string;

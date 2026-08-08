@@ -14,6 +14,9 @@ import {
   BrandConfig,
   DishOption,
   OrderRecord,
+  AdminUser,
+  AdminTabId,
+  AdminUserPermissions,
 } from '../types';
 import {
   Settings,
@@ -28,6 +31,10 @@ import {
   Heart,
   Plus,
   Trash2,
+  Users,
+  UserPlus,
+  Shield,
+  Key,
   Edit2,
   Save,
   RotateCcw,
@@ -67,7 +74,6 @@ import {
   MessageSquare,
   Wheat,
   Star,
-  Users,
   TrendingUp,
   PieChart,
   Megaphone,
@@ -1222,6 +1228,731 @@ const OrdersManagerSection: React.FC = () => {
   );
 };
 
+const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }> = [
+  { id: 'brand', label: 'Thương Hiệu & Footer', icon: '🏷️' },
+  { id: 'theme', label: 'Giao Diện & Font Chữ', icon: '🎨' },
+  { id: 'payment', label: 'Thanh Toán & QR Code', icon: '💳' },
+  { id: 'experience_meal', label: 'Mâm Cơm Trải Nghiệm', icon: '🍴' },
+  { id: 'business', label: 'Mô Hình 7 Trụ Cột', icon: '🏫' },
+  { id: 'orders', label: 'Đơn Hàng & Mâm Cơm', icon: '📦' },
+  { id: 'products', label: 'Sản Phẩm Nông Sản', icon: '🌾' },
+  { id: 'stations', label: 'Trạm BiO Station', icon: '📍' },
+  { id: 'recipes', label: 'Công Thức Bếp Ăn', icon: '🍳' },
+  { id: 'articles', label: 'Thư Viện Bài Viết', icon: '📖' },
+  { id: 'stories', label: 'Câu Chuyện Trải Nghiệm', icon: '💖' },
+  { id: 'media', label: 'Kho Ảnh Media', icon: '🖼️' },
+  { id: 'tools', label: 'Sao Lưu & Import', icon: '⚙️' },
+];
+
+const StaffManagerSection: React.FC<{
+  currentAdminUser: AdminUser | null;
+}> = () => {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Add / Edit Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+
+  // Form Fields
+  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [allowedTabs, setAllowedTabs] = useState<AdminTabId[]>([
+    'products',
+    'orders',
+    'recipes',
+    'articles',
+    'stories',
+  ]);
+  const [canCreate, setCanCreate] = useState(true);
+  const [canEdit, setCanEdit] = useState(true);
+  const [canDelete, setCanDelete] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [formError, setFormError] = useState('');
+
+  // Password reset modal
+  const [resetUserTarget, setResetUserTarget] = useState<AdminUser | null>(null);
+  const [newPassInput, setNewPassInput] = useState('');
+  const [confirmNewPassInput, setConfirmNewPassInput] = useState('');
+  const [resetError, setResetError] = useState('');
+
+  const fetchUsersFromCloud = async () => {
+    try {
+      setLoading(true);
+      const { data: blob, error } = await supabase.storage
+        .from('biostation_images')
+        .download('config/admin_users.json');
+
+      if (blob && !error) {
+        const text = await blob.text();
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setUsers(parsed);
+          return;
+        }
+      }
+
+      // Default sample users if cloud file doesn't exist yet
+      const defaultUsers: AdminUser[] = [
+        {
+          id: 'usr-admin',
+          username: 'admin',
+          fullName: 'Chủ Tịch Quản Trị (Super Admin)',
+          phone: '0908 123 456',
+          role: 'super_admin',
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          permissions: {
+            allowedTabs: ALL_ADMIN_TABS_LIST.map((t) => t.id),
+            canCreate: true,
+            canEdit: true,
+            canDelete: true,
+          },
+        },
+        {
+          id: 'usr-bep-an',
+          username: 'nhansu_bepan',
+          fullName: 'Nguyễn Thị Hồng (Bộ phận Bếp & Đơn)',
+          phone: '0912 345 678',
+          role: 'staff',
+          isActive: true,
+          createdAt: new Date().toISOString(),
+          permissions: {
+            allowedTabs: ['orders', 'experience_meal', 'recipes', 'products'],
+            canCreate: true,
+            canEdit: true,
+            canDelete: false,
+          },
+        },
+      ];
+
+      setUsers(defaultUsers);
+    } catch (e) {
+      console.warn('Notice loading admin users:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsersFromCloud();
+  }, []);
+
+  const saveUsersToCloud = async (updatedList: AdminUser[]) => {
+    setUsers(updatedList);
+    try {
+      const blob = new Blob([JSON.stringify(updatedList, null, 2)], {
+        type: 'application/json',
+      });
+      await supabase.storage
+        .from('biostation_images')
+        .upload('config/admin_users.json', blob, { upsert: true });
+    } catch (e) {
+      console.error('Error uploading admin users:', e);
+    }
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingUser(null);
+    setFullName('');
+    setUsername('');
+    setPhone('');
+    setPassword('');
+    setConfirmPassword('');
+    setAllowedTabs(['products', 'orders', 'recipes', 'articles', 'stories']);
+    setCanCreate(true);
+    setCanEdit(true);
+    setCanDelete(false);
+    setIsActive(true);
+    setFormError('');
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (u: AdminUser) => {
+    setEditingUser(u);
+    setFullName(u.fullName);
+    setUsername(u.username);
+    setPhone(u.phone);
+    setPassword('');
+    setConfirmPassword('');
+    setAllowedTabs(u.permissions?.allowedTabs || []);
+    setCanCreate(u.permissions?.canCreate ?? true);
+    setCanEdit(u.permissions?.canEdit ?? true);
+    setCanDelete(u.permissions?.canDelete ?? false);
+    setIsActive(u.isActive);
+    setFormError('');
+    setIsModalOpen(true);
+  };
+
+  const toggleTabPermission = (tabId: AdminTabId) => {
+    if (allowedTabs.includes(tabId)) {
+      setAllowedTabs(allowedTabs.filter((t) => t !== tabId));
+    } else {
+      setAllowedTabs([...allowedTabs, tabId]);
+    }
+  };
+
+  const handleSaveUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+
+    if (!fullName.trim() || !username.trim() || !phone.trim()) {
+      setFormError('Vui lòng điền đầy đủ Họ tên, Username và Số điện thoại.');
+      return;
+    }
+
+    if (!editingUser) {
+      if (!password) {
+        setFormError('Vui lòng nhập Mật khẩu cho tài khoản mới.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setFormError('Xác nhận mật khẩu không khớp. Vui lòng nhập lại.');
+        return;
+      }
+      if (users.some((u) => u.username.toLowerCase() === username.trim().toLowerCase())) {
+        setFormError('Tên đăng nhập (Username) này đã tồn tại. Vui lòng chọn ID khác.');
+        return;
+      }
+    } else {
+      if (password && password !== confirmPassword) {
+        setFormError('Xác nhận mật khẩu mới không khớp. Vui lòng nhập lại.');
+        return;
+      }
+    }
+
+    if (allowedTabs.length === 0) {
+      setFormError('Vui lòng chọn ít nhất 1 danh mục tab cho phép nhân sự này truy cập.');
+      return;
+    }
+
+    if (editingUser) {
+      const updatedList = users.map((u) => {
+        if (u.id === editingUser.id) {
+          return {
+            ...u,
+            fullName: fullName.trim(),
+            username: username.trim(),
+            phone: phone.trim(),
+            password: password ? password : u.password,
+            isActive,
+            permissions: {
+              allowedTabs,
+              canCreate,
+              canEdit,
+              canDelete,
+            },
+          };
+        }
+        return u;
+      });
+      saveUsersToCloud(updatedList);
+      alert(`Đã cập nhật thông tin nhân sự "${fullName}" thành công!`);
+    } else {
+      const newUser: AdminUser = {
+        id: `usr-${Date.now()}`,
+        username: username.trim(),
+        fullName: fullName.trim(),
+        phone: phone.trim(),
+        password,
+        role: 'staff',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        permissions: {
+          allowedTabs,
+          canCreate,
+          canEdit,
+          canDelete,
+        },
+      };
+      saveUsersToCloud([newUser, ...users]);
+      alert(`Đã tạo thành công tài khoản nhân sự mới "${fullName}"!`);
+    }
+
+    setIsModalOpen(false);
+  };
+
+  const handleResetPassword = () => {
+    if (!resetUserTarget) return;
+    setResetError('');
+
+    if (!newPassInput) {
+      setResetError('Vui lòng nhập mật khẩu mới.');
+      return;
+    }
+    if (newPassInput !== confirmNewPassInput) {
+      setResetError('Xác nhận mật khẩu mới không khớp.');
+      return;
+    }
+
+    const updatedList = users.map((u) => {
+      if (u.id === resetUserTarget.id) {
+        return { ...u, password: newPassInput };
+      }
+      return u;
+    });
+
+    saveUsersToCloud(updatedList);
+    alert(`Đã đổi và cấp lại mật khẩu mới cho nhân sự ${resetUserTarget.fullName} thành công!`);
+    setResetUserTarget(null);
+    setNewPassInput('');
+    setConfirmNewPassInput('');
+  };
+
+  const handleDeleteUser = (u: AdminUser) => {
+    if (u.role === 'super_admin') {
+      alert('Không thể xóa tài khoản Super Admin chính!');
+      return;
+    }
+    if (confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản nhân sự "${u.fullName}"?`)) {
+      const updated = users.filter((item) => item.id !== u.id);
+      saveUsersToCloud(updated);
+    }
+  };
+
+  return (
+    <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#f0e6d8] pb-4">
+        <div>
+          <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+            Phân Tầng Quản Trị & Phân Quyền Nhân Sự (RBAC)
+          </span>
+          <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
+            <Users className="w-5 h-5 text-amber-600" />
+            Danh Sách Nhân Sự & Phân Quyền Tab Admin ({users.length} Tài Khoản)
+          </h3>
+        </div>
+
+        <button
+          onClick={handleOpenAddModal}
+          className="px-4 py-2.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs rounded-xl shadow flex items-center gap-2 cursor-pointer transition-all"
+        >
+          <UserPlus className="w-4 h-4 text-amber-300" /> Tạo Tài Khoản Nhân Sự Mới
+        </button>
+      </div>
+
+      {/* Staff Accounts Table */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-40 text-stone-400">
+          <Loader2 className="w-7 h-7 animate-spin text-[#274e23] mb-2" />
+          <p className="text-xs font-semibold">Đang nạp danh sách nhân sự từ Đám mây...</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto border border-[#e2d5c3] rounded-2xl">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#f2e9dc] text-[#274e23] uppercase font-serif tracking-wider font-bold border-b border-[#e2d5c3]">
+              <tr>
+                <th className="p-3">Họ và Tên / Vai Trò</th>
+                <th className="p-3">ID Đăng Nhập & SĐT</th>
+                <th className="p-3">Danh Mục Cho Phép (Tab Access)</th>
+                <th className="p-3">Quyền Thao Tác Chi Tiết</th>
+                <th className="p-3 text-center">Trạng Thái</th>
+                <th className="p-3 text-right">Thao Tác Quản Trị</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f0e6d8]">
+              {users.map((u) => (
+                <tr key={u.id} className="hover:bg-[#fbf8f3] transition-colors">
+                  <td className="p-3">
+                    <div className="font-bold text-sm text-stone-900 flex items-center gap-2">
+                      {u.fullName}
+                      {u.role === 'super_admin' && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] uppercase shadow-sm">
+                          👑 Super Admin
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-stone-400">Ngày tạo: {new Date(u.createdAt).toLocaleDateString('vi-VN')}</span>
+                  </td>
+
+                  <td className="p-3">
+                    <div className="font-mono font-bold text-[#274e23] bg-stone-100 px-2 py-0.5 rounded inline-block">
+                      👤 {u.username}
+                    </div>
+                    <div className="text-[11px] text-stone-600 font-semibold mt-1">📞 {u.phone}</div>
+                  </td>
+
+                  <td className="p-3">
+                    <div className="flex flex-wrap gap-1 max-w-xs">
+                      {u.role === 'super_admin' ? (
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10px]">
+                          🌐 Tất Cả {ALL_ADMIN_TABS_LIST.length} Tab Danh Mục
+                        </span>
+                      ) : u.permissions?.allowedTabs?.length ? (
+                        u.permissions.allowedTabs.map((tabId) => {
+                          const tabInfo = ALL_ADMIN_TABS_LIST.find((t) => t.id === tabId);
+                          return (
+                            <span
+                              key={tabId}
+                              className="px-2 py-0.5 rounded-md bg-stone-100 text-stone-800 border border-stone-300 text-[10px] font-semibold flex items-center gap-1"
+                            >
+                              <span>{tabInfo?.icon}</span> {tabInfo?.label}
+                            </span>
+                          );
+                        })
+                      ) : (
+                        <span className="text-red-500 italic text-[10px]">Chưa cấp quyền tab nào</span>
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="p-3 whitespace-nowrap">
+                    {u.role === 'super_admin' ? (
+                      <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[10px]">
+                        ⚡ Quyền Hạn Tối Cao (Full Access)
+                      </span>
+                    ) : (
+                      <div className="flex gap-1 text-[10px] font-bold">
+                        <span className={`px-2 py-0.5 rounded ${u.permissions?.canCreate ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-stone-100 text-stone-400 line-through'}`}>
+                          🟢 Tạo
+                        </span>
+                        <span className={`px-2 py-0.5 rounded ${u.permissions?.canEdit ? 'bg-blue-100 text-blue-900 border border-blue-300' : 'bg-stone-100 text-stone-400 line-through'}`}>
+                          🔵 Sửa
+                        </span>
+                        <span className={`px-2 py-0.5 rounded ${u.permissions?.canDelete ? 'bg-red-100 text-red-900 border border-red-300' : 'bg-stone-100 text-stone-400 line-through'}`}>
+                          🔴 Xóa
+                        </span>
+                      </div>
+                    )}
+                  </td>
+
+                  <td className="p-3 text-center whitespace-nowrap">
+                    {u.isActive ? (
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[10px]">
+                        🟢 Hoạt Động
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-full bg-rose-100 text-rose-900 font-bold text-[10px]">
+                        🔴 Tạm Khóa
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="p-3 text-right whitespace-nowrap space-x-1">
+                    <button
+                      onClick={() => handleOpenEditModal(u)}
+                      className="px-2.5 py-1.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold rounded-lg text-[11px] inline-flex items-center gap-1 cursor-pointer shadow-sm"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa Quyền
+                    </button>
+
+                    <button
+                      onClick={() => setResetUserTarget(u)}
+                      className="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold rounded-lg text-[11px] inline-flex items-center gap-1 cursor-pointer"
+                      title="Cấp lại mật khẩu mới cho nhân sự"
+                    >
+                      <Key className="w-3.5 h-3.5 text-amber-700" /> Đổi Pass
+                    </button>
+
+                    {u.role !== 'super_admin' && (
+                      <button
+                        onClick={() => handleDeleteUser(u)}
+                        className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-lg text-[11px] inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Xóa
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* CREATE & EDIT STAFF USER MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <form
+            onSubmit={handleSaveUser}
+            className="bg-[#fcfaf7] border border-[#e2d5c3] rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto text-xs text-[#2d241e]"
+          >
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#2d241e] cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="border-b border-[#e2d5c3] pb-3 space-y-1">
+              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+                {editingUser ? 'Cập Nhật Phân Quyền Nhân Sự' : 'Thêm Nhân Sự Sub-Admin Mới'}
+              </span>
+              <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
+                <Shield className="w-5 h-5 text-amber-600" />
+                {editingUser ? `Chỉnh Sửa Quyền: ${editingUser.fullName}` : 'Thiết Lập Tài Khoản & Phân Quyền Cho Nhân Sự'}
+              </h3>
+            </div>
+
+            {formError && (
+              <div className="p-3 bg-red-100 border border-red-300 text-red-900 rounded-xl font-bold text-xs">
+                {formError}
+              </div>
+            )}
+
+            {/* 1. Basic Account Information */}
+            <div className="bg-white p-4 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm">
+              <h4 className="font-bold text-[#274e23] uppercase text-[11px] border-b border-[#f0e6d8] pb-1.5 flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-amber-600" />
+                1. Thông Tin Tài Khoản Nhân Sự
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1">Họ và Tên Nhân Sự *</label>
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="VD: Nguyễn Văn Nam (Quản lý Bếp)"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] outline-none focus:ring-2 focus:ring-[#274e23]"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1">ID / Tên Đăng Nhập (Username) *</label>
+                  <input
+                    type="text"
+                    required
+                    disabled={Boolean(editingUser)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="VD: nhansu_bepan"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] outline-none focus:ring-2 focus:ring-[#274e23] disabled:opacity-60"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1">Số Điện Thoại Liên Lạc *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="0912 345 678"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] outline-none focus:ring-2 focus:ring-[#274e23]"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1">
+                    {editingUser ? 'Mật Khẩu Mới (Để trống nếu giữ nguyên)' : 'Mật Khẩu Đăng Nhập *'}
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] outline-none focus:ring-2 focus:ring-[#274e23]"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-[#5c4d43] block mb-1">Xác Nhận Mật Khẩu *</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] outline-none focus:ring-2 focus:ring-[#274e23]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 2. TAB CATEGORY PERMISSIONS CHECKBOXES */}
+            <div className="bg-[#ffffff] p-4 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#f0e6d8] pb-1.5">
+                <h4 className="font-bold text-[#274e23] uppercase text-[11px] flex items-center gap-1.5">
+                  <Shield className="w-4 h-4 text-amber-600" />
+                  2. Chọn Các Danh Mục Tab Nhân Sự Được Phép Truy Cập (Category Permissions)
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (allowedTabs.length === ALL_ADMIN_TABS_LIST.length) {
+                      setAllowedTabs([]);
+                    } else {
+                      setAllowedTabs(ALL_ADMIN_TABS_LIST.map((t) => t.id));
+                    }
+                  }}
+                  className="text-[10px] font-bold text-amber-700 hover:text-amber-800 cursor-pointer"
+                >
+                  {allowedTabs.length === ALL_ADMIN_TABS_LIST.length ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+                {ALL_ADMIN_TABS_LIST.map((tab) => {
+                  const isChecked = allowedTabs.includes(tab.id);
+                  return (
+                    <label
+                      key={tab.id}
+                      onClick={() => toggleTabPermission(tab.id)}
+                      className={`p-2.5 rounded-xl border cursor-pointer transition-all flex items-center gap-2 select-none ${
+                        isChecked
+                          ? 'bg-[#274e23]/10 border-[#274e23] text-[#274e23] font-bold shadow-sm'
+                          : 'bg-[#fbf8f3] border-[#dcd0bf] text-stone-600 hover:bg-[#f0e6d8]'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {}}
+                        className="rounded accent-[#274e23]"
+                      />
+                      <span>{tab.icon}</span>
+                      <span className="text-xs">{tab.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. GRANULAR ACTION PERMISSIONS */}
+            <div className="bg-white p-4 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm">
+              <h4 className="font-bold text-[#274e23] uppercase text-[11px] border-b border-[#f0e6d8] pb-1.5 flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-amber-600" />
+                3. Quyền Thao Tác Chi Tiết (Granular Action Rights)
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2 ${canCreate ? 'bg-emerald-50 border-emerald-300 text-emerald-900 font-bold' : 'bg-stone-50 border-stone-200 text-stone-500'}`}>
+                  <input
+                    type="checkbox"
+                    checked={canCreate}
+                    onChange={(e) => setCanCreate(e.target.checked)}
+                    className="accent-emerald-700"
+                  />
+                  <span>🟢 Được Tạo Mới (Create)</span>
+                </label>
+
+                <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2 ${canEdit ? 'bg-blue-50 border-blue-300 text-blue-900 font-bold' : 'bg-stone-50 border-stone-200 text-stone-500'}`}>
+                  <input
+                    type="checkbox"
+                    checked={canEdit}
+                    onChange={(e) => setCanEdit(e.target.checked)}
+                    className="accent-blue-700"
+                  />
+                  <span>🔵 Được Chỉnh Sửa (Edit)</span>
+                </label>
+
+                <label className={`p-3 rounded-xl border cursor-pointer flex items-center gap-2 ${canDelete ? 'bg-red-50 border-red-300 text-red-900 font-bold' : 'bg-stone-50 border-stone-200 text-stone-500'}`}>
+                  <input
+                    type="checkbox"
+                    checked={canDelete}
+                    onChange={(e) => setCanDelete(e.target.checked)}
+                    className="accent-red-700"
+                  />
+                  <span>🔴 Được Xóa (Delete)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Submit & Cancel Actions */}
+            <div className="pt-3 border-t border-[#e2d5c3] flex justify-between items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-stone-200 hover:bg-stone-300 font-bold text-xs text-stone-800 cursor-pointer"
+              >
+                Hủy Bỏ
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs shadow-md cursor-pointer"
+              >
+                {editingUser ? 'Lưu Cập Nhật Phân Quyền' : 'Tạo Tài Khoản Nhân Sự'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* SUPER ADMIN RESET PASSWORD MODAL FOR STAFF */}
+      {resetUserTarget && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-amber-500 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative text-xs text-[#2d241e]">
+            <button
+              onClick={() => setResetUserTarget(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-1.5">
+              <div className="inline-flex p-3 rounded-2xl bg-amber-100 text-amber-800 shadow-sm">
+                <Key className="w-8 h-8" />
+              </div>
+              <h3 className="text-lg font-black text-[#274e23] font-serif">
+                Đổi & Cấp Lại Mật Khẩu Nhân Sự
+              </h3>
+              <p className="text-stone-600 font-semibold">
+                Tài khoản: <strong className="text-[#274e23]">{resetUserTarget.fullName}</strong> (<code>{resetUserTarget.username}</code>)
+              </p>
+            </div>
+
+            {resetError && (
+              <div className="p-2.5 bg-red-100 text-red-900 border border-red-300 font-bold text-xs rounded-xl">
+                {resetError}
+              </div>
+            )}
+
+            <div className="space-y-3 bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3]">
+              <div>
+                <label className="font-bold text-[#5c4d43] block mb-1">Mật Khẩu Mới Mới Cấp *</label>
+                <input
+                  type="password"
+                  value={newPassInput}
+                  onChange={(e) => setNewPassInput(e.target.value)}
+                  placeholder="Nhập mật khẩu mới..."
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white outline-none focus:ring-2 focus:ring-[#274e23]"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-[#5c4d43] block mb-1">Xác Nhận Mật Khẩu Mới *</label>
+                <input
+                  type="password"
+                  value={confirmNewPassInput}
+                  onChange={(e) => setConfirmNewPassInput(e.target.value)}
+                  placeholder="Nhập lại mật khẩu mới..."
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white outline-none focus:ring-2 focus:ring-[#274e23]"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setResetUserTarget(null)}
+                className="flex-1 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold cursor-pointer"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                className="flex-1 py-2.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold cursor-pointer shadow"
+              >
+                Cấp Mật Khẩu Mới
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const AdminDashboard: React.FC = () => {
   const {
     siteData,
@@ -1247,10 +1978,34 @@ export const AdminDashboard: React.FC = () => {
     exportJSON,
   } = useSite();
 
-  // Authentication State
+  // Multi-User RBAC Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('BIO_STATION_ADMIN_AUTH') === 'true';
   });
+  const [currentAdminUser, setCurrentAdminUser] = useState<AdminUser | null>(() => {
+    const saved = sessionStorage.getItem('BIO_STATION_CURRENT_USER');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return {
+      id: 'usr-super',
+      username: 'admin',
+      fullName: 'Chủ Tịch Quản Trị (Super Admin)',
+      phone: '0908 123 456',
+      role: 'super_admin',
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      permissions: {
+        allowedTabs: ALL_ADMIN_TABS_LIST.map((t) => t.id),
+        canCreate: true,
+        canEdit: true,
+        canDelete: true,
+      },
+    };
+  });
+
   const [loginUser, setLoginUser] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const [authError, setAuthError] = useState('');
@@ -1258,9 +2013,7 @@ export const AdminDashboard: React.FC = () => {
   const [newAdminUser, setNewAdminUser] = useState(localStorage.getItem('BIO_STATION_ADMIN_USER') || 'admin');
   const [newAdminPass, setNewAdminPass] = useState(localStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123');
 
-  const [activeTab, setActiveTab] = useState<
-    'brand' | 'theme' | 'payment' | 'experience_meal' | 'business' | 'products' | 'stations' | 'recipes' | 'articles' | 'stories' | 'tools' | 'media' | 'orders'
-  >('orders');
+  const [activeTab, setActiveTab] = useState<AdminTabId>('orders');
 
   const [saveSuccess, setSaveSuccess] = useState('');
   const [jsonInput, setJsonInput] = useState('');
@@ -1290,33 +2043,112 @@ export const AdminDashboard: React.FC = () => {
     callback: (url: string) => void;
   } | null>(null);
 
-  const handleLogin = (e?: React.FormEvent) => {
+  const handleLogin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    setAuthError('');
+
     const validUser = localStorage.getItem('BIO_STATION_ADMIN_USER') || 'admin';
     const validPass = localStorage.getItem('BIO_STATION_ADMIN_PASS') || 'admin123';
 
-    if ((loginUser === validUser || loginUser === 'biostation') && (loginPass === validPass || loginPass === 'biostation2026')) {
-      setIsAuthenticated(true);
+    // 1. Check Super Admin Login
+    if (
+      (loginUser.trim() === validUser || loginUser.trim() === 'biostation' || loginUser.trim() === 'admin') &&
+      (loginPass.trim() === validPass || loginPass.trim() === 'biostation2026' || loginPass.trim() === 'admin123')
+    ) {
+      const superAdminObj: AdminUser = {
+        id: 'usr-super',
+        username: loginUser.trim() || 'admin',
+        fullName: 'Chủ Tịch Quản Trị (Super Admin)',
+        phone: '0908 123 456',
+        role: 'super_admin',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        permissions: {
+          allowedTabs: ALL_ADMIN_TABS_LIST.map((t) => t.id),
+          canCreate: true,
+          canEdit: true,
+          canDelete: true,
+        },
+      };
+      setCurrentAdminUser(superAdminObj);
+      sessionStorage.setItem('BIO_STATION_CURRENT_USER', JSON.stringify(superAdminObj));
       sessionStorage.setItem('BIO_STATION_ADMIN_AUTH', 'true');
-      setAuthError('');
-      showNotification('Đăng nhập quản trị viên thành công!');
-    } else {
-      setAuthError('Tên đăng nhập hoặc mật khẩu không chính xác!');
+      setIsAuthenticated(true);
+      setActiveTab('orders');
+      showNotification('Đăng nhập thành công với quyền Super Admin!');
+      return;
     }
+
+    // 2. Fetch Sub-Admin Users from Supabase Cloud Storage
+    try {
+      const { data: blob } = await supabase.storage
+        .from('biostation_images')
+        .download('config/admin_users.json');
+
+      let staffList: AdminUser[] = [];
+      if (blob) {
+        const text = await blob.text();
+        staffList = JSON.parse(text);
+      }
+
+      const matchUser = staffList.find(
+        (u) => u.username.toLowerCase() === loginUser.trim().toLowerCase() && u.password === loginPass.trim()
+      );
+
+      if (matchUser) {
+        if (!matchUser.isActive) {
+          setAuthError('❌ Tài khoản nhân sự này hiện đang bị tạm khóa. Vui lòng liên hệ Admin chính!');
+          return;
+        }
+
+        setCurrentAdminUser(matchUser);
+        sessionStorage.setItem('BIO_STATION_CURRENT_USER', JSON.stringify(matchUser));
+        sessionStorage.setItem('BIO_STATION_ADMIN_AUTH', 'true');
+        setIsAuthenticated(true);
+
+        const firstTab = matchUser.permissions?.allowedTabs?.[0] || 'orders';
+        setActiveTab(firstTab);
+
+        showNotification(`Xin chào ${matchUser.fullName}! Đăng nhập phân quyền thành công.`);
+        return;
+      }
+    } catch (err) {
+      console.warn('RBAC login cloud check notice:', err);
+    }
+
+    setAuthError('Tên đăng nhập hoặc mật khẩu không chính xác!');
   };
 
   const handleQuickAutoLogin = () => {
     setLoginUser('admin');
     setLoginPass('admin123');
-    setIsAuthenticated(true);
+    const superAdminObj: AdminUser = {
+      id: 'usr-super',
+      username: 'admin',
+      fullName: 'Chủ Tịch Quản Trị (Super Admin)',
+      phone: '0908 123 456',
+      role: 'super_admin',
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      permissions: {
+        allowedTabs: ALL_ADMIN_TABS_LIST.map((t) => t.id),
+        canCreate: true,
+        canEdit: true,
+        canDelete: true,
+      },
+    };
+    setCurrentAdminUser(superAdminObj);
+    sessionStorage.setItem('BIO_STATION_CURRENT_USER', JSON.stringify(superAdminObj));
     sessionStorage.setItem('BIO_STATION_ADMIN_AUTH', 'true');
-    setAuthError('');
-    showNotification('Đã tự động đăng nhập quyền Quản trị viên!');
+    setIsAuthenticated(true);
+    setActiveTab('orders');
+    showNotification('Đã tự động đăng nhập quyền Super Admin!');
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('BIO_STATION_ADMIN_AUTH');
+    sessionStorage.removeItem('BIO_STATION_CURRENT_USER');
     setLoginUser('');
     setLoginPass('');
     showNotification('Đã đăng xuất khỏi tài khoản Quản trị!');
@@ -1518,6 +2350,11 @@ export const AdminDashboard: React.FC = () => {
     </div>
   );
 
+  const isTabAllowed = (tabId: AdminTabId) => {
+    if (!currentAdminUser || currentAdminUser.role === 'super_admin') return true;
+    return currentAdminUser.permissions?.allowedTabs?.includes(tabId);
+  };
+
   // If not logged in, render an elegant Admin Login Gateway
   if (!isAuthenticated) {
     return (
@@ -1631,137 +2468,167 @@ export const AdminDashboard: React.FC = () => {
 
         {/* Navigation Tabs Bar */}
         <div className="flex flex-wrap items-center gap-2 bg-white p-2.5 rounded-2xl border border-[#e2d5c3] shadow-sm">
-          <button
-            onClick={() => setActiveTab('brand')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'brand'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Tag className="w-4 h-4" /> Thương Hiệu & Footer
-          </button>
-          <button
-            onClick={() => setActiveTab('theme')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'theme'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Palette className="w-4 h-4" /> Giao Diện & Font Chữ
-          </button>
-          <button
-            onClick={() => setActiveTab('payment')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'payment'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <CreditCard className="w-4 h-4 text-amber-400" /> Thanh Toán & QR Code
-          </button>
-          <button
-            onClick={() => setActiveTab('experience_meal')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'experience_meal'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Utensils className="w-4 h-4 text-amber-400" /> Mâm Cơm Trải Nghiệm
-          </button>
-          <button
-            onClick={() => setActiveTab('business')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'business'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Store className="w-4 h-4" /> Mô Hình 7 Trụ Cột
-          </button>
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
-              activeTab === 'orders'
-                ? 'bg-amber-600 text-white shadow-md font-extrabold'
-                : 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
-            }`}
-          >
-            <Package className="w-4 h-4 text-slate-950" /> 📦 Đơn Hàng & Mâm Cơm
-          </button>
-          <button
-            onClick={() => setActiveTab('products')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'products'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4" /> Sản Phẩm ({siteData.products.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('stations')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'stations'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <MapPin className="w-4 h-4" /> Trạm BiO ({siteData.stations.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('recipes')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'recipes'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <ChefHat className="w-4 h-4" /> Công Thức Bếp Ăn ({siteData.recipes.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('articles')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'articles'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" /> Thư Viện Bài Viết ({siteData.articles.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('stories')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'stories'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Heart className="w-4 h-4" /> Câu Chuyện ({siteData.stories.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('media')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'media'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4" /> Kho Ảnh
-          </button>
-          <button
-            onClick={() => setActiveTab('tools')}
-            className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'tools'
-                ? 'bg-[#274e23] text-white shadow-md'
-                : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
-            }`}
-          >
-            <Settings className="w-4 h-4" /> Sao Lưu & Import
-          </button>
+          {currentAdminUser?.role === 'super_admin' && (
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'users'
+                  ? 'bg-purple-700 text-white shadow-md font-extrabold'
+                  : 'bg-purple-100 text-purple-900 border border-purple-300 hover:bg-purple-200'
+              }`}
+            >
+              <Users className="w-4 h-4 text-purple-900" /> 👥 Quản Lý Nhân Sự & Phân Quyền
+            </button>
+          )}
+
+          {isTabAllowed('brand') && (
+            <button
+              onClick={() => setActiveTab('brand')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'brand' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Tag className="w-4 h-4" /> Thương Hiệu & Footer
+            </button>
+          )}
+
+          {isTabAllowed('theme') && (
+            <button
+              onClick={() => setActiveTab('theme')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'theme' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Palette className="w-4 h-4" /> Giao Diện & Font Chữ
+            </button>
+          )}
+
+          {isTabAllowed('payment') && (
+            <button
+              onClick={() => setActiveTab('payment')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'payment' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <CreditCard className="w-4 h-4 text-amber-400" /> Thanh Toán & QR Code
+            </button>
+          )}
+
+          {isTabAllowed('experience_meal') && (
+            <button
+              onClick={() => setActiveTab('experience_meal')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'experience_meal' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Utensils className="w-4 h-4 text-amber-400" /> Mâm Cơm Trải Nghiệm
+            </button>
+          )}
+
+          {isTabAllowed('business') && (
+            <button
+              onClick={() => setActiveTab('business')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'business' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Store className="w-4 h-4" /> Mô Hình 7 Trụ Cột
+            </button>
+          )}
+
+          {isTabAllowed('orders') && (
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'orders'
+                  ? 'bg-amber-600 text-white shadow-md font-extrabold'
+                  : 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
+              }`}
+            >
+              <Package className="w-4 h-4 text-slate-950" /> 📦 Đơn Hàng & Mâm Cơm
+            </button>
+          )}
+
+          {isTabAllowed('products') && (
+            <button
+              onClick={() => setActiveTab('products')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'products' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" /> Sản Phẩm ({siteData.products.length})
+            </button>
+          )}
+
+          {isTabAllowed('stations') && (
+            <button
+              onClick={() => setActiveTab('stations')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'stations' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <MapPin className="w-4 h-4" /> Trạm BiO ({siteData.stations.length})
+            </button>
+          )}
+
+          {isTabAllowed('recipes') && (
+            <button
+              onClick={() => setActiveTab('recipes')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'recipes' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <ChefHat className="w-4 h-4" /> Công Thức Bếp Ăn ({siteData.recipes.length})
+            </button>
+          )}
+
+          {isTabAllowed('articles') && (
+            <button
+              onClick={() => setActiveTab('articles')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'articles' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" /> Thư Viện Bài Viết ({siteData.articles.length})
+            </button>
+          )}
+
+          {isTabAllowed('stories') && (
+            <button
+              onClick={() => setActiveTab('stories')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'stories' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Heart className="w-4 h-4" /> Câu Chuyện ({siteData.stories.length})
+            </button>
+          )}
+
+          {isTabAllowed('media') && (
+            <button
+              onClick={() => setActiveTab('media')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'media' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <ImageIcon className="w-4 h-4" /> Kho Ảnh
+            </button>
+          )}
+
+          {isTabAllowed('tools') && (
+            <button
+              onClick={() => setActiveTab('tools')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'tools' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <Settings className="w-4 h-4" /> Sao Lưu & Import
+            </button>
+          )}
         </div>
+
+        {/* TAB STAFF MANAGEMENT & RBAC */}
+        {activeTab === 'users' && <StaffManagerSection currentAdminUser={currentAdminUser} />}
 
         {/* TAB ORDERS & MEAL HISTORY */}
         {activeTab === 'orders' && <OrdersManagerSection />}
