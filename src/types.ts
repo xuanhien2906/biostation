@@ -248,7 +248,8 @@ export type AdminTabId =
   | 'media'
   | 'tools'
   | 'users'
-  | 'logs';
+  | 'logs'
+  | 'backups';
 
 export interface AuditLogEntry {
   id: string;

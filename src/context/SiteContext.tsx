@@ -430,7 +430,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return fallback;
   };
 
-  // Helper to sync brand & site config to Supabase Cloud Storage for real-time multi-device sync
+  // Helper to sync brand & site config to Supabase Cloud Storage for real-time multi-device sync + Auto Snapshot Backup
   const syncCloudConfig = async (overrides?: any) => {
     try {
       const dataToSave = {
@@ -442,14 +442,35 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         businessMission: overrides?.businessMission || businessMission,
         stations: overrides?.stations || stations,
         bioCategories: overrides?.bioCategories || bioCategories,
+        products: overrides?.products || products,
+        recipes: overrides?.recipes || recipes,
+        articles: overrides?.articles || articles,
+        stories: overrides?.stories || stories,
         updatedAt: new Date().toISOString(),
       };
       const jsonString = JSON.stringify(dataToSave, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
+      
+      // 1. Primary Live Config
       await supabase.storage.from('biostation_images').upload('config/site_config.json', blob, {
         upsert: true,
         contentType: 'application/json',
       });
+
+      // 2. Automated Real-time Timestamped Cloud Snapshot Backup
+      try {
+        const now = new Date();
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+        const backupFilename = `backups/site_config_${timestamp}.json`;
+        const backupBlob = new Blob([jsonString], { type: 'application/json' });
+        await supabase.storage.from('biostation_images').upload(backupFilename, backupBlob, {
+          upsert: true,
+          contentType: 'application/json',
+        });
+      } catch (backupErr) {
+        console.warn('Notice creating automated cloud snapshot backup:', backupErr);
+      }
     } catch (err) {
       console.error('Error syncing site_config to Supabase cloud storage:', err);
     }

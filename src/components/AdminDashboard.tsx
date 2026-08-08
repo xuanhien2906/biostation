@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSite } from '../context/SiteContext';
 import { BioStationLogo } from './BioStationLogo';
 import {
@@ -48,6 +48,10 @@ import {
   ShieldCheck,
   Globe,
   Tag,
+  Archive,
+  Camera,
+  Database,
+  Clock,
   ChefHat,
   Layers,
   FileText,
@@ -84,7 +88,6 @@ import {
   Utensils,
   ArrowLeft,
   Calendar,
-  Clock,
   ThumbsUp,
 } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
@@ -1259,6 +1262,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
   { id: 'stories', label: 'Câu Chuyện Trải Nghiệm', icon: '💖' },
   { id: 'media', label: 'Kho Ảnh Media', icon: '🖼️' },
   { id: 'tools', label: 'Sao Lưu & Import', icon: '⚙️' },
+  { id: 'backups', label: 'Auto Backup & Reset Phiên Bản', icon: '📦' },
   { id: 'logs', label: 'Nhật Ký & Audit Logs', icon: '📜' },
 ];
 
@@ -2341,6 +2345,375 @@ const AuditLogsSection: React.FC<{ currentAdminUser: AdminUser | null }> = () =>
   );
 };
 
+const BackupManagerSection: React.FC<{ currentAdminUser: AdminUser | null }> = ({ currentAdminUser }) => {
+  const {
+    brandConfig,
+    heroConfig,
+    themeConfig,
+    paymentConfig,
+    experienceMealConfig,
+    businessMission,
+    stations,
+    bioCategories,
+    products,
+    recipes,
+    articles,
+    stories,
+  } = useSite();
+
+  const [backups, setBackups] = useState<Array<{ name: string; created_at: string; size: number }>>([]);
+  const [loading, setLoading] = useState(true);
+  const [restoringFile, setRestoringFile] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchBackupsFromCloud = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from('biostation_images')
+        .list('backups', { limit: 100, sortBy: { column: 'name', order: 'desc' } });
+
+      if (!error && data) {
+        const validBackups = data.filter((f) => f.name.endsWith('.json'));
+        setBackups(
+          validBackups.map((f) => ({
+            name: f.name,
+            created_at: f.created_at || new Date().toISOString(),
+            size: f.metadata?.size || 0,
+          }))
+        );
+      }
+    } catch (e) {
+      console.warn('Notice loading backup files:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBackupsFromCloud();
+  }, []);
+
+  // Create Manual Snapshot Backup
+  const handleCreateManualSnapshot = async () => {
+    try {
+      setLoading(true);
+      const dataToSave = {
+        brandConfig,
+        heroConfig,
+        themeConfig,
+        paymentConfig,
+        experienceMealConfig,
+        businessMission,
+        stations,
+        bioCategories,
+        products,
+        recipes,
+        articles,
+        stories,
+        snapshotCreatedBy: currentAdminUser ? currentAdminUser.fullName : 'Super Admin',
+        updatedAt: new Date().toISOString(),
+      };
+      const jsonString = JSON.stringify(dataToSave, null, 2);
+      const now = new Date();
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      const filename = `backups/site_config_manual_${timestamp}.json`;
+
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      await supabase.storage.from('biostation_images').upload(filename, blob, {
+        upsert: true,
+        contentType: 'application/json',
+      });
+
+      logAuditEvent(
+        currentAdminUser,
+        'settings',
+        'CREATE',
+        'Bản Sao Lưu Thủ Công',
+        `Tạo bản sao lưu snapshot ${filename}`
+      );
+
+      alert(`✅ Đã tạo bản sao lưu snapshot mới thành công: site_config_manual_${timestamp}.json`);
+      fetchBackupsFromCloud();
+    } catch (err) {
+      alert('❌ Lỗi khi tạo bản sao lưu: ' + (err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Restore Snapshot Version
+  const handleRestoreVersion = async (fileName: string) => {
+    if (
+      !window.confirm(
+        `⚠️ BẠN CÓ CHẮC CHẮN MUỐN KHÔI PHỤC WEBSITE VỀ PHIÊN BẢN SAO LƯU:\n"${fileName}"?\n\nToàn bộ cấu hình logo, phông chữ, thông tin thương hiệu, mâm cơm, công thức, bài viết sẽ lập tức quay lại đúng thời điểm bản sao lưu này!`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setRestoringFile(fileName);
+      const { data: blob, error } = await supabase.storage
+        .from('biostation_images')
+        .download(`backups/${fileName}`);
+
+      if (error || !blob) {
+        throw new Error('Không thể tải file sao lưu từ Đám mây Supabase.');
+      }
+
+      const text = await blob.text();
+      const parsed = JSON.parse(text);
+
+      // Overwrite primary live config/site_config.json on Cloud
+      const mainBlob = new Blob([JSON.stringify(parsed, null, 2)], { type: 'application/json' });
+      await supabase.storage.from('biostation_images').upload('config/site_config.json', mainBlob, {
+        upsert: true,
+        contentType: 'application/json',
+      });
+
+      logAuditEvent(
+        currentAdminUser,
+        'settings',
+        'UPDATE',
+        'Khôi Phục Phiên Bản Website',
+        `Khôi phục toàn bộ website về bản sao lưu ${fileName}`
+      );
+
+      alert(`🎉 Đã khôi phục thành công toàn bộ website về phiên bản: ${fileName}!\nTrang web sẽ tự động làm mới ngay bây giờ.`);
+      window.location.reload();
+    } catch (err) {
+      alert('❌ Lỗi khi khôi phục bản sao lưu: ' + (err as Error).message);
+    } finally {
+      setRestoringFile(null);
+    }
+  };
+
+  // Download snapshot file
+  const handleDownloadSnapshot = async (fileName: string) => {
+    try {
+      const { data: blob } = await supabase.storage
+        .from('biostation_images')
+        .download(`backups/${fileName}`);
+
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+      }
+    } catch (e) {
+      alert('Lỗi tải file: ' + (e as Error).message);
+    }
+  };
+
+  // Delete snapshot file
+  const handleDeleteSnapshot = async (fileName: string) => {
+    if (!window.confirm(`Xóa bản sao lưu "${fileName}" khỏi Đám mây?`)) return;
+    try {
+      await supabase.storage.from('biostation_images').remove([`backups/${fileName}`]);
+      fetchBackupsFromCloud();
+    } catch (e) {
+      alert('Lỗi xóa file: ' + (e as Error).message);
+    }
+  };
+
+  // Import Offline Backup File
+  const handleImportOfflineFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const content = e.target?.result as string;
+        const parsed = JSON.parse(content);
+
+        if (!window.confirm(`Xác nhận khôi phục dữ liệu website từ file offline "${file.name}"?`)) return;
+
+        const mainBlob = new Blob([JSON.stringify(parsed, null, 2)], { type: 'application/json' });
+        await supabase.storage.from('biostation_images').upload('config/site_config.json', mainBlob, {
+          upsert: true,
+          contentType: 'application/json',
+        });
+
+        alert('🎉 Đã phục hồi dữ liệu từ file offline thành công! Trang web sẽ tự động làm mới.');
+        window.location.reload();
+      } catch (err) {
+        alert('❌ File JSON không hợp lệ: ' + (err as Error).message);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const totalBackups = backups.length;
+  const latestBackup = backups[0] ? backups[0].created_at : null;
+
+  return (
+    <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#f0e6d8] pb-4">
+        <div>
+          <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            Tự Động Sao Lưu Thời Gian Thực & Phục Hồi Phiên Bản (Version Controller)
+          </span>
+          <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
+            <Archive className="w-5 h-5 text-emerald-600" />
+            📦 Quản Lý Backup & Reset Lịch Sử Cập Nhật Website ({totalBackups} Bản Sao Lưu Cloud)
+          </h3>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleCreateManualSnapshot}
+            disabled={loading}
+            className="px-3.5 py-2 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow transition-all"
+          >
+            <Camera className="w-3.5 h-3.5 text-amber-300" /> Tạo Bản Sao Lưu Ngay
+          </button>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImportOfflineFile}
+            accept=".json"
+            className="hidden"
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all"
+          >
+            <Upload className="w-3.5 h-3.5 text-amber-700" /> Upload Restore File Máy Cục Bộ
+          </button>
+
+          <button
+            onClick={fetchBackupsFromCloud}
+            className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer border border-stone-300"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-emerald-700" /> Làm Mới Danh Sách
+          </button>
+        </div>
+      </div>
+
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Tổng Bản Sao Lưu Trên Cloud</span>
+            <Database className="w-4 h-4 text-emerald-700" />
+          </div>
+          <p className="text-2xl font-black text-[#274e23]">{totalBackups} Bản Snapshot</p>
+          <span className="text-[10px] text-stone-400">Lưu trên Đám mây Supabase Cloud</span>
+        </div>
+
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Bản Sao Lưu Gần Nhất</span>
+            <Clock className="w-4 h-4 text-blue-700" />
+          </div>
+          <p className="text-sm font-bold text-blue-900">
+            {latestBackup ? new Date(latestBackup).toLocaleString('vi-VN') : 'Chưa có bản lưu'}
+          </p>
+          <span className="text-[10px] text-stone-400">Tự động sao lưu theo thời gian thực</span>
+        </div>
+
+        <div className="bg-[#fbf8f3] p-4 rounded-2xl border border-[#e2d5c3] space-y-1">
+          <div className="flex items-center justify-between text-stone-500 text-xs font-semibold">
+            <span>Chế Độ Sao Lưu Hệ Thống</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          </div>
+          <p className="text-sm font-bold text-emerald-800">Tự Động Real-Time Active ⚡</p>
+          <span className="text-[10px] text-stone-400">Mỗi thay đổi đều tự lưu snapshot</span>
+        </div>
+      </div>
+
+      {/* Backups List Table */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center h-40 text-stone-400">
+          <Loader2 className="w-7 h-7 animate-spin text-[#274e23] mb-2" />
+          <p className="text-xs font-semibold">Đang tải danh sách các bản sao lưu Đám mây...</p>
+        </div>
+      ) : backups.length === 0 ? (
+        <div className="text-center py-12 bg-[#fbf8f3] rounded-2xl border border-dashed border-[#e2d5c3] text-stone-500 text-xs">
+          <Archive className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+          <p className="font-bold text-stone-700 mb-1">Chưa có bản sao lưu nào trên Đám mây!</p>
+          <p className="text-[11px] text-stone-400 mb-4">Mỗi khi bạn thực hiện cập nhật trên website, hệ thống sẽ tự động tạo file sao lưu tại đây.</p>
+          <button
+            onClick={handleCreateManualSnapshot}
+            className="px-4 py-2 bg-[#274e23] text-white text-xs font-bold rounded-xl shadow cursor-pointer"
+          >
+            📸 Tạo Bản Sao Lưu Đầu Tiên Ngay
+          </button>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-[#e2d5c3]">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#f2e9dc] text-[#5c4d43] font-bold uppercase tracking-wider border-b border-[#e2d5c3]">
+              <tr>
+                <th className="p-3">🕒 Thời Gian Sao Lưu</th>
+                <th className="p-3">📁 Tên File / Mã Snapshot</th>
+                <th className="p-3">📊 Dung Lượng</th>
+                <th className="p-3 text-right">⚡ Thao Tác Phục Hồi / Tải Về</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f0e6d8]">
+              {backups.map((item) => (
+                <tr key={item.name} className="hover:bg-[#fcfaf7] transition">
+                  <td className="p-3 font-semibold text-stone-800">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-emerald-700" />
+                      {new Date(item.created_at).toLocaleString('vi-VN')}
+                    </span>
+                  </td>
+                  <td className="p-3 font-mono text-[11px] text-emerald-900 font-bold">
+                    {item.name}
+                  </td>
+                  <td className="p-3 text-stone-500 font-medium">
+                    {item.size ? `${(item.size / 1024).toFixed(1)} KB` : 'Tự động'}
+                  </td>
+                  <td className="p-3 text-right space-x-2">
+                    <button
+                      onClick={() => handleRestoreVersion(item.name)}
+                      disabled={restoringFile === item.name}
+                      className="px-3 py-1.5 bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs rounded-xl shadow inline-flex items-center gap-1 cursor-pointer transition"
+                      title="Khôi phục toàn bộ website về phiên bản thời điểm này"
+                    >
+                      {restoringFile === item.name ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <RotateCcw className="w-3.5 h-3.5 text-amber-300" />
+                      )}
+                      Phục Hồi Phiên Bản Này
+                    </button>
+
+                    <button
+                      onClick={() => handleDownloadSnapshot(item.name)}
+                      className="px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs rounded-xl inline-flex items-center gap-1 cursor-pointer"
+                      title="Tải file backup về máy"
+                    >
+                      <Download className="w-3.5 h-3.5 text-stone-600" /> Tải Về
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteSnapshot(item.name)}
+                      className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-xl inline-flex items-center gap-1 cursor-pointer"
+                      title="Xóa bản sao lưu này"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const AdminDashboard: React.FC = () => {
   const {
     siteData,
@@ -3016,6 +3389,19 @@ export const AdminDashboard: React.FC = () => {
             </button>
           )}
 
+          {isTabAllowed('backups') && (
+            <button
+              onClick={() => setActiveTab('backups')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'backups'
+                  ? 'bg-emerald-800 text-white shadow-md font-extrabold'
+                  : 'bg-emerald-50 text-emerald-900 border border-emerald-300 hover:bg-emerald-100'
+              }`}
+            >
+              <Archive className="w-4 h-4 text-emerald-700" /> 📦 Auto Backup & Reset Phiên Bản
+            </button>
+          )}
+
           {isTabAllowed('logs') && (
             <button
               onClick={() => setActiveTab('logs')}
@@ -3029,6 +3415,9 @@ export const AdminDashboard: React.FC = () => {
             </button>
           )}
         </div>
+
+        {/* TAB AUTO BACKUP & VERSION MANAGER */}
+        {activeTab === 'backups' && <BackupManagerSection currentAdminUser={currentAdminUser} />}
 
         {/* TAB AUDIT LOGS */}
         {activeTab === 'logs' && <AuditLogsSection currentAdminUser={currentAdminUser} />}
