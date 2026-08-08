@@ -4,7 +4,7 @@ import { createServer as createViteServer } from "vite";
 import apiApp from "./api/index.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 // Mount the API
 app.use(apiApp);
@@ -27,7 +27,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Dr. Berg Health & Keto Center server running on http://0.0.0.0:${PORT}`);
+    console.log(`BiO Station server running on http://0.0.0.0:${PORT}`);
   });
 }
 
