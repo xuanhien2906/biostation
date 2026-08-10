@@ -3,6 +3,7 @@ import { Search, ShoppingBag, Sprout, Store, Sparkles, BookOpen, Layers, Menu, X
 import { TabType, Product, Article } from '../types';
 import { BioStationLogo } from './BioStationLogo';
 import { useSite } from '../context/SiteContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface HeaderProps {
   activeTab: TabType;
@@ -189,7 +190,9 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Action Controls: Cart & Mobile Toggle */}
-          <div className="flex items-center gap-3 shrink-0 order-2 md:order-3">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0 order-2 md:order-3">
+            <LanguageSwitcher />
+
             {/* Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
