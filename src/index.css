@@ -34,11 +34,18 @@
 }
 
 /* Hide Google Translate UI elements */
-.goog-te-banner-frame.skiptranslate {
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+.VIpgJd-Zvi9od-ORHb-OEVmcd,
+.VIpgJd-Zvi9od-aZ2wEe-wOHMyf,
+#goog-gt-tt {
   display: none !important;
+  visibility: hidden !important;
 }
+
 body {
   top: 0px !important;
+  position: static !important;
 }
 .goog-tooltip {
   display: none !important;
