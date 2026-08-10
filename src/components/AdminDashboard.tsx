@@ -1211,7 +1211,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
 
 const StaffManagerSection: React.FC<{
   currentAdminUser: AdminUser | null;
-}> = () => {
+}> = ({ currentAdminUser }) => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
 

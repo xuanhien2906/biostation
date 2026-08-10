@@ -124,7 +124,7 @@ ${businessInfo}
       : `Khách hàng: ${message}\nTư vấn viên:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.6-flash",
       contents: prompt,
       config: {
         systemInstruction,
@@ -188,7 +188,7 @@ Return a JSON object matching this schema:
     `.trim();
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-3.6-flash",
       contents: prompt,
       config: {
         systemInstruction,
