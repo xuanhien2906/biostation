@@ -2851,6 +2851,13 @@ export const AdminDashboard: React.FC = () => {
     showNotification('Đã đăng xuất khỏi tài khoản Quản trị!');
   };
 
+  const handleClearCache = () => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ bộ nhớ đệm (Cache) và làm mới hệ thống không?')) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
   const handleUpdateAdminCredentials = () => {
     if (!newAdminUser.trim() || !newAdminPass.trim()) {
       alert('Tên đăng nhập và mật khẩu không được để trống!');
@@ -3151,6 +3158,12 @@ export const AdminDashboard: React.FC = () => {
               className="px-4 py-2.5 rounded-xl bg-red-800/80 hover:bg-red-900 text-white font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" /> Khôi Phục Mặc Định
+            </button>
+            <button
+              onClick={handleClearCache}
+              className="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" /> Xóa Bộ Nhớ Đệm
             </button>
             <button
               onClick={handleLogout}
