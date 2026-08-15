@@ -4636,111 +4636,230 @@ export const AdminDashboard: React.FC = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {(siteData.experienceMealConfig?.dishes || []).map((dish, index, array) => (
-                  <div
-                    key={dish.id}
-                    className={`bg-white p-3.5 rounded-2xl border ${dish.isMain ? 'border-amber-500 shadow-amber-200' : 'border-[#e2d5c3]'} shadow-sm flex flex-col justify-between space-y-3 relative`}
-                  >
-                    <div className="space-y-2">
-                      <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
-                        <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
-                        <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
-                          {dish.category}
-                        </span>
-                        {dish.isMain && (
-                          <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
-                            <Star className="w-3 h-3 fill-white" /> Món Chính
-                          </span>
-                        )}
-                      </div>
+              <div className="mb-6">
+                <h5 className="font-bold text-[#b45309] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase">Phân hệ Cơm & Nước</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {(siteData.experienceMealConfig?.dishes || []).map((dish, index, array) => {
+                    if (dish.category === 'Cháo' || dish.category === 'Topping') return null;
+                    return (
+                      <div
+                        key={dish.id}
+                        className={`bg-white p-3.5 rounded-2xl border ${dish.isMain ? 'border-amber-500 shadow-amber-200' : 'border-[#e2d5c3]'} shadow-sm flex flex-col justify-between space-y-3 relative`}
+                      >
+                        <div className="space-y-2">
+                          <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
+                            <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                            <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+                              {dish.category}
+                            </span>
+                            {dish.isMain && (
+                              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
+                                <Star className="w-3 h-3 fill-white" /> Món Chính
+                              </span>
+                            )}
+                          </div>
 
-                      <div>
-                        <h5 className="font-bold text-xs text-[#274e23] line-clamp-1">{dish.name}</h5>
-                        {dish.flavor && <p className="text-[10px] text-[#7a6858] line-clamp-2 mt-0.5">{dish.flavor}</p>}
-                        <div className="text-[11px] font-bold text-amber-700 mt-1" style={{ color: dish.color || '#b45309' }}>
-                          Giá: {((dish.price ?? (dish as any).extraPrice) || 0).toLocaleString('vi-VN')}đ
+                          <div>
+                            <h5 className="font-bold text-xs text-[#274e23] line-clamp-1">{dish.name}</h5>
+                            {dish.flavor && <p className="text-[10px] text-[#7a6858] line-clamp-2 mt-0.5">{dish.flavor}</p>}
+                            <div className="text-[11px] font-bold text-amber-700 mt-1" style={{ color: dish.color || '#b45309' }}>
+                              Giá: {((dish.price ?? (dish as any).extraPrice) || 0).toLocaleString('vi-VN')}đ
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#f0e6d8]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              if (index > 0) {
+                                [newList[index - 1], newList[index]] = [newList[index], newList[index - 1]];
+                                updateExperienceMealConfig({ dishes: newList });
+                              }
+                            }}
+                            disabled={index === 0}
+                            className={`p-1.5 rounded-lg ${index === 0 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
+                            title="Đưa lên trước"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              if (index < newList.length - 1) {
+                                [newList[index + 1], newList[index]] = [newList[index], newList[index + 1]];
+                                updateExperienceMealConfig({ dishes: newList });
+                              }
+                            }}
+                            disabled={index === array.length - 1}
+                            className={`p-1.5 rounded-lg ${index === array.length - 1 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
+                            title="Đưa xuống sau"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              newList[index] = { ...newList[index], isMain: !newList[index].isMain };
+                              updateExperienceMealConfig({ dishes: newList });
+                            }}
+                            className={`p-1.5 rounded-lg ${dish.isMain ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} cursor-pointer`}
+                            title="Đánh dấu nổi bật (Món Chính)"
+                          >
+                            <Star className={`w-3.5 h-3.5 ${dish.isMain ? 'fill-amber-500' : ''}`} />
+                          </button>
+
+                          <div className="flex-1"></div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsAddingDish(false);
+                              setEditingDish(dish);
+                            }}
+                            className="px-2 py-1.5 bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] font-bold text-xs rounded-lg flex items-center justify-center gap-1 cursor-pointer"
+                            title="Sửa"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Xóa món "${dish.name}" khỏi thực đơn?`)) {
+                                const updatedDishes = (siteData.experienceMealConfig?.dishes || []).filter(
+                                  (d) => d.id !== dish.id
+                                );
+                                updateExperienceMealConfig({ dishes: updatedDishes });
+                                showNotification('Đã xóa món ăn khỏi thực đơn!');
+                              }
+                            }}
+                            className="p-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg cursor-pointer"
+                            title="Xóa"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
                         </div>
                       </div>
-                    </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-                    <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#f0e6d8]">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newList = [...(siteData.experienceMealConfig?.dishes || [])];
-                          if (index > 0) {
-                            [newList[index - 1], newList[index]] = [newList[index], newList[index - 1]];
-                            updateExperienceMealConfig({ dishes: newList });
-                          }
-                        }}
-                        disabled={index === 0}
-                        className={`p-1.5 rounded-lg ${index === 0 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
-                        title="Đưa lên trước"
+              <div>
+                <h5 className="font-bold text-[#b45309] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase">Phân hệ Cháo & Topping</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {(siteData.experienceMealConfig?.dishes || []).map((dish, index, array) => {
+                    if (dish.category !== 'Cháo' && dish.category !== 'Topping') return null;
+                    return (
+                      <div
+                        key={dish.id}
+                        className={`bg-white p-3.5 rounded-2xl border ${dish.isMain ? 'border-amber-500 shadow-amber-200' : 'border-[#e2d5c3]'} shadow-sm flex flex-col justify-between space-y-3 relative`}
                       >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newList = [...(siteData.experienceMealConfig?.dishes || [])];
-                          if (index < newList.length - 1) {
-                            [newList[index + 1], newList[index]] = [newList[index], newList[index + 1]];
-                            updateExperienceMealConfig({ dishes: newList });
-                          }
-                        }}
-                        disabled={index === array.length - 1}
-                        className={`p-1.5 rounded-lg ${index === array.length - 1 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
-                        title="Đưa xuống sau"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newList = [...(siteData.experienceMealConfig?.dishes || [])];
-                          newList[index] = { ...newList[index], isMain: !newList[index].isMain };
-                          updateExperienceMealConfig({ dishes: newList });
-                        }}
-                        className={`p-1.5 rounded-lg ${dish.isMain ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} cursor-pointer`}
-                        title="Đánh dấu nổi bật (Món Chính)"
-                      >
-                        <Star className={`w-3.5 h-3.5 ${dish.isMain ? 'fill-amber-500' : ''}`} />
-                      </button>
+                        <div className="space-y-2">
+                          <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
+                            <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                            <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+                              {dish.category}
+                            </span>
+                            {dish.isMain && (
+                              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
+                                <Star className="w-3 h-3 fill-white" /> Món Chính
+                              </span>
+                            )}
+                          </div>
 
-                      <div className="flex-1"></div>
+                          <div>
+                            <h5 className="font-bold text-xs text-[#274e23] line-clamp-1">{dish.name}</h5>
+                            {dish.flavor && <p className="text-[10px] text-[#7a6858] line-clamp-2 mt-0.5">{dish.flavor}</p>}
+                            <div className="text-[11px] font-bold text-amber-700 mt-1" style={{ color: dish.color || '#b45309' }}>
+                              Giá: {((dish.price ?? (dish as any).extraPrice) || 0).toLocaleString('vi-VN')}đ
+                            </div>
+                          </div>
+                        </div>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsAddingDish(false);
-                          setEditingDish(dish);
-                        }}
-                        className="px-2 py-1.5 bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] font-bold text-xs rounded-lg flex items-center justify-center gap-1 cursor-pointer"
-                        title="Sửa"
-                      >
-                        <Edit2 className="w-3 h-3" />
-                      </button>
+                        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#f0e6d8]">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              if (index > 0) {
+                                [newList[index - 1], newList[index]] = [newList[index], newList[index - 1]];
+                                updateExperienceMealConfig({ dishes: newList });
+                              }
+                            }}
+                            disabled={index === 0}
+                            className={`p-1.5 rounded-lg ${index === 0 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
+                            title="Đưa lên trước"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              if (index < newList.length - 1) {
+                                [newList[index + 1], newList[index]] = [newList[index], newList[index + 1]];
+                                updateExperienceMealConfig({ dishes: newList });
+                              }
+                            }}
+                            disabled={index === array.length - 1}
+                            className={`p-1.5 rounded-lg ${index === array.length - 1 ? 'text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'} cursor-pointer`}
+                            title="Đưa xuống sau"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
+                              newList[index] = { ...newList[index], isMain: !newList[index].isMain };
+                              updateExperienceMealConfig({ dishes: newList });
+                            }}
+                            className={`p-1.5 rounded-lg ${dish.isMain ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} cursor-pointer`}
+                            title="Đánh dấu nổi bật (Món Chính)"
+                          >
+                            <Star className={`w-3.5 h-3.5 ${dish.isMain ? 'fill-amber-500' : ''}`} />
+                          </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (window.confirm(`Xóa món "${dish.name}" khỏi thực đơn?`)) {
-                            const updatedDishes = (siteData.experienceMealConfig?.dishes || []).filter(
-                              (d) => d.id !== dish.id
-                            );
-                            updateExperienceMealConfig({ dishes: updatedDishes });
-                            showNotification('Đã xóa món ăn khỏi thực đơn!');
-                          }
-                        }}
-                        className="p-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg cursor-pointer"
-                        title="Xóa"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                          <div className="flex-1"></div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsAddingDish(false);
+                              setEditingDish(dish);
+                            }}
+                            className="px-2 py-1.5 bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] font-bold text-xs rounded-lg flex items-center justify-center gap-1 cursor-pointer"
+                            title="Sửa"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (window.confirm(`Xóa món "${dish.name}" khỏi thực đơn?`)) {
+                                const updatedDishes = (siteData.experienceMealConfig?.dishes || []).filter(
+                                  (d) => d.id !== dish.id
+                                );
+                                updateExperienceMealConfig({ dishes: updatedDishes });
+                                showNotification('Đã xóa món ăn khỏi thực đơn!');
+                              }
+                            }}
+                            className="p-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg cursor-pointer"
+                            title="Xóa"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

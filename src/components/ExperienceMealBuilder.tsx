@@ -135,30 +135,56 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
     setQuantities({});
   };
 
+  const renderDishName = (name: string, isMainDish: boolean, qty: number) => {
+    const textColor = (isMainDish && qty > 0) ? 'text-white' : 'text-[#274e23]';
+    if (name.includes('(Size M)')) {
+      const parts = name.split('(Size M)');
+      return (
+        <div className={`font-bold text-base leading-snug line-clamp-3 mb-2 ${textColor}`}>
+          {parts[0]}<span className="inline-block px-1.5 py-0.5 rounded-md text-[11px] font-black bg-emerald-100 text-emerald-700 ml-1 shadow-sm border border-emerald-200 tracking-wide">(Size M)</span>{parts[1]}
+        </div>
+      );
+    }
+    if (name.includes('(Size L)')) {
+      const parts = name.split('(Size L)');
+      return (
+        <div className={`font-bold text-base leading-snug line-clamp-3 mb-2 ${textColor}`}>
+          {parts[0]}<span className="inline-block px-1.5 py-0.5 rounded-md text-[11px] font-black bg-rose-100 text-rose-700 ml-1 shadow-sm border border-rose-200 tracking-wide">(Size L)</span>{parts[1]}
+        </div>
+      );
+    }
+    return (
+      <div className={`font-bold text-base leading-snug line-clamp-3 mb-2 ${textColor}`}>
+        {name}
+      </div>
+    );
+  };
+
   const renderMenuItem = (item: any, isMainDish?: boolean, isChao1Loai?: boolean) => {
     const qty = quantities[item.id] || 0;
     const itemColor = item.color || (isMainDish ? '#274e23' : '#b45309');
     
     return (
-      <div key={item.id} className={`flex flex-col h-full rounded-3xl border transition-all shadow-sm hover:shadow-md overflow-hidden ${
+      <div key={item.id} className={`flex flex-col h-full rounded-3xl border transition-all overflow-hidden ${
         isMainDish 
-          ? (qty > 0 ? 'bg-[#274e23] border-[#274e23] text-white' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]') 
-          : (qty > 0 ? 'bg-amber-50/50 border-amber-500' : 'bg-white border-[#e2d5c3] hover:border-amber-500/50')
+          ? (qty > 0 ? 'bg-[#274e23] border-[#274e23] text-white shadow-lg scale-[1.02]' : 'bg-[#fffbeb] border-amber-400 hover:border-amber-600 shadow-md hover:shadow-lg hover:-translate-y-1 relative') 
+          : (qty > 0 ? 'bg-amber-50/50 border-amber-500 shadow-sm' : 'bg-white border-[#e2d5c3] hover:border-amber-500/50 shadow-sm hover:shadow')
       }`}>
+        {isMainDish && qty === 0 && (
+          <div className="absolute inset-0 border-2 border-amber-400 rounded-3xl pointer-events-none opacity-50"></div>
+        )}
         {item.image && (
           <div className="w-full aspect-[4/3] bg-[#f0e6d8] relative overflow-hidden shrink-0 border-b border-black/5">
             <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
             {isMainDish && (
-              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
+              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-md border border-amber-400 uppercase tracking-wider">
                  Món Chính
               </span>
             )}
           </div>
         )}
-        <div className="p-4 flex flex-col flex-1">
-          <div className={`font-bold text-base leading-snug line-clamp-3 mb-2 ${isMainDish && qty > 0 ? 'text-white' : 'text-[#274e23]'}`}>
-            {item.name}
-          </div>
+        <div className="p-4 flex flex-col flex-1 relative z-10">
+          {renderDishName(item.name, !!isMainDish, qty)}
           
           <div className="mt-auto pt-3 flex items-center justify-between border-t border-black/5">
             <div className="text-lg sm:text-xl font-black" style={{ color: (isMainDish && qty > 0) ? '#fde047' : itemColor }}>
