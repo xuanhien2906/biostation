@@ -130,11 +130,11 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-[#274e23] font-serif group-hover:text-amber-700 transition-colors flex items-center justify-between">
-                    Kế Hoạch Kinh Doanh 7 Trụ Cột
+                    {heroConfig.card1Title || 'Kế Hoạch Kinh Doanh 7 Trụ Cột'}
                     <ArrowRight className="w-4 h-4 text-[#8c7868] group-hover:text-[#274e23] transition-colors" />
                   </h3>
                   <p className="text-xs text-[#6e5d4f] mt-0.5">
-                    Mô hình Trải nghiệm – Bán lẻ – Doanh thu & Chi phí dự kiến.
+                    {heroConfig.card1Desc || 'Mô hình Trải nghiệm – Bán lẻ – Doanh thu & Chi phí dự kiến.'}
                   </p>
                 </div>
               </div>
@@ -151,11 +151,11 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-[#274e23] font-serif group-hover:text-amber-700 transition-colors flex items-center justify-between">
-                    Gạo Hữu Cơ & Nông Sản BMQ
+                    {heroConfig.card2Title || 'Gạo Hữu Cơ & Nông Sản BMQ'}
                     <ArrowRight className="w-4 h-4 text-[#8c7868] group-hover:text-[#274e23] transition-colors" />
                   </h3>
                   <p className="text-xs text-[#6e5d4f] mt-0.5">
-                    Gạo ST25 Bách Mộc, Rau củ tươi hái trong ngày, Mật ong BiO.
+                    {heroConfig.card2Desc || 'Gạo ST25 Bách Mộc, Rau củ tươi hái trong ngày, Mật ong BiO.'}
                   </p>
                 </div>
               </div>

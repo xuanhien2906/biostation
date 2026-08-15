@@ -16,6 +16,8 @@ import {
   DishOption,
   BioCategoryOption,
   BusinessMissionConfig,
+  FooterConfig,
+  NavConfig,
 } from '../types';
 
 export const DEFAULT_BIO_CATEGORIES: BioCategoryOption[] = [
@@ -310,6 +312,8 @@ export const DEFAULT_STATIONS: StationItem[] = [
 export interface SiteDataState {
   brandConfig: BrandConfig;
   heroConfig: HeroConfig;
+  footerConfig: FooterConfig;
+  navConfig: NavConfig;
   themeConfig: ThemeConfig;
   paymentConfig: PaymentConfig;
   experienceMealConfig: ExperienceMealConfig;
@@ -329,6 +333,8 @@ interface SiteContextType {
   siteData: SiteDataState;
   updateBrandConfig: (config: Partial<BrandConfig>) => void;
   updateHeroConfig: (config: Partial<HeroConfig>) => void;
+  updateFooterConfig: (config: Partial<FooterConfig>) => void;
+  updateNavConfig: (config: Partial<NavConfig>) => void;
   updateThemeConfig: (config: Partial<ThemeConfig>) => void;
   updatePaymentConfig: (config: Partial<PaymentConfig>) => void;
   updateExperienceMealConfig: (config: Partial<ExperienceMealConfig>) => void;
@@ -357,6 +363,32 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [brandConfig, setBrandConfig] = useState<BrandConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_brand`);
     return saved ? JSON.parse(saved) : DEFAULT_BRAND_CONFIG;
+  });
+
+  const [footerConfig, setFooterConfig] = useState<FooterConfig>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_footer`);
+    return saved ? JSON.parse(saved) : ((SITE_CONFIG_DATA as any).footerConfig || {
+      sloganHighlight: 'Đúng: Nguồn gốc rõ ràng • Thật: Thông tin thật • Thuận tự nhiên',
+      column1Title: 'Khám Phá Hệ Sinh Thái',
+      column2Title: 'Văn Phòng & Điểm Trạm',
+      policy1Label: 'Chính Sách Bảo Mật',
+      policy2Label: 'Tiêu Chuẩn BMQ',
+      policy3Label: 'Điều Khoản Dịch Vụ',
+    });
+  });
+
+  const [navConfig, setNavConfig] = useState<NavConfig>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_nav`);
+    return saved ? JSON.parse(saved) : ((SITE_CONFIG_DATA as any).navConfig || {
+      tabs: [
+        { id: 'home', label: 'Tổng Quan' },
+        { id: 'model', label: 'Mô Hình 7 Trụ Cột' },
+        { id: 'shop', label: 'Cửa Hàng Hữu Cơ' },
+        { id: 'network', label: 'Trạm Giao Điểm' },
+        { id: 'recipes', label: 'Bếp Ăn Lành' },
+        { id: 'knowledge', label: 'Thư Viện Sống Xanh' },
+      ]
+    });
   });
 
   const [heroConfig, setHeroConfig] = useState<HeroConfig>(() => {
@@ -437,6 +469,14 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_brand`, JSON.stringify(brandConfig));
   }, [brandConfig]);
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_footer`, JSON.stringify(footerConfig));
+  }, [footerConfig]);
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_nav`, JSON.stringify(navConfig));
+  }, [navConfig]);
 
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_hero`, JSON.stringify(heroConfig));
@@ -543,13 +583,18 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Core function: sync current state to Supabase Cloud Storage + create timestamped backup snapshot
   const syncCloudConfig = useCallback(async (dataOverride?: Record<string, any>) => {
     try {
-      const dataToSave = {
+      const dataToSave: any = {
         brandConfig: dataOverride?.brandConfig || brandConfig,
         heroConfig: dataOverride?.heroConfig || heroConfig,
+        footerConfig: dataOverride?.footerConfig || footerConfig,
+        navConfig: dataOverride?.navConfig || navConfig,
         themeConfig: dataOverride?.themeConfig || themeConfig,
         paymentConfig: dataOverride?.paymentConfig || paymentConfig,
         experienceMealConfig: dataOverride?.experienceMealConfig || experienceMealConfig,
         businessMission: dataOverride?.businessMission || businessMission,
+        businessBlocks: dataOverride?.businessBlocks || businessBlocks,
+        roadmapStages: dataOverride?.roadmapStages || roadmapStages,
+        principles: dataOverride?.principles || principles,
         stations: dataOverride?.stations || stations,
         bioCategories: dataOverride?.bioCategories || bioCategories,
         products: dataOverride?.products || products,
@@ -758,6 +803,14 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setBrandConfig((prev) => ({ ...prev, ...config }));
   };
 
+  const updateFooterConfig = (config: Partial<FooterConfig>) => {
+    setFooterConfig((prev) => ({ ...prev, ...config }));
+  };
+
+  const updateNavConfig = (config: Partial<NavConfig>) => {
+    setNavConfig((prev) => ({ ...prev, ...config }));
+  };
+
   const updateHeroConfig = (config: Partial<HeroConfig>) => {
     setHeroConfig((prev) => ({ ...prev, ...config }));
   };
@@ -858,6 +911,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const data: SiteDataState = {
       brandConfig,
       heroConfig,
+      footerConfig,
+      navConfig,
       themeConfig,
       paymentConfig,
       experienceMealConfig,
@@ -879,6 +934,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const parsed = JSON.parse(jsonString);
       if (parsed.brandConfig) setBrandConfig(parsed.brandConfig);
+      if (parsed.footerConfig) setFooterConfig(parsed.footerConfig);
+      if (parsed.navConfig) setNavConfig(parsed.navConfig);
       if (parsed.heroConfig) setHeroConfig(parsed.heroConfig);
       if (parsed.themeConfig) setThemeConfig(parsed.themeConfig);
       if (parsed.paymentConfig) setPaymentConfig(parsed.paymentConfig);
@@ -904,6 +961,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const siteData: SiteDataState = {
     brandConfig,
     heroConfig,
+    footerConfig,
+    navConfig,
     themeConfig,
     paymentConfig,
     experienceMealConfig,
@@ -924,6 +983,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         siteData,
         updateBrandConfig,
+        updateFooterConfig,
+        updateNavConfig,
         updateHeroConfig,
         updateThemeConfig,
         updatePaymentConfig,

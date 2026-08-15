@@ -220,72 +220,22 @@ export const Header: React.FC<HeaderProps> = ({
         {/* BOTTOM ROW (DESKTOP): Horizontal Navigation Menu Bar */}
         <div className="hidden lg:block border-t border-[#e6dbc8]/80 py-2">
           <nav className="flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
-            <button
-              onClick={() => handleNavClick('home')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'home'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              {brandConfig.homepageLabel || 'Trang Chủ'}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('model')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                activeTab === 'model'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              <Store className="w-4 h-4 text-amber-500" />
-              {brandConfig.bioStationLabel || 'Mô Hình BiO'}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('shop')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'shop'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              {brandConfig.agriProductsLabel || 'Nông Sản BMQ'}
-            </button>
-
-            <button
-              onClick={() => handleNavClick('network')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'network'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              Mạng Lưới Station
-            </button>
-
-            <button
-              onClick={() => handleNavClick('recipes')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'recipes'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              Bữa Ăn Lành
-            </button>
-
-            <button
-              onClick={() => handleNavClick('knowledge')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'knowledge'
-                  ? 'bg-[#274e23] text-white font-semibold shadow-sm'
-                  : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
-              }`}
-            >
-              Thư Viện Sống Xanh
-            </button>
+            {siteData?.navConfig?.tabs?.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleNavClick(tab.id)}
+                className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
+                  tab.id === 'model' ? 'flex items-center gap-1.5 ' : ''
+                }${
+                  activeTab === tab.id
+                    ? 'bg-[#274e23] text-white font-semibold shadow-sm'
+                    : 'text-[#5c4d43] hover:text-[#274e23] hover:bg-[#f0e6d8]'
+                }`}
+              >
+                {tab.id === 'model' && <Store className="w-4 h-4 text-amber-500" />}
+                {tab.label}
+              </button>
+            ))}
 
             <button
               onClick={() => handleNavClick('advisor')}
@@ -305,55 +255,18 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Mobile Drawer */}
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-[#fbf8f3] border-b border-[#e6dbc8] px-4 pt-2 pb-6 space-y-2">
-          <button
-            onClick={() => handleNavClick('home')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold ${
-              activeTab === 'home' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            Trang Chủ Tổng Quan
-          </button>
-          <button
-            onClick={() => handleNavClick('model')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 ${
-              activeTab === 'model' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            <Store className="w-4 h-4 text-amber-500" />
-            Kế Hoạch Kinh Doanh BiO Station
-          </button>
-          <button
-            onClick={() => handleNavClick('shop')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold ${
-              activeTab === 'shop' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            Cửa Hàng Nông Sản BMQ
-          </button>
-          <button
-            onClick={() => handleNavClick('network')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold ${
-              activeTab === 'network' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            Mạng Lưới Station Toàn Quốc
-          </button>
-          <button
-            onClick={() => handleNavClick('recipes')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold ${
-              activeTab === 'recipes' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            Công Thức Món Ăn Lành
-          </button>
-          <button
-            onClick={() => handleNavClick('knowledge')}
-            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold ${
-              activeTab === 'knowledge' ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
-            }`}
-          >
-            Thư Viện Sống Xanh Bách Mộc
-          </button>
+          {siteData?.navConfig?.tabs?.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleNavClick(tab.id)}
+              className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 ${
+                activeTab === tab.id ? 'bg-[#274e23] text-white' : 'text-[#2d241e]'
+              }`}
+            >
+              {tab.id === 'model' && <Store className="w-4 h-4 text-amber-500" />}
+              {tab.label}
+            </button>
+          ))}
         </div>
       )}
     </header>

@@ -2651,6 +2651,8 @@ export const AdminDashboard: React.FC = () => {
     siteData,
     updateBrandConfig,
     updateHeroConfig,
+    updateFooterConfig,
+    updateNavConfig,
     updateThemeConfig,
     updatePaymentConfig,
     updateExperienceMealConfig,
@@ -3851,6 +3853,112 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
+            <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-4 mb-4">
+              <h3 className="text-lg font-bold font-serif text-[#274e23] border-b border-[#f0e6d8] pb-3 flex items-center gap-2">
+                <Store className="w-5 h-5 text-amber-600" />
+                Chỉnh Sửa Chân Trang (Footer)
+              </h3>
+              
+              <div>
+                <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
+                  Khẩu Hiệu Bôi Đậm (Slogan Highlight - Dùng dấu • để phân cách)
+                </label>
+                <input
+                  type="text"
+                  value={siteData.footerConfig?.sloganHighlight || 'Đúng: Nguồn gốc rõ ràng • Thật: Thông tin thật • Thuận tự nhiên'}
+                  onChange={(e) => updateFooterConfig({ sloganHighlight: e.target.value })}
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Tiêu đề Cột 1</label>
+                  <input
+                    type="text"
+                    value={siteData.footerConfig?.column1Title || 'Khám Phá Hệ Sinh Thái'}
+                    onChange={(e) => updateFooterConfig({ column1Title: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-[#fbf8f3]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Tiêu đề Cột 2</label>
+                  <input
+                    type="text"
+                    value={siteData.footerConfig?.column2Title || 'Văn Phòng & Điểm Trạm'}
+                    onChange={(e) => updateFooterConfig({ column2Title: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-[#fbf8f3]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mt-2">
+                <div>
+                  <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Chính Sách 1</label>
+                  <input
+                    type="text"
+                    value={siteData.footerConfig?.policy1Label || 'Chính Sách Bảo Mật'}
+                    onChange={(e) => updateFooterConfig({ policy1Label: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-[#fbf8f3]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Chính Sách 2</label>
+                  <input
+                    type="text"
+                    value={siteData.footerConfig?.policy2Label || 'Tiêu Chuẩn BMQ'}
+                    onChange={(e) => updateFooterConfig({ policy2Label: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-[#fbf8f3]"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">Chính Sách 3</label>
+                  <input
+                    type="text"
+                    value={siteData.footerConfig?.policy3Label || 'Điều Khoản Dịch Vụ'}
+                    onChange={(e) => updateFooterConfig({ policy3Label: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-[#fbf8f3]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-4 mb-4">
+              <h3 className="text-lg font-bold font-serif text-[#274e23] border-b border-[#f0e6d8] pb-3 flex items-center gap-2">
+                <Globe className="w-5 h-5 text-amber-600" />
+                Chỉnh Sửa Thanh Điều Hướng (Navigation)
+              </h3>
+              
+              <div className="space-y-3">
+                {siteData.navConfig?.tabs?.map((tab, idx) => (
+                  <div key={tab.id} className="flex items-center gap-3 bg-[#f8f5f0] p-3 rounded-xl border border-[#e2d5c3]">
+                    <div className="w-1/3">
+                      <label className="text-[11px] font-bold text-[#274e23] block mb-1">ID (Không đổi)</label>
+                      <input
+                        type="text"
+                        value={tab.id}
+                        disabled
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-gray-100 text-gray-500 cursor-not-allowed"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="text-[11px] font-bold text-[#274e23] block mb-1">Tên Hiển Thị Menu</label>
+                      <input
+                        type="text"
+                        value={tab.label}
+                        onChange={(e) => {
+                          const newTabs = [...(siteData.navConfig?.tabs || [])];
+                          newTabs[idx] = { ...newTabs[idx], label: e.target.value };
+                          updateNavConfig({ tabs: newTabs });
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
               <button
                 onClick={() => handleSaveAndRefresh('Đã lưu thông tin thương hiệu & footer!')}
                 className="w-full py-2.5 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
@@ -3915,7 +4023,42 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <div className="bg-[#f8f5f0] p-3 rounded-xl border border-[#e2d5c3]">
+                  <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 1: Tiêu đề</label>
+                  <input
+                    type="text"
+                    value={siteData.heroConfig.card1Title || 'Kế Hoạch Kinh Doanh 7 Trụ Cột'}
+                    onChange={(e) => updateHeroConfig({ card1Title: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white mb-2"
+                  />
+                  <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 1: Mô tả</label>
+                  <textarea
+                    rows={2}
+                    value={siteData.heroConfig.card1Desc || 'Mô hình Trải nghiệm – Bán lẻ – Doanh thu & Chi phí dự kiến.'}
+                    onChange={(e) => updateHeroConfig({ card1Desc: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                  />
+                </div>
+                <div className="bg-[#f8f5f0] p-3 rounded-xl border border-[#e2d5c3]">
+                  <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 2: Tiêu đề</label>
+                  <input
+                    type="text"
+                    value={siteData.heroConfig.card2Title || 'Gạo Hữu Cơ & Nông Sản BMQ'}
+                    onChange={(e) => updateHeroConfig({ card2Title: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white mb-2"
+                  />
+                  <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 2: Mô tả</label>
+                  <textarea
+                    rows={2}
+                    value={siteData.heroConfig.card2Desc || 'Gạo ST25 Bách Mộc, Rau củ tươi hái trong ngày, Mật ong BiO.'}
+                    onChange={(e) => updateHeroConfig({ card2Desc: e.target.value })}
+                    className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-4">
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
                     Nút bấm chính (Primary CTA)
@@ -5114,6 +5257,193 @@ export const AdminDashboard: React.FC = () => {
                           ))}
                         </div>
                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ROADMAP STAGES MANAGER */}
+            <div className="space-y-6 pt-6 border-t border-[#f0e6d8]">
+              <div className="flex items-center justify-between">
+                <h4 className="text-md font-bold font-serif text-[#274e23] flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-amber-600" />
+                  Lộ Trình Phát Triển (Roadmap)
+                </h4>
+                <button
+                  onClick={() => {
+                    const newList = [...(siteData.roadmapStages || [])];
+                    const nextStep = newList.length > 0 ? Math.max(...newList.map(s => s.step)) + 1 : 1;
+                    newList.push({
+                      step: nextStep,
+                      title: 'Giai đoạn mới',
+                      subTitle: 'Thời gian mới',
+                      description: 'Mô tả giai đoạn mới',
+                      icon: 'MapPin',
+                      status: 'planned'
+                    });
+                    setRoadmapStages(newList);
+                  }}
+                  className="px-3 py-1.5 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-[11px] rounded-lg shadow flex items-center gap-1 cursor-pointer transition-all"
+                >
+                  <Plus className="w-3 h-3" /> Thêm Giai Đoạn
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(siteData.roadmapStages || []).map((stage, idx) => (
+                  <div key={stage.step} className="bg-[#fbf8f3] p-4 rounded-xl border border-[#e2d5c3] space-y-3 relative">
+                    <button
+                      onClick={() => {
+                        const newList = (siteData.roadmapStages || []).filter(s => s.step !== stage.step);
+                        setRoadmapStages(newList);
+                      }}
+                      className="absolute top-3 right-3 p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="grid grid-cols-2 gap-3 pr-10">
+                      <div>
+                        <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Thời gian (subTitle)</label>
+                        <input
+                          type="text"
+                          value={stage.subTitle}
+                          onChange={(e) => {
+                            const newList = [...(siteData.roadmapStages || [])];
+                            newList[idx] = { ...newList[idx], subTitle: e.target.value };
+                            setRoadmapStages(newList);
+                          }}
+                          className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Trạng Thái</label>
+                        <select
+                          value={stage.status}
+                          onChange={(e) => {
+                            const newList = [...(siteData.roadmapStages || [])];
+                            newList[idx] = { ...newList[idx], status: e.target.value as any };
+                            setRoadmapStages(newList);
+                          }}
+                          className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                        >
+                          <option value="active">Đang diễn ra (Active)</option>
+                          <option value="expanding">Đang mở rộng (Expanding)</option>
+                          <option value="planned">Sắp tới (Planned)</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Tiêu Đề</label>
+                      <input
+                        type="text"
+                        value={stage.title}
+                        onChange={(e) => {
+                          const newList = [...(siteData.roadmapStages || [])];
+                          newList[idx] = { ...newList[idx], title: e.target.value };
+                          setRoadmapStages(newList);
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Mô Tả</label>
+                      <textarea
+                        rows={2}
+                        value={stage.description}
+                        onChange={(e) => {
+                          const newList = [...(siteData.roadmapStages || [])];
+                          newList[idx] = { ...newList[idx], description: e.target.value };
+                          setRoadmapStages(newList);
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PRINCIPLES MANAGER */}
+            <div className="space-y-6 pt-6 border-t border-[#f0e6d8]">
+              <div className="flex items-center justify-between">
+                <h4 className="text-md font-bold font-serif text-[#274e23] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-600" />
+                  Tiêu Chuẩn & Nguyên Tắc (Principles)
+                </h4>
+                <button
+                  onClick={() => {
+                    const newList = [...(siteData.principles || [])];
+                    const nextId = newList.length > 0 ? Math.max(...newList.map(p => p.id)) + 1 : 1;
+                    newList.push({
+                      id: nextId,
+                      title: 'Nguyên tắc mới',
+                      subTitle: 'Mô tả nguyên tắc',
+                      icon: 'ShieldCheck'
+                    });
+                    setPrinciples(newList);
+                  }}
+                  className="px-3 py-1.5 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-[11px] rounded-lg shadow flex items-center gap-1 cursor-pointer transition-all"
+                >
+                  <Plus className="w-3 h-3" /> Thêm Nguyên Tắc
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {(siteData.principles || []).map((principle, idx) => (
+                  <div key={principle.id} className="bg-[#fbf8f3] p-4 rounded-xl border border-[#e2d5c3] space-y-3 relative">
+                    <button
+                      onClick={() => {
+                        const newList = (siteData.principles || []).filter(p => p.id !== principle.id);
+                        setPrinciples(newList);
+                      }}
+                      className="absolute top-3 right-3 p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="pr-10">
+                      <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Icon</label>
+                      <select
+                        value={principle.icon}
+                        onChange={(e) => {
+                          const newList = [...(siteData.principles || [])];
+                          newList[idx] = { ...newList[idx], icon: e.target.value };
+                          setPrinciples(newList);
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                      >
+                        <option value="Leaf">Leaf</option>
+                        <option value="Heart">Heart</option>
+                        <option value="ShieldCheck">ShieldCheck</option>
+                        <option value="Users">Users</option>
+                        <option value="Star">Star</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Tiêu Đề</label>
+                      <input
+                        type="text"
+                        value={principle.title}
+                        onChange={(e) => {
+                          const newList = [...(siteData.principles || [])];
+                          newList[idx] = { ...newList[idx], title: e.target.value };
+                          setPrinciples(newList);
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-[#5c4d43] block mb-1">Mô Tả (subTitle)</label>
+                      <textarea
+                        rows={3}
+                        value={principle.subTitle}
+                        onChange={(e) => {
+                          const newList = [...(siteData.principles || [])];
+                          newList[idx] = { ...newList[idx], subTitle: e.target.value };
+                          setPrinciples(newList);
+                        }}
+                        className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf]"
+                      />
                     </div>
                   </div>
                 ))}

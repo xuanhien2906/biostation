@@ -98,6 +98,24 @@ export interface BrandConfig {
   mainSaleProductTitle?: string;   // e.g. "Sản Phẩm Bán Chính Trang Chủ"
 }
 
+export interface FooterConfig {
+  sloganHighlight?: string; // "Đúng: Nguồn gốc rõ ràng • Thật: Thông tin thật • Thuận tự nhiên"
+  column1Title?: string; // "Khám Phá Hệ Sinh Thái"
+  column2Title?: string; // "Văn Phòng & Điểm Trạm"
+  policy1Label?: string; // "Chính Sách Bảo Mật"
+  policy2Label?: string; // "Tiêu Chuẩn BMQ"
+  policy3Label?: string; // "Điều Khoản Dịch Vụ"
+}
+
+export interface NavTabConfig {
+  id: TabType;
+  label: string;
+}
+
+export interface NavConfig {
+  tabs: NavTabConfig[];
+}
+
 export interface HeroConfig {
   badgeTag: string;
   titlePart1: string;
@@ -112,6 +130,10 @@ export interface HeroConfig {
   coreValue3Desc: string;
   ctaPrimaryText: string;
   ctaSecondaryText: string;
+  card1Title?: string;
+  card1Desc?: string;
+  card2Title?: string;
+  card2Desc?: string;
 }
 
 export interface CoreValue {

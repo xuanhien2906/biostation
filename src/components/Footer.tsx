@@ -46,11 +46,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs text-amber-300 font-bold">
-              <span>Đúng: Nguồn gốc rõ ràng</span>
-              <span>•</span>
-              <span>Thật: Thông tin thật</span>
-              <span>•</span>
-              <span>Thuận tự nhiên</span>
+              {siteData?.footerConfig?.sloganHighlight?.split('•').map((part, idx, arr) => (
+                <React.Fragment key={idx}>
+                  <span>{part.trim()}</span>
+                  {idx < arr.length - 1 && <span>•</span>}
+                </React.Fragment>
+              ))}
             </div>
 
             {/* Social Links if present */}
@@ -84,71 +85,29 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           {/* Quick Navigation Links */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-bold font-serif text-sm text-white uppercase tracking-wider">
-              Khám Phá Hệ Sinh Thái
+              {siteData?.footerConfig?.column1Title || 'Khám Phá Hệ Sinh Thái'}
             </h4>
             <ul className="space-y-2 text-xs text-emerald-200">
-              <li>
-                <button
-                  onClick={() => {
-                    setActiveTab('model');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hover:text-amber-300 transition-colors cursor-pointer"
-                >
-                  Kế Hoạch Kinh Doanh BiO Station
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    setActiveTab('shop');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hover:text-amber-300 transition-colors cursor-pointer"
-                >
-                  Gạo Hữu Cơ & Nông Sản BMQ
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    setActiveTab('network');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hover:text-amber-300 transition-colors cursor-pointer"
-                >
-                  Mạng Lưới Station Toàn Quốc
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    setActiveTab('recipes');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hover:text-amber-300 transition-colors cursor-pointer"
-                >
-                  Bếp Ăn Lành & Công Thức
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => {
-                    setActiveTab('knowledge');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hover:text-amber-300 transition-colors cursor-pointer"
-                >
-                  Thư Viện Sống Xanh Bách Mộc
-                </button>
-              </li>
+              {siteData?.navConfig?.tabs?.map((tab) => (
+                <li key={tab.id}>
+                  <button
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-amber-300 transition-colors cursor-pointer"
+                  >
+                    {tab.label}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Details */}
           <div className="lg:col-span-4 space-y-3">
             <h4 className="font-bold font-serif text-sm text-white uppercase tracking-wider">
-              Văn Phòng & Điểm Trạm
+              {siteData?.footerConfig?.column2Title || 'Văn Phòng & Điểm Trạm'}
             </h4>
             <div className="space-y-2 text-xs text-emerald-200">
               <p className="flex items-start gap-2">
@@ -181,9 +140,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-300/80 gap-4">
           <p>{brandConfig.copyrightText || '© 2026 BiO Station – Hệ Sinh Thái Bách Mộc. Chạm để trở về.'}</p>
           <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end">
-            <span className="hover:text-white cursor-pointer transition-colors">Chính Sách Bảo Mật</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Tiêu Chuẩn BMQ</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Điều Khoản Dịch Vụ</span>
+            <span className="hover:text-white cursor-pointer transition-colors">{siteData?.footerConfig?.policy1Label || 'Chính Sách Bảo Mật'}</span>
+            <span className="hover:text-white cursor-pointer transition-colors">{siteData?.footerConfig?.policy2Label || 'Tiêu Chuẩn BMQ'}</span>
+            <span className="hover:text-white cursor-pointer transition-colors">{siteData?.footerConfig?.policy3Label || 'Điều Khoản Dịch Vụ'}</span>
             <span className="text-emerald-800 select-none">|</span>
             <button
               onClick={() => {
