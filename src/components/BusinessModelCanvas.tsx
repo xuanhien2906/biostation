@@ -98,7 +98,7 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
             <div className="space-y-4 text-center md:text-left flex-1">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#274e23]/10 text-[#274e23] text-xs font-bold uppercase tracking-wider">
                 <Sprout className="w-4 h-4 text-amber-600" />
-                Mô Hình Kinh Doanh Chuẩn Quốc Gia
+                {businessMission?.topBadgeText || 'Mô Hình Kinh Doanh Chuẩn Quốc Gia'}
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-serif text-[#274e23] tracking-tight">
@@ -245,10 +245,10 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
         <div className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black font-serif text-[#274e23]">
-              4 Giai Đoạn Phát Triển Hệ Thống
+              {businessMission?.roadmapSectionTitle || '4 Giai Đoạn Phát Triển Hệ Thống'}
             </h2>
             <p className="text-sm text-[#7a6858]">
-              Lộ trình mở rộng bền vững từ trung tâm điều phối tới toàn quốc
+              {businessMission?.roadmapSectionSubtitle || 'Lộ trình mở rộng bền vững từ trung tâm điều phối tới toàn quốc'}
             </p>
           </div>
 
@@ -304,10 +304,10 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
         <div className="bg-[#f2e8da] rounded-3xl p-8 border border-[#e2d5c3]">
           <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
             <h2 className="text-2xl font-black font-serif text-[#274e23]">
-              5 Nguyên Tắc Phát Triển Chuỗi
+              {businessMission?.principlesSectionTitle || '5 Nguyên Tắc Phát Triển Chuỗi'}
             </h2>
             <p className="text-xs text-[#7a6858]">
-              Đảm bảo tính đồng nhất chất lượng và niềm tin thương hiệu Bách Mộc trên toàn hệ thống
+              {businessMission?.principlesSectionSubtitle || 'Đảm bảo tính đồng nhất chất lượng và niềm tin thương hiệu Bách Mộc trên toàn hệ thống'}
             </p>
           </div>
 

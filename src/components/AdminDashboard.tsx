@@ -4901,6 +4901,66 @@ export const AdminDashboard: React.FC = () => {
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
                   />
                 </div>
+                
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Badge Đầu Trang (Màu Xanh Nhỏ)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.topBadgeText || ''}
+                    onChange={(e) => updateBusinessMission({ topBadgeText: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Tiêu Đề Lộ Trình (VD: 4 Giai Đoạn...)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.roadmapSectionTitle || ''}
+                    onChange={(e) => updateBusinessMission({ roadmapSectionTitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Mô Tả Lộ Trình
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={siteData.businessMission?.roadmapSectionSubtitle || ''}
+                    onChange={(e) => updateBusinessMission({ roadmapSectionSubtitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Tiêu Đề Nguyên Tắc (VD: 5 Nguyên Tắc...)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.principlesSectionTitle || ''}
+                    onChange={(e) => updateBusinessMission({ principlesSectionTitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Mô Tả Nguyên Tắc
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={siteData.businessMission?.principlesSectionSubtitle || ''}
+                    onChange={(e) => updateBusinessMission({ principlesSectionSubtitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
               </div>
             </div>
 

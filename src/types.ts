@@ -333,6 +333,11 @@ export interface BusinessMissionConfig {
   missionText: string;
   blocksSectionTitle: string;
   blocksSectionSubtitle: string;
+  topBadgeText?: string;
+  roadmapSectionTitle?: string;
+  roadmapSectionSubtitle?: string;
+  principlesSectionTitle?: string;
+  principlesSectionSubtitle?: string;
   partnershipImageUrl?: string;
   title?: string;
   subTitle?: string;
