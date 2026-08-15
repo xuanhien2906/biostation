@@ -83,7 +83,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
     const qty = Number(qtyRaw);
     const item = allItems.find(i => i.id === id);
     if (item) {
-      const lineTotal = (item.price || 0) * qty;
+      const lineTotal = ((item.price ?? (item as any).extraPrice) || 0) * qty;
       grandTotal += lineTotal;
       totalItemsCount += qty;
       const toppingStr = chaoToppings[id] ? ` (${chaoToppings[id]})` : '';
@@ -162,7 +162,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
           
           <div className="mt-auto pt-3 flex items-center justify-between border-t border-black/5">
             <div className="text-lg sm:text-xl font-black" style={{ color: (isMainDish && qty > 0) ? '#fde047' : itemColor }}>
-              {item.price.toLocaleString('vi-VN')}đ
+              {((item.price ?? item.extraPrice) || 0).toLocaleString('vi-VN')}đ
             </div>
             
             <div className={`flex items-center gap-3 p-1 rounded-xl border shrink-0 ${isMainDish && qty > 0 ? 'bg-white/10 border-white/20' : 'bg-[#f0e6d8] border-[#dcd0bf]'}`}>

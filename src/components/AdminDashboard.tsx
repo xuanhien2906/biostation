@@ -4659,7 +4659,7 @@ export const AdminDashboard: React.FC = () => {
                         <h5 className="font-bold text-xs text-[#274e23] line-clamp-1">{dish.name}</h5>
                         {dish.flavor && <p className="text-[10px] text-[#7a6858] line-clamp-2 mt-0.5">{dish.flavor}</p>}
                         <div className="text-[11px] font-bold text-amber-700 mt-1" style={{ color: dish.color || '#b45309' }}>
-                          Giá: {dish.price.toLocaleString('vi-VN')}đ
+                          Giá: {((dish.price ?? (dish as any).extraPrice) || 0).toLocaleString('vi-VN')}đ
                         </div>
                       </div>
                     </div>
