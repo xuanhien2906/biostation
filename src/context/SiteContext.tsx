@@ -653,6 +653,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.warn('Could not fetch cloud site_config from Supabase:', e);
         }
 
+        /* OBSOLETE: We now rely purely on site_config.json for products
         const { data: prodData, error: prodErr } = await supabase.from('products').select('*');
         if (!prodErr && prodData && prodData.length > 0) {
           setProducts((prev) => {
@@ -662,6 +663,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
           });
         }
+        */
 
         const { data: artData, error: artErr } = await supabase.from('articles').select('*');
         if (!artErr && artData && artData.length > 0) {
