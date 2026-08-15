@@ -148,6 +148,11 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
         {item.image && (
           <div className="w-full aspect-[4/3] bg-[#f0e6d8] relative overflow-hidden shrink-0 border-b border-black/5">
             <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+            {isMainDish && (
+              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
+                 Món Chính
+              </span>
+            )}
           </div>
         )}
         <div className="p-4 flex flex-col flex-1">
