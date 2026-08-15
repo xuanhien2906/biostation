@@ -350,7 +350,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V9';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V10';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
