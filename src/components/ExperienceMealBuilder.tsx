@@ -25,45 +25,7 @@ interface OrderItem {
   image?: string;
 }
 
-const MENU_COM: OrderItem[] = [
-  { id: 'com_huu_co', name: '16. Cơm hữu cơ Bách Mộc (Gồm: Cơm, Canh, Rau luộc, Món mặn)', price: 59000, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80' },
-  { id: 'com_lut_huu_co', name: '17. Cơm lứt hữu cơ Bách Mộc (Gồm: Cơm lứt, Canh, Rau, Món mặn)', price: 75000, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80' },
-  { id: 'do_an_them', name: '18. Đồ ăn thêm', price: 30000 },
-  { id: 'com_them_huu_co', name: '19. Cơm thêm - Hữu cơ', price: 10000 },
-  { id: 'com_them_lut', name: '20. Cơm thêm - Lứt', price: 15000 },
-  { id: 'mang_cam_gao', name: '21. Màng cám gạo dinh dưỡng Bách Mộc', price: 10000 },
-];
-
-const MENU_NUOC: OrderItem[] = [
-  { id: 'tra_chanh', name: '22. Trà chanh', price: 15000 },
-  { id: 'tra_tac', name: '23. Trà tắc', price: 15000 },
-  { id: 'tra_bach_moc', name: '24. Trà Bách Mộc', price: 5000 },
-  { id: 'khan_lanh', name: '25. Khăn lạnh', price: 3000 },
-];
-
-const MENU_CHAO_CHINH = [
-  { id: 'chao_1_loai_M', name: '1. Cháo + 1 loại (Size M)', price: 39000 },
-  { id: 'chao_1_loai_L', name: '1. Cháo + 1 loại (Size L)', price: 59000 },
-  { id: 'chao_ca_hoi_M', name: '2. Cháo Cá hồi (Size M)', price: 65000 },
-  { id: 'chao_ca_hoi_L', name: '2. Cháo Cá hồi (Size L)', price: 85000 },
-  { id: 'chao_suon_non_M', name: '3. Cháo Sườn non (Size M)', price: 50000 },
-  { id: 'chao_suon_non_L', name: '3. Cháo Sườn non (Size L)', price: 65000 },
-  { id: 'chao_dac_biet_L', name: '4. Cháo đặc biệt (Size L)', price: 89000 },
-];
-
-const MENU_CHAO_TOPPING: OrderItem[] = [
-  { id: 'top_chao_lua_me', name: '5. Cháo Lúa Mẹ', price: 9000 },
-  { id: 'top_chao_them', name: '6. Cháo thêm', price: 5000 },
-  { id: 'top_thit_heo_bam', name: '7. Thịt heo băm', price: 20000 },
-  { id: 'top_rau_cu', name: '8. Rau củ', price: 20000 },
-  { id: 'top_thit_ga', name: '9. Thịt gà', price: 20000 },
-  { id: 'top_nam', name: '10. Nấm', price: 20000 },
-  { id: 'top_ruoc_ca', name: '11. Ruốc cá', price: 20000 },
-  { id: 'top_thit_bo_bam', name: '12. Thịt bò băm', price: 20000 },
-  { id: 'top_tom', name: '13. Tôm', price: 20000 },
-  { id: 'top_tim_cat', name: '14. Tim - Cật', price: 20000 },
-  { id: 'top_trung', name: '15. Trứng', price: 10000 },
-];
+// Menu items will be fetched dynamically from SiteContext
 
 interface ExperienceMealBuilderProps {
   onAddToCart: (product: Product) => void;
@@ -105,15 +67,23 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
   const [added, setAdded] = useState<boolean>(false);
 
   // Calculate totals
-  const allItems = [...MENU_COM, ...MENU_NUOC, ...MENU_CHAO_CHINH, ...MENU_CHAO_TOPPING];
+  const { siteData } = useSite();
+  const allItems = siteData.experienceMealConfig?.dishes || [];
+  
+  const MENU_COM = allItems.filter(d => d.category === 'Cơm');
+  const MENU_NUOC = allItems.filter(d => d.category === 'Nước');
+  const MENU_CHAO_CHINH = allItems.filter(d => d.category === 'Cháo');
+  const MENU_CHAO_TOPPING = allItems.filter(d => d.category === 'Topping');
+
   let grandTotal = 0;
   let totalItemsCount = 0;
   const selectedItemsDetails: { name: string; qty: number; total: number }[] = [];
 
-  Object.entries(quantities).forEach(([id, qty]) => {
+  Object.entries(quantities).forEach(([id, qtyRaw]) => {
+    const qty = Number(qtyRaw);
     const item = allItems.find(i => i.id === id);
     if (item) {
-      const lineTotal = item.price * qty;
+      const lineTotal = (item.price || 0) * qty;
       grandTotal += lineTotal;
       totalItemsCount += qty;
       const toppingStr = chaoToppings[id] ? ` (${chaoToppings[id]})` : '';
@@ -165,8 +135,10 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
     setQuantities({});
   };
 
-  const renderMenuItem = (item: OrderItem, isMainDish?: boolean, isChao1Loai?: boolean) => {
+  const renderMenuItem = (item: any, isMainDish?: boolean, isChao1Loai?: boolean) => {
     const qty = quantities[item.id] || 0;
+    const itemColor = item.color || (isMainDish ? '#274e23' : '#b45309');
+    
     return (
       <div key={item.id} className={`flex flex-col h-full rounded-3xl border transition-all shadow-sm hover:shadow-md overflow-hidden ${
         isMainDish 
@@ -184,7 +156,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
           </div>
           
           <div className="mt-auto pt-3 flex items-center justify-between border-t border-black/5">
-            <div className={`text-lg sm:text-xl font-black ${isMainDish && qty > 0 ? 'text-amber-300' : 'text-orange-600'}`}>
+            <div className="text-lg sm:text-xl font-black" style={{ color: (isMainDish && qty > 0) ? '#fde047' : itemColor }}>
               {item.price.toLocaleString('vi-VN')}đ
             </div>
             
@@ -270,13 +242,13 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                   <Utensils className="w-6 h-6 text-amber-500" /> Cơm (Rice Meals)
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {MENU_COM.map((item, index) => renderMenuItem(item, index < 2))}
+                  {MENU_COM.map(item => renderMenuItem(item, item.isMain))}
                 </div>
               </div>
               <div>
                 <h4 className="font-bold text-xl text-[#274e23] font-serif mb-4 border-b border-[#e2d5c3] pb-2">Nước (Drinks)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {MENU_NUOC.map(item => renderMenuItem(item))}
+                  {MENU_NUOC.map(item => renderMenuItem(item, item.isMain))}
                 </div>
               </div>
             </div>
@@ -289,7 +261,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                   <Utensils className="w-6 h-6 text-amber-500" /> Loại Cháo (Porridge)
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {MENU_CHAO_CHINH.map(item => renderMenuItem(item, true, item.id.includes('chao_1_loai')))}
+                  {MENU_CHAO_CHINH.map(item => renderMenuItem(item, item.isMain, item.id.includes('chao_1_loai')))}
                 </div>
                 <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
                   <strong className="block mb-1">Lưu ý cho món Cháo + 1 loại:</strong>
@@ -302,7 +274,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                   Giá tách lẻ gọi thêm (Toppings)
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {MENU_CHAO_TOPPING.map(item => renderMenuItem(item))}
+                  {MENU_CHAO_TOPPING.map(item => renderMenuItem(item, item.isMain))}
                 </div>
               </div>
             </div>

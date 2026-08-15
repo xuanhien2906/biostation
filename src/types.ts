@@ -13,11 +13,13 @@ export type TabType =
 export interface DishOption {
   id: string;
   name: string;
-  category: 'Món Mặn' | 'Món Xào' | 'Món Canh' | 'Món Phụ & Tráng Miệng';
-  origin: string;
-  flavor: string;
-  extraPrice: number;
-  image: string;
+  category: 'Cơm' | 'Nước' | 'Cháo' | 'Topping' | 'Món Mặn' | 'Món Xào' | 'Món Canh' | 'Món Phụ & Tráng Miệng';
+  origin?: string;
+  flavor?: string;
+  price: number;
+  image?: string;
+  color?: string;
+  isMain?: boolean;
 }
 
 export interface ExperienceMealConfig {

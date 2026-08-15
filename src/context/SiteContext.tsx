@@ -64,7 +64,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Mặn',
       origin: 'Thịt heo sinh thái Củ Chi nuôi thảo mộc, không chất tạo nạc',
       flavor: 'Đậm đà, béo ngậy vừa phải, thơm nức mùi hành ớt tiêu đen',
-      extraPrice: 20000,
+      price: 20000,
       image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -73,7 +73,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Mặn',
       origin: 'Cá lóc đồng tự nhiên miền Tây, riềng củ tươi Lâm Đồng',
       flavor: 'Thịt cá săn chắc, thấm vị mặn ngọt cay nồng chuẩn vị Nam Bộ',
-      extraPrice: 20000,
+      price: 20000,
       image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -82,7 +82,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Mặn',
       origin: 'Gà ta thả vườn đồi Lâm Đồng chạy bộ, sả tươi Củ Chi',
       flavor: 'Thịt gà dai ngọt, thơm nồng mùi sả tươi và ớt hiểm',
-      extraPrice: 20000,
+      price: 20000,
       image: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -91,7 +91,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Xào',
       origin: 'Rau muống hữu cơ Củ Chi thu hoạch trong ngày',
       flavor: 'Giòn ngọt tự nhiên, thơm lừng tỏi tép đập dập',
-      extraPrice: 15000,
+      price: 15000,
       image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -100,7 +100,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Xào',
       origin: 'Cải thìa hữu cơ Lâm Đồng & Nấm đùi gà tươi',
       flavor: 'Thanh mát, giòn ngọt, giàu chất xơ & khoáng chất',
-      extraPrice: 15000,
+      price: 15000,
       image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -109,7 +109,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Canh',
       origin: 'Cá lóc đồng, bạc hà, đậu okras, cà chua & me tươi Củ Chi',
       flavor: 'Chua thanh dịu mát, ngọt nước cá tự nhiên, rất đưa cơm',
-      extraPrice: 20000,
+      price: 20000,
       image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -118,7 +118,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Canh',
       origin: 'Sườn heo sinh thái & Củ khoai tây, cà rốt, su su hữu cơ',
       flavor: 'Nước canh ngọt lịm đậm đà từ xương hầm và củ quả tươi',
-      extraPrice: 20000,
+      price: 20000,
       image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80',
     },
     {
@@ -127,7 +127,7 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
       category: 'Món Phụ & Tráng Miệng',
       origin: 'Trứng gà thảo mộc đốm tía tô & hành lá hữu cơ',
       flavor: 'Béo ngậy, vàng ươm, thơm lừng bơ thực vật & hành lá',
-      extraPrice: 15000,
+      price: 15000,
       image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=400&q=80',
     },
   ],
