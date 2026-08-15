@@ -107,10 +107,6 @@ export const FloatingActions: React.FC = () => {
         
         {/* 3D Motion Sphere Button - Map */}
         <div className="relative animate-float-3d">
-          {/* Radar Waves */}
-          <div className="absolute -inset-2 bg-amber-400/40 rounded-full animate-ripple-1 pointer-events-none" />
-          <div className="absolute -inset-2 bg-orange-400/30 rounded-full animate-ripple-2 pointer-events-none" />
-
           {/* 3D Sphere Button */}
           <button
             onClick={() => setShowMapOptions(!showMapOptions)}
@@ -129,7 +125,7 @@ export const FloatingActions: React.FC = () => {
             </div>
 
             {/* Mini active badge */}
-            <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full shadow-sm animate-pulse" />
+            <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-red-500 border-2 border-white rounded-full shadow-sm" />
           </button>
         </div>
       </div>
@@ -144,10 +140,6 @@ export const FloatingActions: React.FC = () => {
 
         {/* 3D Motion Sphere Button - Hotline */}
         <div className="relative animate-float-3d-delay">
-          {/* Radar Waves */}
-          <div className="absolute -inset-2 bg-emerald-500/40 rounded-full animate-ripple-1 pointer-events-none" />
-          <div className="absolute -inset-2 bg-[#274e23]/35 rounded-full animate-ripple-2 pointer-events-none" />
-
           {/* 3D Sphere Button */}
           <a
             href={`tel:${hotline.replace(/\D/g, '')}`}
@@ -165,8 +157,7 @@ export const FloatingActions: React.FC = () => {
               <Phone className="w-6 h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] animate-phone-ring text-emerald-300" />
             </div>
 
-            {/* Mini pulsing live indicator */}
-            <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full shadow-sm animate-ping" />
+            {/* Mini active badge */}
             <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full shadow-sm" />
           </a>
         </div>
