@@ -1,4 +1,4 @@
-{
+﻿{
   "brandConfig": {
     "logoType": "image",
     "logoImageUrl": "/custom-logo.png",
@@ -73,13 +73,13 @@
     "supportPhone": "0813 13 13 85"
   },
   "experienceMealConfig": {
-    "pricePerPerson": 50000,
-    "depositPercent": 50,
-    "includedDishesPerPerson": 2,
+    "pricePerPerson": 0,
+    "depositPercent": 0,
+    "includedDishesPerPerson": 0,
     "bannerTitle": "Menu cơm cháo hữu cơ tại Bio Station",
     "bannerSubtitle": "",
     "bannerDescription": "",
-    "depositNoticeText": "Để đảm bảo nguyên liệu hữu cơ (thịt sinh thái Củ Chi, rau hái sáng, cá lóc đồng) luôn được chuẩn bị tươi mới tuyệt đối và bếp không bị lãng phí food waste, BiO Station yêu cầu thanh toán cọc 50% sau khi quý khách xác nhận đơn.",
+    "depositNoticeText": "",
     "dishes": [
       {
         "id": "dish-thit-kho-to",
@@ -407,192 +407,6 @@
     }
   ],
   "products": [
-    {
-      "id": "prod-bua-an-1-nguoi",
-      "name": "Gói Bữa Ăn Trải Nghiệm 1 Người",
-      "subtitle": "Cơm Nhà Bách Mộc 100% Nguyên Liệu Sạch",
-      "category": "Bữa Ăn Trải Nghiệm",
-      "price": 50000,
-      "rating": 4.98,
-      "reviewCount": 1580,
-      "badge": "HOT TRẢI NGHIỆM",
-      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80",
-      "description": "Thưởng thức bữa cơm nhà đúng nghĩa được nấu trực tiếp từ Gạo ST25 Bách Mộc, rau củ hữu cơ hái mỗi sáng và thịt cá sinh thái tươi ngon bán tại cửa hàng. Trải nghiệm vị ngọt thật của nông sản nguyên bản trước khi quyết định mua nguyên liệu về tự nấu!",
-      "keyBenefits": [
-        "Được nấu 100% từ Gạo ST25 Bách Mộc & Nông sản hữu cơ chuẩn BMQ",
-        "Phần ăn dinh dưỡng trọn vẹn với giá cực tốt",
-        "Tùy chọn combo từ 2, 3, 4 đến 5 món theo sở thích",
-        "Nguồn gốc nguyên liệu minh bạch, chuẩn vị cơm nhà truyền thống",
-        "Thưởng thức tại không gian xanh mát BiO Station hoặc mang đi"
-      ],
-      "origin": "Chế biến tươi nóng tại Bếp Trải Nghiệm BiO Station",
-      "certification": "Đạt Chuẩn An Toàn Thực Phẩm BMQ Qualified Dining",
-      "bmqNote": "Khách hàng ăn trải nghiệm được tặng ngay voucher giảm 10% khi mua gạo ST25 hoặc rau củ tươi mang về.",
-      "servingsCount": 1,
-      "dishOptions": [
-        2,
-        3,
-        4,
-        5
-      ],
-      "dishSampleList": [
-        "Cơm trắng dẻo thơm Gạo ST25 Bách Mộc (Ăn thoải mái)",
-        "Món mặn: Thịt kho tộ / Cá lóc đồng / Gà xào sả ớt",
-        "Món xào: Rau muống / Cải thìa xào tỏi hữu cơ",
-        "Canh thanh mát: Canh rau tập tàng / Canh bí đỏ thịt bằm",
-        "Món phụ: Trứng chiên thảo mộc / Cà pháo ngâm chua ngọt",
-        "Tráng miệng & Nước uống: Trà thảo mộc Bát Bảo thanh lọc"
-      ],
-      "flavorProfile": "Hương vị cơm nhà 3 miền mộc mạc, đậm đà, không phụ gia công nghiệp, giữ vị ngọt tự nhiên của thực phẩm."
-    },
-    {
-      "id": "prod-bua-an-2-nguoi",
-      "name": "Gói Bữa Ăn Trải Nghiệm 2 Người (Đôi Lứa)",
-      "subtitle": "Thực Đơn Cơm Ấm Lòng Cho 2 Người (100.000đ / Combo)",
-      "category": "Bữa Ăn Trải Nghiệm",
-      "price": 100000,
-      "originalPrice": 120000,
-      "rating": 4.99,
-      "reviewCount": 2100,
-      "badge": "KẾT NỐI ĐÔI LỨA",
-      "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80",
-      "description": "Bữa ăn ấm cúng cho 2 người với lượng thức ăn đầy đặn gấp đôi. Thực đơn linh hoạt chọn từ 2 đến 5 món mặn - xào - canh - tráng miệng. Được chế biến nguyên bản từ gạo thơm ST25 và rau thịt sạch tại BiO Station.",
-      "keyBenefits": [
-        "Mức giá 100.000đ trọn gói cho 2 người",
-        "Đầy đặn khẩu phần, tăng lượng thịt cá và rau củ tươi",
-        "Được tùy chọn linh hoạt 2 món, 3 món, 4 món hoặc 5 món",
-        "Sử dụng 100% dầu ăn hướng dương & gia vị tự nhiên không MSG",
-        "Tặng kèm 2 ly trà thảo mộc Bách Mộc ướp lạnh"
-      ],
-      "origin": "Chế biến tươi nóng tại Bếp Trải Nghiệm BiO Station",
-      "certification": "Đạt Chuẩn An Toàn Thực Phẩm BMQ Qualified Dining",
-      "bmqNote": "Rất phù hợp cho nhân viên văn phòng đi ăn trưa đôi hoặc vợ chồng trải nghiệm ẩm thực thuận tự nhiên.",
-      "servingsCount": 2,
-      "dishOptions": [
-        2,
-        3,
-        4,
-        5
-      ],
-      "dishSampleList": [
-        "2 Phần cơm Gạo ST25 Bách Mộc (Nóng hổi, dẻo thơm)",
-        "Món mặn chính: Thịt ba chỉ kho tiêu / Cá kho riềng",
-        "Món mặn phụ: Trứng gà thảo mộc đốm hành / Chả cua",
-        "Món rau: Củ quả luộc chấm kho quẹt Bách Mộc / Rau xào tỏi",
-        "Món canh: Canh chua cá lóc / Canh sườn nấu củ quả",
-        "2 Ly Trà thảo mộc thanh lọc mát lành"
-      ],
-      "flavorProfile": "Vị mặn ngọt thanh nhẹ vừa vặn, kết hợp hài hòa dinh dưỡng, đượm không khí cơm ấm nhà thân thuộc."
-    },
-    {
-      "id": "prod-bua-an-3-nguoi",
-      "name": "Gói Bữa Ăn Trải Nghiệm 3 Người",
-      "subtitle": "Thực Đơn Cơm Mâm Xanh Cho 3 Người (150.000đ / Combo)",
-      "category": "Bữa Ăn Trải Nghiệm",
-      "price": 150000,
-      "rating": 4.92,
-      "reviewCount": 940,
-      "badge": "THIẾT THỰC",
-      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80",
-      "description": "Mâm cơm gia đình nhỏ hoặc nhóm bạn 3 người. Món ăn nấu từ nguồn thịt heo sinh thái, gà chạy bộ Lâm Đồng và rau củ xanh tươi thu hoạch trong ngày.",
-      "keyBenefits": [
-        "Giá 150.000đ trọn mâm cơm cho 3 người",
-        "Đa dạng 3-5 món chính đong đặn, dinh dưỡng cân bằng",
-        "Trải nghiệm chất lượng nguyên liệu hữu cơ Bách Mộc thực tế",
-        "Bao gồm nước uống thảo mộc và món phụ đi kèm"
-      ],
-      "origin": "Bếp Trải Nghiệm BiO Station",
-      "certification": "BMQ Qualified Dining",
-      "bmqNote": "Mâm cơm truyền thống giúp các thành viên gắn kết và cảm nhận giá trị của nông sản sạch.",
-      "servingsCount": 3,
-      "dishOptions": [
-        3,
-        4,
-        5
-      ],
-      "dishSampleList": [
-        "3 Tô cơm Gạo ST25 Bách Mộc dẻo ngọt",
-        "Món mặn 1: Gà ta thả vườn xào nấm",
-        "Món mặn 2: Thịt heo sinh thái kho tộ",
-        "Món xào: Bông cải xào bò tươi",
-        "Món canh: Canh khổ qua dồn thịt / Canh cua rau đéc",
-        "Trà thảo mộc Bát Bảo & Trái cây hữu cơ tráng miệng"
-      ],
-      "flavorProfile": "Nông sản đậm đà tự nhiên, canh ngọt nước xương hầm, hương vị thanh thuần không ngấy."
-    },
-    {
-      "id": "prod-bua-an-4-nguoi",
-      "name": "Gói Bữa Ăn Trải Nghiệm 4 Người",
-      "subtitle": "Thực Đơn Mâm Cơm Đu Bủ Cho 4 Người (200.000đ / Combo)",
-      "category": "Bữa Ăn Trải Nghiệm",
-      "price": 200000,
-      "rating": 4.96,
-      "reviewCount": 1320,
-      "badge": "TIẾT KIỆM",
-      "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
-      "description": "Mâm cơm tròn vị 4 người chuẩn phong cách cơm nhà Bách Mộc. Đầy đủ các món mặn, kho, xào, canh và tráng miệng nấu hoàn toàn bằng nguyên liệu hữu cơ có sẵn trong cửa hàng.",
-      "keyBenefits": [
-        "Giá 200.000đ trọn mâm 4 người",
-        "Khẩu phần đong đặn, thoải mái cho cả gia đình 4 người",
-        "Cam kết sử dụng gạo ST25 chuẩn BMQ & thực phẩm tươi mới",
-        "Miễn phí trà thảo mộc & tráng miệng trái cây theo mùa"
-      ],
-      "origin": "Bếp Trải Nghiệm BiO Station",
-      "certification": "BMQ Qualified Dining",
-      "bmqNote": "Gia đình có thể ghé thưởng thức bữa trưa hoặc bữa tối tại Station trước khi mua sắm thực phẩm cho cả tuần.",
-      "servingsCount": 4,
-      "dishOptions": [
-        3,
-        4,
-        5
-      ],
-      "dishSampleList": [
-        "Cơm Gạo ST25 Bách Mộc phục vụ tận mâm",
-        "Sườn heo sinh thái ram mặn ngọt",
-        "Cá lóc đồng kho riềng ớt",
-        "Rau luộc ngũ sắc chấm kho quẹt Bách Mộc",
-        "Canh sườn hầm củ quả Lâm Đồng",
-        "Nước mát thảo mộc & Dưa hấu hữu cơ"
-      ],
-      "flavorProfile": "Hương vị gia đình ấm áp, vừa miệng mọi lứa tuổi từ người lớn đến trẻ em."
-    },
-    {
-      "id": "prod-bua-an-gia-dinh",
-      "name": "Gói Bữa Ăn Trải Nghiệm Gia Đình Sum Vầy (5 Người)",
-      "subtitle": "Mâm Cơm Đại Gia Đình Bách Mộc (250.000đ / Combo)",
-      "category": "Bữa Ăn Trải Nghiệm",
-      "price": 250000,
-      "originalPrice": 280000,
-      "rating": 5,
-      "reviewCount": 1890,
-      "badge": "FAMILY FAVORITE",
-      "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
-      "description": "Trải nghiệm trọn vẹn ẩm thực sinh thái Bách Mộc với mâm cơm đại gia đình 5 người. Đầy đủ 5 món chính chế biến cầu kỳ, thể hiện trọn vẹn sự tươi ngon tuyệt vời của nông sản BMQ.",
-      "keyBenefits": [
-        "Trọn gói 250.000đ cho 5 người",
-        "Trải nghiệm đa dạng nguyên liệu cao cấp nhất tại cửa hàng",
-        "Tặng kèm 1 túi quà nông sản dùng thử cho gia đình mang về",
-        "Phục vụ chu đáo tại bàn không gian cây xanh thư thái"
-      ],
-      "origin": "Bếp Trải Nghiệm BiO Station",
-      "certification": "BMQ Qualified Dining Standard",
-      "bmqNote": "Mâm cơm giúp mọi thế hệ trong gia đình gắn kết và tìm lại vị ngon mộc mạc của bữa cơm quê nhà.",
-      "servingsCount": 5,
-      "dishOptions": [
-        4,
-        5
-      ],
-      "dishSampleList": [
-        "Gạo ST25 Bách Mộc lúa tôm (Thố cơm nóng)",
-        "Gà ta thả vườn Lâm Đồng hấp lá chanh",
-        "Thịt heo sinh thái kho trứng thảo mộc",
-        "Thiên lý xào bò / Nấm tươi xào dầu hướng dương",
-        "Rau sống, rau thơm & Cà pháo ngâm mắm",
-        "Canh riêu cua đồng rau đéc / Canh nghêu nấu chua",
-        "Trà thảo mộc & Chè đậu xanh nha đam"
-      ],
-      "flavorProfile": "Đong đầy hương vị quê hương, tinh tế, bổ dưỡng và an lành tuyệt đối."
-    },
     {
       "id": "prod-gao-bach-moc",
       "name": "Gạo Hữu Cơ Bách Mộc ST25",

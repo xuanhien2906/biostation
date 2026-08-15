@@ -776,7 +776,7 @@ const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = 
         </div>
 
         <div className="p-3.5 rounded-2xl bg-purple-50 border border-purple-200">
-          <span className="text-[10px] font-bold text-purple-900 uppercase block">Mâm Cơm Trải Nghiệm</span>
+          <span className="text-[10px] font-bold text-purple-900 uppercase block">Menu Cơm Cháo</span>
           <span className="text-base font-black text-purple-950 block mt-0.5">{countMeal} Mâm</span>
           <span className="text-[9px] text-purple-800 mt-1 block">{countDineIn} tại chỗ | {countTakeaway} mang về</span>
         </div>
@@ -1195,7 +1195,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
   { id: 'brand', label: 'Thương Hiệu & Footer', icon: '🏷️' },
   { id: 'theme', label: 'Giao Diện & Font Chữ', icon: '🎨' },
   { id: 'payment', label: 'Thanh Toán & QR Code', icon: '💳' },
-  { id: 'experience_meal', label: 'Mâm Cơm Trải Nghiệm', icon: '🍴' },
+  { id: 'experience_meal', label: 'Menu Cơm Cháo', icon: '🍴' },
   { id: 'business', label: 'Mô Hình 7 Trụ Cột', icon: '🏫' },
   { id: 'orders', label: 'Đơn Hàng & Mâm Cơm', icon: '📦' },
   { id: 'products', label: 'Sản Phẩm Nông Sản', icon: '🌾' },
@@ -3237,7 +3237,7 @@ export const AdminDashboard: React.FC = () => {
                 activeTab === 'experience_meal' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
               }`}
             >
-              <Utensils className="w-4 h-4 text-amber-400" /> Mâm Cơm Trải Nghiệm
+              <Utensils className="w-4 h-4 text-amber-400" /> Menu Cơm Cháo
             </button>
           )}
 

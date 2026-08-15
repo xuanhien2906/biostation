@@ -48,14 +48,13 @@ export const DEFAULT_BIO_CATEGORIES: BioCategoryOption[] = [
 ];
 
 export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
-  pricePerPerson: 50000,
-  depositPercent: 50,
-  includedDishesPerPerson: 2,
+  pricePerPerson: 0,
+  depositPercent: 0,
+  includedDishesPerPerson: 0,
   bannerTitle: 'Menu cơm cháo hữu cơ tại Bio Station',
   bannerSubtitle: '',
   bannerDescription: '',
-  depositNoticeText:
-    'Để đảm bảo nguyên liệu hữu cơ (thịt sinh thái Củ Chi, rau hái sáng, cá lóc đồng) luôn được chuẩn bị tươi mới tuyệt đối và bếp không bị lãng phí food waste, BiO Station yêu cầu thanh toán cọc 50% sau khi quý khách xác nhận đơn.',
+  depositNoticeText: '',
   dishes: [
     {
       id: 'dish-com-huu-co',
@@ -349,7 +348,7 @@ interface SiteContextType {
   exportJSON: () => string;
 }
 
-const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V11';
+const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V12';
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
