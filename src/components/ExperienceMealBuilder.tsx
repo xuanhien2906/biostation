@@ -73,6 +73,8 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
   
   // Cart state: item_id -> quantity
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  // Chao toppings state: item_id -> selected topping string
+  const [chaoToppings, setChaoToppings] = useState<Record<string, string>>({});
 
   const handleIncrease = (id: string) => {
     setQuantities(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
@@ -113,7 +115,8 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
       const lineTotal = item.price * qty;
       grandTotal += lineTotal;
       totalItemsCount += qty;
-      selectedItemsDetails.push({ name: item.name, qty, total: lineTotal });
+      const toppingStr = chaoToppings[id] ? ` (${chaoToppings[id]})` : '';
+      selectedItemsDetails.push({ name: item.name + toppingStr, qty, total: lineTotal });
     }
   });
 
@@ -161,30 +164,57 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
     setQuantities({});
   };
 
-  const renderMenuItem = (item: OrderItem) => {
+  const renderMenuItem = (item: OrderItem, isMainDish?: boolean, isChao1Loai?: boolean) => {
     const qty = quantities[item.id] || 0;
     return (
-      <div key={item.id} className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border mb-2 transition-all ${qty > 0 ? 'bg-[#274e23]/5 border-[#274e23]' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]/50'}`}>
-        <div className="flex-1">
-          <div className="font-bold text-sm text-[#274e23]">{item.name}</div>
-          <div className="text-sm font-bold text-[#a66e2c] mt-1">{item.price.toLocaleString('vi-VN')}đ</div>
+      <div key={item.id} className="mb-2">
+        <div className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border transition-all ${
+          isMainDish 
+            ? (qty > 0 ? 'bg-[#274e23] border-[#274e23] text-white shadow-lg' : 'bg-[#1e3e1a] border-[#1e3e1a] text-white hover:bg-[#274e23]') 
+            : (qty > 0 ? 'bg-[#274e23]/5 border-[#274e23]' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]/50')
+        }`}>
+          <div className="flex-1 pr-2">
+            <div className={`font-bold text-sm ${isMainDish ? 'text-white' : 'text-[#274e23]'}`}>{item.name}</div>
+            <div className={`text-sm font-bold mt-1 ${isMainDish ? 'text-[#f0e6d8]' : 'text-[#a66e2c]'}`}>{item.price.toLocaleString('vi-VN')}đ</div>
+          </div>
+          <div className="flex items-center gap-3 bg-[#f0e6d8] p-1.5 rounded-xl border border-[#dcd0bf] shrink-0">
+            <button
+              onClick={() => handleDecrease(item.id)}
+              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${qty > 0 ? 'bg-white text-[#274e23] shadow-sm' : 'text-gray-400 cursor-not-allowed'}`}
+              disabled={qty === 0}
+            >
+              <Minus className="w-4 h-4 stroke-[3]" />
+            </button>
+            <span className="w-6 text-center font-bold text-sm text-[#274e23]">{qty}</span>
+            <button
+              onClick={() => handleIncrease(item.id)}
+              className="w-7 h-7 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] shadow-sm flex items-center justify-center transition-colors"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3 bg-[#f0e6d8] p-1.5 rounded-xl border border-[#dcd0bf] shrink-0">
-          <button
-            onClick={() => handleDecrease(item.id)}
-            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${qty > 0 ? 'bg-white text-[#274e23] shadow-sm' : 'text-gray-400 cursor-not-allowed'}`}
-            disabled={qty === 0}
-          >
-            <Minus className="w-4 h-4 stroke-[3]" />
-          </button>
-          <span className="w-6 text-center font-bold text-sm text-[#274e23]">{qty}</span>
-          <button
-            onClick={() => handleIncrease(item.id)}
-            className="w-7 h-7 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] shadow-sm flex items-center justify-center transition-colors"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-          </button>
-        </div>
+        {isChao1Loai && qty > 0 && (
+          <div className="mt-2 ml-2 p-3 bg-amber-50/80 rounded-lg border border-amber-200 flex flex-col gap-2">
+             <span className="text-xs font-bold text-amber-900">Vui lòng chọn 1 loại dùng kèm:</span>
+             <select 
+               className="w-full p-2.5 rounded-md border border-amber-300 text-sm bg-white outline-none focus:border-[#274e23] font-medium text-[#2d241e]"
+               value={chaoToppings[item.id] || ''}
+               onChange={(e) => setChaoToppings(prev => ({...prev, [item.id]: e.target.value}))}
+             >
+               <option value="" disabled>-- Chọn 1 loại topping --</option>
+               <option value="Thịt heo băm">Thịt heo băm</option>
+               <option value="Rau củ">Rau củ</option>
+               <option value="Thịt gà">Thịt gà</option>
+               <option value="Nấm">Nấm</option>
+               <option value="Ruốc cá">Ruốc cá</option>
+               <option value="Thịt bò băm">Thịt bò băm</option>
+               <option value="Tôm">Tôm</option>
+               <option value="Tim - Cật">Tim - Cật</option>
+               <option value="Trứng">Trứng</option>
+             </select>
+          </div>
+        )}
       </div>
     );
   };
@@ -226,30 +256,37 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                 <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 flex items-center gap-2">
                   <Utensils className="w-5 h-5 text-amber-500" /> Cơm (Rice Meals)
                 </h4>
-                {MENU_COM.map(renderMenuItem)}
+                {MENU_COM.map((item, index) => renderMenuItem(item, index < 2))}
               </div>
               <div>
                 <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4">Nước (Drinks)</h4>
-                {MENU_NUOC.map(renderMenuItem)}
+                {MENU_NUOC.map(item => renderMenuItem(item))}
               </div>
             </div>
           )}
 
           {activeTab === 'chao' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-8">
               <div>
-                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 flex items-center gap-2">
-                  <Utensils className="w-5 h-5 text-amber-500" /> Loại Cháo (Porridge)
+                <h4 className="font-bold text-xl text-[#274e23] font-serif mb-4 flex items-center gap-2 border-b border-[#e2d5c3] pb-2">
+                  <Utensils className="w-6 h-6 text-amber-500" /> Loại Cháo (Porridge)
                 </h4>
-                {MENU_CHAO_CHINH.map(renderMenuItem)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                  {MENU_CHAO_CHINH.map(item => renderMenuItem(item, true, item.id.includes('chao_1_loai')))}
+                </div>
                 <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
                   <strong className="block mb-1">Lưu ý cho món Cháo + 1 loại:</strong>
                   Khi gọi cháo từ 2 món topping trở lên, giá sẽ tính = Giá cháo 1 loại + Giá các món topping mua lẻ.
                 </div>
               </div>
+              
               <div>
-                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4">Giá Tách Lẻ / Gọi Thêm</h4>
-                {MENU_CHAO_TOPPING.map(renderMenuItem)}
+                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 border-b border-[#e2d5c3] pb-2">
+                  Giá tách lẻ gọi thêm (Toppings)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                  {MENU_CHAO_TOPPING.map(item => renderMenuItem(item))}
+                </div>
               </div>
             </div>
           )}
