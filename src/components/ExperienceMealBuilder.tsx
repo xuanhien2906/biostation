@@ -1,114 +1,10 @@
 import React, { useState } from 'react';
 import { useSite } from '../context/SiteContext';
 import {
-  Utensils,
-  Plus,
-  Minus,
-  Check,
-  CheckCircle2,
-  Users,
-  ChefHat,
-  Info,
-  ChevronDown,
-  ShoppingBag,
-  Sparkles,
-  Flame,
-  Award,
-  Clock,
-  Calendar,
-  MapPin,
-  Truck,
-  Heart,
-  ShieldCheck,
-  CreditCard,
-  MessageSquare,
-  User,
-  AlertCircle,
-  QrCode,
-  ArrowRight,
+  Utensils, Plus, Minus, Check, Truck, 
+  MapPin, Clock, Calendar, MessageSquare
 } from 'lucide-react';
-import { Product, DishOption } from '../types';
-
-export const MENU_DISHES: DishOption[] = [
-  {
-    id: 'dish-thit-kho-to',
-    name: 'Thịt Ba Chỉ Sinh Thái Kho Tộ',
-    category: 'Món Mặn',
-    origin: 'Thịt heo sinh thái Củ Chi nuôi thảo mộc, không chất tạo nạc',
-    flavor: 'Đậm đà, béo ngậy vừa phải, thơm nức mùi hành ớt tiêu đen',
-    extraPrice: 20000,
-    image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-ca-loc-kho',
-    name: 'Cá Lóc Đồng Kho Riềng Bách Mộc',
-    category: 'Món Mặn',
-    origin: 'Cá lóc đồng tự nhiên miền Tây, riềng củ tươi Lâm Đồng',
-    flavor: 'Thịt cá săn chắc, thấm vị mặn ngọt cay nồng chuẩn vị Nam Bộ',
-    extraPrice: 20000,
-    image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-ga-xao-sa-ot',
-    name: 'Gà Ta Đồi Xào Sả Ớt',
-    category: 'Món Mặn',
-    origin: 'Gà ta thả vườn đồi Lâm Đồng chạy bộ, sả tươi Củ Chi',
-    flavor: 'Thịt gà dai ngọt, thơm nồng mùi sả tươi và ớt hiểm',
-    extraPrice: 20000,
-    image: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-rau-muong-xao',
-    name: 'Rau Muống Hữu Cơ Xào Tỏi',
-    category: 'Món Xào',
-    origin: 'Rau muống hữu cơ Củ Chi thu hoạch trong ngày',
-    flavor: 'Giòn ngọt tự nhiên, thơm lừng tỏi tép đập dập',
-    extraPrice: 15000,
-    image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-cai-xao-nam',
-    name: 'Cải Thìa Xào Nấm Tươi',
-    category: 'Món Xào',
-    origin: 'Cải thìa hữu cơ Lâm Đồng & Nấm đùi gà tươi',
-    flavor: 'Thanh mát, giòn ngọt, giàu chất xơ & khoáng chất',
-    extraPrice: 15000,
-    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-canh-chua-ca',
-    name: 'Canh Chua Cá Lóc Đồng Bách Mộc',
-    category: 'Món Canh',
-    origin: 'Cá lóc đồng, bạc hà, đậu okras, cà chua & me tươi Củ Chi',
-    flavor: 'Chua thanh dịu mát, ngọt nước cá tự nhiên, rất đưa cơm',
-    extraPrice: 20000,
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-canh-suon-cu-qua',
-    name: 'Canh Sườn Hầm Củ Quả Lâm Đồng',
-    category: 'Món Canh',
-    origin: 'Sườn heo sinh thái & Củ khoai tây, cà rốt, su su hữu cơ',
-    flavor: 'Nước canh ngọt lịm đậm đà từ xương hầm và củ quả tươi',
-    extraPrice: 20000,
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80',
-  },
-  {
-    id: 'dish-trung-chien-thao-moc',
-    name: 'Trứng Gà Thảo Mộc Chiên Đốm Hành',
-    category: 'Món Phụ & Tráng Miệng',
-    origin: 'Trứng gà thảo mộc đốm tía tô & hành lá hữu cơ',
-    flavor: 'Béo ngậy, vàng ươm, thơm lừng bơ thực vật & hành lá',
-    extraPrice: 15000,
-    image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=400&q=80',
-  },
-];
-
-export interface GuestInfo {
-  id: number;
-  name: string;
-  notes: string;
-}
+import { Product } from '../types';
 
 export const formatVietnameseDate = (dateStr: string) => {
   if (!dateStr) return '';
@@ -122,205 +18,113 @@ export const formatVietnameseDate = (dateStr: string) => {
   return `${dayName}, ngày ${dd}/${mm}/${yyyy}`;
 };
 
+interface OrderItem {
+  id: string;
+  name: string;
+  price: number;
+}
+
+const MENU_COM: OrderItem[] = [
+  { id: 'com_huu_co', name: '16. Cơm hữu cơ Bách Mộc (Gồm: Cơm, Canh, Rau luộc, Món mặn)', price: 59000 },
+  { id: 'com_lut_huu_co', name: '17. Cơm lứt hữu cơ Bách Mộc (Gồm: Cơm lứt, Canh, Rau, Món mặn)', price: 75000 },
+  { id: 'do_an_them', name: '18. Đồ ăn thêm', price: 30000 },
+  { id: 'com_them_huu_co', name: '19. Cơm thêm - Hữu cơ', price: 10000 },
+  { id: 'com_them_lut', name: '20. Cơm thêm - Lứt', price: 15000 },
+  { id: 'mang_cam_gao', name: '21. Màng cám gạo dinh dưỡng Bách Mộc', price: 10000 },
+];
+
+const MENU_NUOC: OrderItem[] = [
+  { id: 'tra_chanh', name: '22. Trà chanh', price: 15000 },
+  { id: 'tra_tac', name: '23. Trà tắc', price: 15000 },
+  { id: 'tra_bach_moc', name: '24. Trà Bách Mộc', price: 5000 },
+  { id: 'khan_lanh', name: '25. Khăn lạnh', price: 3000 },
+];
+
+const MENU_CHAO_CHINH = [
+  { id: 'chao_1_loai_M', name: '1. Cháo + 1 loại (Size M)', price: 39000 },
+  { id: 'chao_1_loai_L', name: '1. Cháo + 1 loại (Size L)', price: 59000 },
+  { id: 'chao_ca_hoi_M', name: '2. Cháo Cá hồi (Size M)', price: 65000 },
+  { id: 'chao_ca_hoi_L', name: '2. Cháo Cá hồi (Size L)', price: 85000 },
+  { id: 'chao_suon_non_M', name: '3. Cháo Sườn non (Size M)', price: 50000 },
+  { id: 'chao_suon_non_L', name: '3. Cháo Sườn non (Size L)', price: 65000 },
+  { id: 'chao_dac_biet_L', name: '4. Cháo đặc biệt (Size L)', price: 89000 },
+];
+
+const MENU_CHAO_TOPPING: OrderItem[] = [
+  { id: 'top_chao_lua_me', name: '5. Cháo Lúa Mẹ', price: 9000 },
+  { id: 'top_chao_them', name: '6. Cháo thêm', price: 5000 },
+  { id: 'top_thit_heo_bam', name: '7. Thịt heo băm', price: 20000 },
+  { id: 'top_rau_cu', name: '8. Rau củ', price: 20000 },
+  { id: 'top_thit_ga', name: '9. Thịt gà', price: 20000 },
+  { id: 'top_nam', name: '10. Nấm', price: 20000 },
+  { id: 'top_ruoc_ca', name: '11. Ruốc cá', price: 20000 },
+  { id: 'top_thit_bo_bam', name: '12. Thịt bò băm', price: 20000 },
+  { id: 'top_tom', name: '13. Tôm', price: 20000 },
+  { id: 'top_tim_cat', name: '14. Tim - Cật', price: 20000 },
+  { id: 'top_trung', name: '15. Trứng', price: 10000 },
+];
+
 interface ExperienceMealBuilderProps {
   onAddToCart: (product: Product) => void;
 }
 
 export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ onAddToCart }) => {
-  const { siteData } = useSite();
-  const mealConfig = siteData.experienceMealConfig || {
-    pricePerPerson: 50000,
-    depositPercent: 50,
-    includedDishesPerPerson: 2,
-    bannerTitle: 'Thiết Kế Mâm Cơm Trải Nghiệm Cá Nhân Hóa',
-    bannerSubtitle: 'Dịch Vụ Bữa Ăn Trải Nghiệm Độc Quyền BiO Station',
-    bannerDescription:
-      'Phục vụ từ 1 đến 10 khách. Mỗi phần ăn 50.000đ / người đã bao gồm Cơm ST25 Bách Mộc dẻo ngọt và 2 suất món ăn tự chọn.',
-    depositNoticeText:
-      'Để đảm bảo nguyên liệu hữu cơ luôn tươi mới tuyệt đối và không lãng phí food waste, BiO Station yêu cầu thanh toán cọc 50% sau khi quý khách xác nhận đơn.',
-    dishes: MENU_DISHES,
+  const [activeTab, setActiveTab] = useState<'com_nuoc' | 'chao'>('com_nuoc');
+  
+  // Cart state: item_id -> quantity
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+
+  const handleIncrease = (id: string) => {
+    setQuantities(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
   };
 
-  const availableDishes = mealConfig.dishes && mealConfig.dishes.length > 0 ? mealConfig.dishes : MENU_DISHES;
-
-  // 1. Number of people (from 1 to 10)
-  const [peopleCount, setPeopleCount] = useState<number>(1);
-
-  // 2. Individual Guest Information & Specific Dietary Notes
-  const [guests, setGuests] = useState<GuestInfo[]>([
-    { id: 1, name: 'Khách 1 (Trưởng đoàn)', notes: '' },
-  ]);
-
-  const [activeGuestTab, setActiveGuestTab] = useState<number>(1);
-
-  // Update people count and sync guest slots
-  const handlePeopleCountChange = (count: number) => {
-    setPeopleCount(count);
-    setGuests((prev) => {
-      const updated: GuestInfo[] = [];
-      for (let i = 1; i <= count; i++) {
-        const existing = prev.find((g) => g.id === i);
-        if (existing) {
-          updated.push(existing);
-        } else {
-          updated.push({
-            id: i,
-            name: i === 1 ? 'Khách 1 (Trưởng đoàn)' : `Khách ${i}`,
-            notes: '',
-          });
-        }
+  const handleDecrease = (id: string) => {
+    setQuantities(prev => {
+      const current = prev[id] || 0;
+      if (current <= 1) {
+        const newState = { ...prev };
+        delete newState[id];
+        return newState;
       }
-      return updated;
+      return { ...prev, [id]: current - 1 };
     });
-    if (activeGuestTab > count) {
-      setActiveGuestTab(1);
-    }
   };
 
-  const updateGuestDetail = (id: number, field: 'name' | 'notes', value: string) => {
-    setGuests((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, [field]: value } : g))
-    );
-  };
-
-  // 3. Dish Selection with Quantities (Map dishId -> quantity, default empty so user selects)
-  const [dishQuantities, setDishQuantities] = useState<Record<string, number>>({});
-
-  const [selectedCategory, setSelectedCategory] = useState<string>('Tất Cả');
-
-  // 4. Dining Mode: initially null (unselected white state)
+  // Delivery / Dine in
   const [diningMode, setDiningMode] = useState<'dine_in' | 'delivery' | null>(null);
-
-  // Today ISO date YYYY-MM-DD
   const todayIsoDate = React.useMemo(() => new Date().toISOString().split('T')[0], []);
-
-  // Dine-in appointment & delivery details
   const [reservationDate, setReservationDate] = useState<string>(todayIsoDate);
   const [reservationTime, setReservationTime] = useState<string>('12:00');
-  const [selectedStation, setSelectedStation] = useState<string>(
-    'BiO Station Phú Mỹ Hưng (124 Nguyễn Đức Cảnh, Q.7)'
-  );
-
-  // Delivery details
+  const [selectedStation, setSelectedStation] = useState<string>('BiO Station Phú Mỹ Hưng (124 Nguyễn Đức Cảnh, Q.7)');
   const [deliveryAddress, setDeliveryAddress] = useState<string>('');
   const [deliveryPhone, setDeliveryPhone] = useState<string>('');
-  const [deliveryNotes, setDeliveryNotes] = useState<string>('');
-
+  const [orderNotes, setOrderNotes] = useState<string>('');
   const [added, setAdded] = useState<boolean>(false);
 
-  // Quantity Change Handlers
-  const handleIncreaseDish = (dishId: string) => {
-    setDishQuantities((prev) => ({
-      ...prev,
-      [dishId]: (prev[dishId] || 0) + 1,
-    }));
-  };
+  // Calculate totals
+  const allItems = [...MENU_COM, ...MENU_NUOC, ...MENU_CHAO_CHINH, ...MENU_CHAO_TOPPING];
+  let grandTotal = 0;
+  let totalItemsCount = 0;
+  const selectedItemsDetails: { name: string; qty: number; total: number }[] = [];
 
-  const handleDecreaseDish = (dishId: string) => {
-    setDishQuantities((prev) => {
-      const current = prev[dishId] || 0;
-      if (current <= 0) return prev;
-      const updated = { ...prev };
-      if (current === 1) {
-        delete updated[dishId];
-      } else {
-        updated[dishId] = current - 1;
-      }
-      return updated;
-    });
-  };
+  Object.entries(quantities).forEach(([id, qty]) => {
+    const item = allItems.find(i => i.id === id);
+    if (item) {
+      const lineTotal = item.price * qty;
+      grandTotal += lineTotal;
+      totalItemsCount += qty;
+      selectedItemsDetails.push({ name: item.name, qty, total: lineTotal });
+    }
+  });
 
-  // Pricing calculations
-  const pricePerPerson = mealConfig.pricePerPerson || 50000;
-  const depositPercent = (mealConfig.depositPercent || 50) / 100;
-  const basePrice = peopleCount * pricePerPerson;
-
-  // Included dish portion allowance
-  const includedPortionsAllowance = peopleCount * (mealConfig.includedDishesPerPerson || 2);
-
-  // Selected dishes array with portion counts
-  const selectedDishesWithQty = availableDishes.map((d) => ({
-    dish: d,
-    quantity: dishQuantities[d.id] || 0,
-  })).filter((item) => item.quantity > 0);
-
-  const totalPortionsSelected = selectedDishesWithQty.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
-
-  let remainingFreeAllowance = includedPortionsAllowance;
-  let extraCostTotal = 0;
-
-  const dishBillingBreakdown = selectedDishesWithQty.map((item) => {
-    const qty = item.quantity;
-    let freeQty = 0;
-    let paidQty = 0;
-
-    if (remainingFreeAllowance > 0) {
-      if (remainingFreeAllowance >= qty) {
-        freeQty = qty;
-        remainingFreeAllowance -= qty;
-      } else {
-        freeQty = remainingFreeAllowance;
-        paidQty = qty - remainingFreeAllowance;
-        remainingFreeAllowance = 0;
-      }
-    } else {
-      paidQty = qty;
+  const handleAddToCart = () => {
+    if (totalItemsCount === 0) {
+      alert("Vui lòng chọn ít nhất 1 món!");
+      return;
     }
 
-    const itemExtraCost = paidQty * item.dish.extraPrice;
-    extraCostTotal += itemExtraCost;
-
-    return {
-      dish: item.dish,
-      totalQty: qty,
-      freeQty,
-      paidQty,
-      cost: itemExtraCost,
-    };
-  });
-
-  const dishBillingMap = React.useMemo(() => {
-    const map = new Map<string, { totalQty: number; freeQty: number; paidQty: number; cost: number }>();
-    dishBillingBreakdown.forEach((b) => {
-      map.set(b.dish.id, b);
-    });
-    return map;
-  }, [dishBillingBreakdown]);
-
-  // Grand Total Bill
-  const grandTotal = basePrice + extraCostTotal;
-
-  // Required Deposit
-  const depositRequired = Math.round(grandTotal * depositPercent);
-  const remainingAtService = grandTotal - depositRequired;
-
-  // Filtered Dishes by Category
-  const categories = ['Tất Cả', 'Món Mặn', 'Món Xào', 'Món Canh', 'Món Phụ & Tráng Miệng'];
-  const filteredDishes = availableDishes.filter((dish) => {
-    if (selectedCategory === 'Tất Cả') return true;
-    return dish.category === selectedCategory;
-  });
-
-  // Submit & Add to Cart
-  const handleAddToCart = () => {
-    // Generate guest preferences string summary
-    const guestSummary = guests
-      .map(
-        (g) =>
-          `[${g.name}]: ${g.notes ? g.notes : 'Khống có lưu ý đặc biệt'}`
-      )
-      .join(' | ');
-
-    const dishListSummary = dishBillingBreakdown.map(
-      (b) =>
-        `${b.dish.name} (x${b.totalQty}${
-          b.paidQty > 0 ? ` - Phụ thu +${b.cost.toLocaleString('vi-VN')}đ` : ' - Bao gồm 0đ'
-        })`
-    );
-
+    const dishListSummary = selectedItemsDetails.map(item => `${item.name} (x${item.qty}) - ${item.total.toLocaleString('vi-VN')}đ`);
+    
     const formattedDateText = formatVietnameseDate(reservationDate);
     const diningSummary =
       diningMode === 'dine_in'
@@ -328,795 +132,240 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
         : `Giao hàng tận nơi: ${deliveryAddress} (SĐT: ${deliveryPhone}) - Ngày giao: ${formattedDateText} lúc ${reservationTime}`;
 
     const customProduct: Product = {
-      id: `exp-luxury-${peopleCount}p-${Date.now()}`,
-      name: `Bữa Ăn Trải Nghiệm Luxury ${peopleCount} Người (${totalPortionsSelected} Phần Món)`,
-      subtitle: `${diningMode === 'dine_in' ? 'Ăn tại chỗ Bếp Station' : 'Giao mâm cơm tận nơi'} • Cọc 50%: ${depositRequired.toLocaleString('vi-VN')}đ`,
+      id: `order-menu-${Date.now()}`,
+      name: `Đơn Đặt Hàng Cơm & Cháo (${totalItemsCount} món)`,
+      subtitle: `${diningMode === 'dine_in' ? 'Ăn tại chỗ Bếp Station' : 'Giao hàng tận nơi'}`,
       category: 'Bữa Ăn Trải Nghiệm',
       price: grandTotal,
       rating: 5.0,
-      reviewCount: 3800,
-      badge: `${peopleCount} NGƯỜI • CỌC 50% (${depositRequired.toLocaleString('vi-VN')}đ)`,
-      image:
-        selectedDishesWithQty[0]?.dish.image ||
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
-      description: `Bữa ăn trải nghiệm cao cấp thiết kế riêng cho ${peopleCount} người. ${diningSummary}. Lưu ý khẩu vị các thành viên: ${guestSummary}.`,
+      reviewCount: 1520,
+      badge: `TỔNG CỘNG: ${grandTotal.toLocaleString('vi-VN')}đ`,
+      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+      description: `Chi tiết đơn hàng: ${diningSummary}. Ghi chú: ${orderNotes || 'Không có'}.`,
       keyBenefits: [
-        `Quy mô ${peopleCount} người (${basePrice.toLocaleString('vi-VN')}đ gói cơ bản)`,
-        `Đã chọn ${totalPortionsSelected} phần món ăn phong phú (Số lượng tùy chỉnh)`,
-        `Chính sách đặt cọc 50% (${depositRequired.toLocaleString('vi-VN')}đ) giữ chỗ & chuẩn bị nguyên liệu`,
-        `Hình thức: ${diningMode === 'dine_in' ? 'Ăn tại chỗ có hẹn giờ' : 'Giao mâm cơm tận nơi'}`,
+        `Tổng cộng ${totalItemsCount} phần ăn / uống`,
+        `Thành tiền: ${grandTotal.toLocaleString('vi-VN')}đ`,
+        `Hình thức: ${diningMode === 'dine_in' ? 'Ăn tại chỗ có hẹn giờ' : 'Giao hàng tận nơi'}`
       ],
       origin: 'Bếp Trải Nghiệm BiO Station',
-      certification: 'Tiêu chuẩn BMQ Qualified Dining & Prep',
-      bmqNote: 'Mâm cơm chuẩn vị nhà làm, chế biến từ gạo ST25 Bách Mộc, thịt sinh thái & rau củ hữu cơ tươi hái.',
+      certification: 'Tiêu chuẩn BMQ',
+      bmqNote: 'Mâm cơm chuẩn vị nhà làm, chế biến từ nguyên liệu sạch Bách Mộc.',
       dishSampleList: dishListSummary,
-      flavorProfile: `Khẩu vị tùy biến từng người: ${guestSummary}`,
+      flavorProfile: orderNotes ? `Ghi chú: ${orderNotes}` : '',
     };
 
     onAddToCart(customProduct);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+    // Reset
+    setQuantities({});
+  };
+
+  const renderMenuItem = (item: OrderItem) => {
+    const qty = quantities[item.id] || 0;
+    return (
+      <div key={item.id} className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border mb-2 transition-all ${qty > 0 ? 'bg-[#274e23]/5 border-[#274e23]' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]/50'}`}>
+        <div className="flex-1">
+          <div className="font-bold text-sm text-[#274e23]">{item.name}</div>
+          <div className="text-sm font-bold text-[#a66e2c] mt-1">{item.price.toLocaleString('vi-VN')}đ</div>
+        </div>
+        <div className="flex items-center gap-3 bg-[#f0e6d8] p-1.5 rounded-xl border border-[#dcd0bf] shrink-0">
+          <button
+            onClick={() => handleDecrease(item.id)}
+            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${qty > 0 ? 'bg-white text-[#274e23] shadow-sm' : 'text-gray-400 cursor-not-allowed'}`}
+            disabled={qty === 0}
+          >
+            <Minus className="w-4 h-4 stroke-[3]" />
+          </button>
+          <span className="w-6 text-center font-bold text-sm text-[#274e23]">{qty}</span>
+          <button
+            onClick={() => handleIncrease(item.id)}
+            className="w-7 h-7 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] shadow-sm flex items-center justify-center transition-colors"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div className="bg-white rounded-3xl border border-[#e2d5c3] shadow-xl overflow-hidden text-[#2d241e]">
-      {/* 1. LUXURY HEADER BANNER */}
-      <div className="bg-gradient-to-r from-[#1b3318] via-[#274e23] to-[#172e15] p-6 sm:p-8 text-white space-y-3 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex flex-wrap items-center justify-between gap-3 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-wider border border-amber-400/30">
-            <ChefHat className="w-4 h-4" />
-            <span>Dịch Vụ Bữa Ăn Trải Nghiệm Độc Quyền BiO Station</span>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs bg-black/30 backdrop-blur px-3.5 py-1.5 rounded-full border border-white/20 text-amber-200">
-            <ShieldCheck className="w-4 h-4 text-amber-400" />
-            <span>Cam Kết Đặt Cọc 50% – Nguyên Liệu Tươi Chuẩn BMQ</span>
-          </div>
-        </div>
-
-        <h3 className="text-2xl sm:text-4xl font-black font-serif text-white tracking-tight">
-          Thiết Kế Mâm Cơm Trải Nghiệm Cá Nhân Hóa
+      {/* HEADER BANNER */}
+      <div className="bg-gradient-to-r from-[#1b3318] via-[#274e23] to-[#172e15] p-6 sm:p-8 text-white relative overflow-hidden">
+        <h3 className="text-2xl sm:text-3xl font-black font-serif text-white tracking-tight mb-2">
+          Thực Đơn Cơm & Cháo Bách Mộc
         </h3>
-
-        <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed max-w-4xl">
-          Phục vụ từ <strong>1 đến 10 khách</strong>. Mỗi phần ăn <strong className="text-amber-300">50.000đ / người</strong> đã bao gồm Cơm ST25 Bách Mộc dẻo ngọt và <strong>2 suất món ăn tự chọn</strong>. Quý khách có thể thoải mái ghi chú khẩu vị riêng cho từng thành viên, chọn số lượng phần ăn, đặt lịch hẹn ăn tại chỗ hoặc giao mâm cơm tận nơi.
+        <p className="text-sm text-emerald-100">
+          Chế biến từ nguyên liệu hữu cơ chuẩn BMQ. Chọn món, lên đơn và thưởng thức trọn vị tự nhiên.
         </p>
       </div>
 
-      <div className="p-6 sm:p-8 space-y-10">
-        {/* STEP 1: CHỌN SỐ LƯỢNG NGƯỜI (1 - 10 NGƯỜI) */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#e2d5c3] pb-3">
-            <h4 className="font-bold font-serif text-base text-[#274e23] flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-[#274e23] text-white text-xs flex items-center justify-center font-bold">1</span>
-              <span>Bước 1: Chọn Số Lượng Khách (1 – 10 Người)</span>
-            </h4>
-            <div className="text-xs text-[#7a6858]">
-              Giá gói cơ bản (50k/người): <strong className="text-[#a66e2c] text-sm font-bold">{basePrice.toLocaleString('vi-VN')} VNĐ</strong>
-            </div>
-          </div>
+      <div className="p-4 sm:p-6 space-y-6">
+        {/* TABS */}
+        <div className="flex gap-2 border-b border-[#e2d5c3] pb-4">
+          <button
+            onClick={() => setActiveTab('com_nuoc')}
+            className={`flex-1 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'com_nuoc' ? 'bg-[#274e23] text-white' : 'bg-[#f0e6d8] text-[#5c4d43] hover:bg-[#e4d6c2]'}`}
+          >
+            Menu Cơm & Nước
+          </button>
+          <button
+            onClick={() => setActiveTab('chao')}
+            className={`flex-1 py-3 text-sm font-bold rounded-xl transition-colors ${activeTab === 'chao' ? 'bg-[#274e23] text-white' : 'bg-[#f0e6d8] text-[#5c4d43] hover:bg-[#e4d6c2]'}`}
+          >
+            Menu Cháo
+          </button>
+        </div>
 
-          {/* Clean, Streamlined Guest Selector (Dropdown Only) */}
-          <div className="bg-[#f8f5f0] p-4 sm:p-5 rounded-2xl border border-[#e2d5c3] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#274e23]/10 text-[#274e23] flex items-center justify-center shrink-0">
-                <Users className="w-5 h-5 text-[#274e23]" />
+        {/* MENU CONTENT */}
+        <div className="min-h-[400px]">
+          {activeTab === 'com_nuoc' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 flex items-center gap-2">
+                  <Utensils className="w-5 h-5 text-amber-500" /> Cơm (Rice Meals)
+                </h4>
+                {MENU_COM.map(renderMenuItem)}
               </div>
               <div>
-                <div className="text-xs font-bold text-[#274e23]">Số Lượng Người Dùng Bữa</div>
-                <div className="text-[11px] text-[#7a6858]">Bao gồm {peopleCount * (mealConfig.includedDishesPerPerson || 2)} suất món tùy chọn tự chọn miễn phí</div>
+                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4">Nước (Drinks)</h4>
+                {MENU_NUOC.map(renderMenuItem)}
               </div>
             </div>
+          )}
 
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <label className="text-xs font-bold text-[#5c4d43] whitespace-nowrap shrink-0">
-                Số lượng khách:
-              </label>
-              <select
-                value={peopleCount}
-                onChange={(e) => handlePeopleCountChange(Number(e.target.value))}
-                className="w-full sm:w-64 px-4 py-3 rounded-xl border border-[#dcd0bf] bg-white text-xs font-bold text-[#274e23] focus:ring-2 focus:ring-[#274e23] outline-none shadow-sm cursor-pointer"
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-                  <option key={num} value={num}>
-                    {num} Khách — { (num * (mealConfig.pricePerPerson || 50000)).toLocaleString('vi-VN') }đ gói cơ bản
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* STEP 2: LƯU Ý & SỞ THÍCH KHẨU VỊ DÀNH CHO TỪNG NGƯỜI (VERTICAL ACCORDION) */}
-        <div className="space-y-4 bg-[#f8f5f0] p-4 sm:p-6 rounded-2xl border border-[#dcd0bf]">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#dcd0bf] pb-3">
-            <div>
-              <h4 className="font-bold font-serif text-base text-[#274e23] flex items-center gap-2">
-                <Heart className="w-5 h-5 text-rose-600 fill-rose-500" />
-                <span>Bước 2: Ghi Chú Khẩu Vị Cho Từng Khách ({peopleCount} Người)</span>
-              </h4>
-              <p className="text-xs text-[#7a6858] mt-0.5">
-                Bếp BiO Station chăm sóc riêng từng vị khách: khẩu vị nhạt, không ăn cay, dị ứng hải sản hay bớt mỡ.
-              </p>
-            </div>
-
-            <span className="text-[11px] bg-amber-500/10 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-500/20 shrink-0 flex items-center gap-1">
-              ✨ Chăm sóc tinh tế • Chuẩn Bếp Nhà
-            </span>
-          </div>
-
-          {/* Vertical Stacked Guest Accordion List */}
-          <div className="space-y-2.5">
-            {guests.map((g) => {
-              const isExpanded = activeGuestTab === g.id;
-              return (
-                <div
-                  key={g.id}
-                  className={`rounded-2xl border transition-all duration-200 overflow-hidden bg-white ${
-                    isExpanded
-                      ? 'border-[#274e23] shadow-md ring-1 ring-[#274e23]/20'
-                      : 'border-[#e2d5c3] hover:border-[#274e23]/50 shadow-sm'
-                  }`}
-                >
-                  {/* Accordion Header Bar */}
-                  <button
-                    type="button"
-                    onClick={() => setActiveGuestTab(isExpanded ? 0 : g.id)}
-                    className={`w-full p-3.5 sm:p-4 text-left flex items-center justify-between gap-3 cursor-pointer transition-colors ${
-                      isExpanded ? 'bg-[#274e23]/5' : 'hover:bg-[#fbf8f3]'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-all ${
-                        isExpanded
-                          ? 'bg-[#274e23] text-white shadow-sm'
-                          : g.notes
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : 'bg-[#f0e6d8] text-[#5c4d43]'
-                      }`}>
-                        {g.id}
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-[#274e23] truncate">
-                            {g.name || `Khách ${g.id}`}
-                          </span>
-                          {g.id === 1 && (
-                            <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded shrink-0">
-                              Trưởng đoàn
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-[11px] text-[#7a6858] truncate mt-0.5">
-                          {g.notes ? (
-                            <span className="text-emerald-700 font-medium">✓ Ghi chú: {g.notes}</span>
-                          ) : (
-                            <span className="text-[#a69688]">Chạm để nhập thông tin & ghi chú...</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full hidden sm:inline-block ${
-                        g.notes ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {g.notes ? 'Đã ghi chú' : 'Chưa ghi chú'}
-                      </span>
-                      <ChevronDown
-                        className={`w-4 h-4 text-[#7a6858] transition-transform duration-200 ${
-                          isExpanded ? 'rotate-180 text-[#274e23]' : ''
-                        }`}
-                      />
-                    </div>
-                  </button>
-
-                  {/* Accordion Content Panel */}
-                  {isExpanded && (
-                    <div className="p-4 sm:p-5 pt-2 border-t border-[#f0e6d8] space-y-3 bg-white">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
-                            Tên / Biệt Danh Khách {g.id}:
-                          </label>
-                          <input
-                            type="text"
-                            value={g.name}
-                            onChange={(e) => updateGuestDetail(g.id, 'name', e.target.value)}
-                            placeholder={g.id === 1 ? 'VD: Anh Nam (Trưởng đoàn)' : `VD: Khách ${g.id}`}
-                            className="w-full px-3.5 py-2.5 rounded-xl border border-[#dcd0bf] text-xs bg-[#fdfbf7] focus:outline-none focus:border-[#274e23]"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-semibold text-[#5c4d43] block mb-1">
-                            Ghi Chú Khẩu Vị & Yêu Cầu Đặc Biệt:
-                          </label>
-                          <input
-                            type="text"
-                            value={g.notes}
-                            onChange={(e) => updateGuestDetail(g.id, 'notes', e.target.value)}
-                            placeholder="VD: Không ăn cay, ăn nhạt, dị ứng hải sản..."
-                            className="w-full px-3.5 py-2.5 rounded-xl border border-[#dcd0bf] text-xs bg-[#fdfbf7] focus:outline-none focus:border-[#274e23]"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Quick suggestion chips */}
-                      <div className="pt-1 flex flex-wrap items-center gap-1.5 text-[11px]">
-                        <span className="text-[#7a6858] font-bold">Gợi ý nhanh:</span>
-                        {['Không ăn cay', 'Không hành', 'Ăn nhạt', 'Ít dầu mỡ', 'Dị ứng hải sản', 'Bớt ngọt'].map((chip) => (
-                          <button
-                            key={chip}
-                            type="button"
-                            onClick={() => {
-                              const newNotes = g.notes ? `${g.notes}, ${chip}` : chip;
-                              updateGuestDetail(g.id, 'notes', newNotes);
-                            }}
-                            className="px-2.5 py-1 rounded-lg bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#5c4d43] font-medium transition-colors cursor-pointer"
-                          >
-                            + {chip}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+          {activeTab === 'chao' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 flex items-center gap-2">
+                  <Utensils className="w-5 h-5 text-amber-500" /> Loại Cháo (Porridge)
+                </h4>
+                {MENU_CHAO_CHINH.map(renderMenuItem)}
+                <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
+                  <strong className="block mb-1">Lưu ý cho món Cháo + 1 loại:</strong>
+                  Khi gọi cháo từ 2 món topping trở lên, giá sẽ tính = Giá cháo 1 loại + Giá các món topping mua lẻ.
                 </div>
-              );
-            })}
-          </div>
+              </div>
+              <div>
+                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4">Giá Tách Lẻ / Gọi Thêm</h4>
+                {MENU_CHAO_TOPPING.map(renderMenuItem)}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* STEP 3: LỰA CHỌN MÓN ĂN VỚI CỘT SỐ LƯỢNG (QUANTITY COLUMN FOR ITEMS) */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#e2d5c3] pb-3">
-            <div>
-              <h4 className="font-bold font-serif text-base text-[#274e23] flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#274e23] text-white text-xs flex items-center justify-center font-bold">3</span>
-                <span>Bước 3: Chọn Món & Tùy Chỉnh Số Lượng Phần Món</span>
-              </h4>
-              <p className="text-xs text-[#7a6858] mt-0.5">
-                • <strong>Suất món bao gồm miễn phí:</strong> <span className="text-emerald-700 font-bold">{includedPortionsAllowance} phần món</span> (2 phần / người x {peopleCount} người) <br className="hidden sm:inline" />
-                • Đã chọn: <span className="font-bold text-[#a66e2c]">{totalPortionsSelected} phần món</span>. Tăng số lượng món phụ tùy thích!
-              </p>
-            </div>
-
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    selectedCategory === cat
-                      ? 'bg-[#274e23] text-white shadow-sm'
-                      : 'bg-[#f0e6d8] text-[#5c4d43] hover:bg-[#e4d6c2]'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Dishes Table / Grid with Explicit Quantity Column */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredDishes.map((dish) => {
-              const qty = dishQuantities[dish.id] || 0;
-              const isSelected = qty > 0;
-              const billingInfo = dishBillingMap.get(dish.id);
-
-              return (
-                <div
-                  key={dish.id}
-                  className={`relative p-3.5 rounded-2xl border transition-all duration-200 flex flex-col justify-between group ${
-                    isSelected
-                      ? 'bg-amber-50/70 border-amber-600 shadow-sm ring-1 ring-amber-500'
-                      : 'bg-white border-[#e2d5c3] hover:border-[#274e23] hover:shadow'
-                  }`}
-                >
-                  {/* Badge Label when selected */}
-                  {isSelected && (
-                    <div className="absolute top-2.5 right-2.5 z-10">
-                      <span className="bg-[#274e23] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow flex items-center gap-1">
-                        <Check className="w-3 h-3 text-amber-300" />
-                        <span>Đã chọn {qty} phần</span>
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="space-y-2">
-                    <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
-                      <img
-                        src={dish.image}
-                        alt={dish.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute bottom-1.5 left-1.5 bg-slate-900/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur">
-                        {dish.category}
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <h5 className="font-bold text-xs sm:text-sm text-[#274e23] font-serif line-clamp-1">
-                        {dish.name}
-                      </h5>
-
-                      <p className="text-[10px] text-[#7a6858] line-clamp-2">
-                        {dish.flavor}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Quantity Control & Price Status Bar */}
-                  <div className="pt-3 mt-2 border-t border-[#f0e6d8] flex items-center justify-between text-xs">
-                    <div>
-                      {isSelected ? (
-                        <div>
-                          <span className="text-[10px] text-[#274e23] font-bold block">Thành tiền món:</span>
-                          <span className="font-bold text-[#a66e2c]">
-                            {billingInfo && billingInfo.cost > 0
-                              ? `+${billingInfo.cost.toLocaleString('vi-VN')}đ`
-                              : '0đ (Bao gồm)'}
-                          </span>
-                        </div>
-                      ) : (
-                        <div>
-                          <span className="text-[10px] text-[#8c7868] block">Trạng thái:</span>
-                          <span className="text-[11px] font-medium text-gray-500">Chưa chọn món</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Quantity Stepper */}
-                    <div className="flex items-center gap-1.5 bg-[#f0e6d8] p-1 rounded-xl border border-[#dcd0bf]">
-                      <button
-                        type="button"
-                        onClick={() => handleDecreaseDish(dish.id)}
-                        disabled={qty === 0}
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
-                          qty > 0
-                            ? 'bg-white text-[#274e23] hover:bg-rose-100 hover:text-rose-700 font-bold shadow-sm cursor-pointer'
-                            : 'text-gray-400 cursor-not-allowed'
-                        }`}
-                      >
-                        <Minus className="w-3 h-3 stroke-[3]" />
-                      </button>
-
-                      <span className="w-6 text-center font-extrabold text-xs text-[#274e23]">
-                        {qty}
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={() => handleIncreaseDish(dish.id)}
-                        className="w-6 h-6 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] font-bold shadow-sm flex items-center justify-center cursor-pointer transition-colors"
-                      >
-                        <Plus className="w-3 h-3 stroke-[3]" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* STEP 4: HÌNH THỨC TRẢI NGHIỆM (ĂN TẠI CHỖ CÓ HẸN GIỜ VS GIAO HÀNG TẬN NƠI) */}
-        <div className="space-y-4 bg-[#f2e9dc] p-5 sm:p-6 rounded-2xl border border-[#dcd0bf]">
-          <div className="border-b border-[#dcd0bf] pb-3">
-            <h4 className="font-bold font-serif text-base text-[#274e23] flex items-center gap-2">
-              <span className="w-6 h-6 rounded-full bg-[#274e23] text-white text-xs flex items-center justify-center font-bold">4</span>
-              <span>Bước 4: Chọn Hình Thức Trải Nghiệm</span>
-            </h4>
-            <p className="text-xs text-[#7a6858] mt-0.5">
-              Vui lòng trỏ chuột chọn hình thức trải nghiệm phù hợp để hiển thị thông tin đặt lịch & tính tổng chi phí bên dưới.
-            </p>
-          </div>
-
-          {/* Mode Option Cards - White by default, turns green on hover/select */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* HÌNH THỨC TRẢI NGHIỆM */}
+        <div className="bg-[#f2e9dc] p-5 rounded-2xl border border-[#dcd0bf] mt-8">
+          <h4 className="font-bold font-serif text-base text-[#274e23] mb-4">Chọn Hình Thức Nhận Đơn</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <button
-              type="button"
               onClick={() => setDiningMode('dine_in')}
-              className={`p-4 rounded-2xl border transition-all cursor-pointer text-left flex items-start gap-3.5 group ${
-                diningMode === 'dine_in'
-                  ? 'bg-[#274e23] text-white border-[#274e23] shadow-lg ring-2 ring-amber-400'
-                  : 'bg-white text-[#2d241e] border-[#dcd0bf] hover:border-[#274e23] hover:bg-[#f4f9f4] hover:shadow-md'
-              }`}
+              className={`p-4 rounded-xl border text-left flex items-start gap-3 transition-colors ${diningMode === 'dine_in' ? 'bg-[#274e23] text-white border-[#274e23] shadow-md' : 'bg-white text-[#2d241e] border-[#dcd0bf] hover:border-[#274e23]'}`}
             >
-              <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold transition-colors ${
-                  diningMode === 'dine_in'
-                    ? 'bg-amber-400 text-[#1f381c]'
-                    : 'bg-[#f0e6d8] text-[#274e23] group-hover:bg-[#274e23] group-hover:text-white'
-                }`}
-              >
-                <Utensils className="w-5 h-5" />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h5 className="font-bold text-sm font-serif">Ăn Tại Bếp / Nhận Tại Station</h5>
-                  {diningMode === 'dine_in' && (
-                    <span className="bg-amber-400 text-[#1f381c] text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Đã Chọn
-                    </span>
-                  )}
-                </div>
-                <p
-                  className={`text-xs ${
-                    diningMode === 'dine_in' ? 'text-amber-100' : 'text-[#7a6858]'
-                  }`}
-                >
-                  Thưởng thức trực tiếp mâm cơm nóng sốt tại không gian xanh của BiO Station hoặc ghé trạm nhận mâm.
-                </p>
+              <Utensils className={`w-6 h-6 ${diningMode === 'dine_in' ? 'text-amber-400' : 'text-[#274e23]'}`} />
+              <div>
+                <div className="font-bold text-sm">Ăn Tại Bếp / Lấy Tại Quầy</div>
+                <div className={`text-xs mt-1 ${diningMode === 'dine_in' ? 'text-emerald-100' : 'text-gray-500'}`}>Dùng bữa trực tiếp hoặc ghé lấy.</div>
               </div>
             </button>
-
             <button
-              type="button"
               onClick={() => setDiningMode('delivery')}
-              className={`p-4 rounded-2xl border transition-all cursor-pointer text-left flex items-start gap-3.5 group ${
-                diningMode === 'delivery'
-                  ? 'bg-[#274e23] text-white border-[#274e23] shadow-lg ring-2 ring-amber-400'
-                  : 'bg-white text-[#2d241e] border-[#dcd0bf] hover:border-[#274e23] hover:bg-[#f4f9f4] hover:shadow-md'
-              }`}
+              className={`p-4 rounded-xl border text-left flex items-start gap-3 transition-colors ${diningMode === 'delivery' ? 'bg-[#274e23] text-white border-[#274e23] shadow-md' : 'bg-white text-[#2d241e] border-[#dcd0bf] hover:border-[#274e23]'}`}
             >
-              <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold transition-colors ${
-                  diningMode === 'delivery'
-                    ? 'bg-amber-400 text-[#1f381c]'
-                    : 'bg-[#f0e6d8] text-[#274e23] group-hover:bg-[#274e23] group-hover:text-white'
-                }`}
-              >
-                <Truck className="w-5 h-5" />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h5 className="font-bold text-sm font-serif">Giao Mâm Cơm Tận Nơi</h5>
-                  {diningMode === 'delivery' && (
-                    <span className="bg-amber-400 text-[#1f381c] text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Đã Chọn
-                    </span>
-                  )}
-                </div>
-                <p
-                  className={`text-xs ${
-                    diningMode === 'delivery' ? 'text-amber-100' : 'text-[#7a6858]'
-                  }`}
-                >
-                  Bếp BiO Station đóng gói giữ nhiệt và giao mâm cơm sạch tận nhà hoặc văn phòng theo giờ hẹn.
-                </p>
+              <Truck className={`w-6 h-6 ${diningMode === 'delivery' ? 'text-amber-400' : 'text-[#274e23]'}`} />
+              <div>
+                <div className="font-bold text-sm">Giao Hàng Tận Nơi</div>
+                <div className={`text-xs mt-1 ${diningMode === 'delivery' ? 'text-emerald-100' : 'text-gray-500'}`}>Giao nóng sốt tận nhà.</div>
               </div>
             </button>
           </div>
 
-          {/* Details Form rendered when mode is selected */}
           {diningMode === 'dine_in' && (
-            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm animate-fadeIn">
-              <div className="text-xs font-bold text-[#274e23] flex items-center gap-1.5 pb-2 border-b border-[#f0e6d8]">
-                <Utensils className="w-4 h-4 text-amber-600" />
-                <span>Chi Tiết Lịch Hẹn Đến Ăn Tại Chi Nhánh BiO Station:</span>
+            <div className="bg-white p-4 rounded-xl border border-[#dcd0bf] space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> Chọn Trạm BiO Station:</label>
+                <select value={selectedStation} onChange={(e) => setSelectedStation(e.target.value)} className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm">
+                  <option>BiO Station Phú Mỹ Hưng (124 Nguyễn Đức Cảnh, Q.7)</option>
+                  <option>BiO Station Thảo Điền (32 Trần Ngọc Diện, Q.2)</option>
+                </select>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Chọn Chi Nhánh BiO Station:</span>
-                  </label>
-                  <select
-                    value={selectedStation}
-                    onChange={(e) => setSelectedStation(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dcd0bf] text-xs font-medium focus:outline-none focus:border-[#274e23] bg-[#fdfbf7]"
-                  >
-                    <option value="BiO Station Phú Mỹ Hưng (124 Nguyễn Đức Cảnh, Q.7)">
-                      BiO Station Phú Mỹ Hưng (Quận 7)
-                    </option>
-                    <option value="BiO Station Thảo Điền (38 Quốc Hương, Q.2)">
-                      BiO Station Thảo Điền (Quận 2)
-                    </option>
-                    <option value="BiO Station Củ Chi (Khu Nông Trại Sinh Thái Củ Chi)">
-                      BiO Station Nông Trại Củ Chi
-                    </option>
-                  </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Ngày Hẹn:</label>
+                  <input type="date" value={reservationDate} onChange={(e) => setReservationDate(e.target.value)} min={todayIsoDate} className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Chọn Ngày Đến Ăn (Lịch Bếp):</span>
-                  </label>
-                  <input
-                    type="date"
-                    min={todayIsoDate}
-                    value={reservationDate}
-                    onChange={(e) => setReservationDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dcd0bf] text-xs font-bold text-[#274e23] focus:outline-none focus:border-[#274e23] bg-[#fdfbf7] cursor-pointer"
-                  />
-                  {reservationDate && (
-                    <span className="text-[11px] font-semibold text-emerald-800 block mt-0.5">
-                      🗓️ {formatVietnameseDate(reservationDate)}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Giờ Hẹn Ăn (Bếp Nấu Sẵn):</span>
-                  </label>
-                  <select
-                    value={reservationTime}
-                    onChange={(e) => setReservationTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dcd0bf] text-xs font-medium focus:outline-none focus:border-[#274e23] bg-[#fdfbf7]"
-                  >
-                    <option value="11:30">11:30 (Trưa)</option>
-                    <option value="12:00">12:00 (Trưa)</option>
-                    <option value="12:30">12:30 (Trưa)</option>
-                    <option value="18:00">18:00 (Tối)</option>
-                    <option value="18:30">18:30 (Tối)</option>
-                    <option value="19:00">19:00 (Tối)</option>
-                  </select>
+                <div>
+                  <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Giờ Tới:</label>
+                  <input type="time" value={reservationTime} onChange={(e) => setReservationTime(e.target.value)} className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
                 </div>
               </div>
             </div>
           )}
 
           {diningMode === 'delivery' && (
-            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#e2d5c3] space-y-3 shadow-sm animate-fadeIn">
-              <div className="text-xs font-bold text-[#274e23] flex items-center gap-1.5 pb-2 border-b border-[#f0e6d8]">
-                <Truck className="w-4 h-4 text-amber-600" />
-                <span>Thông Tin Nhận Giao Mâm Cơm Tận Nơi:</span>
+            <div className="bg-white p-4 rounded-xl border border-[#dcd0bf] space-y-4">
+              <div>
+                <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> Địa chỉ giao hàng:</label>
+                <input type="text" value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} placeholder="Nhập số nhà, tên đường, phường, quận..." className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-1 md:col-span-2">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Địa Chỉ Giao Mâm Cơm:</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện..."
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#dcd0bf] text-xs focus:outline-none focus:border-[#274e23] bg-[#fdfbf7]"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <Truck className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Số Điện Thoại Nhận Hàng:</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={deliveryPhone}
-                    onChange={(e) => setDeliveryPhone(e.target.value)}
-                    placeholder="VD: 0908123456"
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#dcd0bf] text-xs focus:outline-none focus:border-[#274e23] bg-[#fdfbf7]"
-                  />
-                </div>
+              <div>
+                <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5">Số điện thoại người nhận:</label>
+                <input type="tel" value={deliveryPhone} onChange={(e) => setDeliveryPhone(e.target.value)} placeholder="09x..." className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
               </div>
-
-              {/* Date & Time Selection for Delivery */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#f0e6d8]">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Chọn Ngày Giao Mâm Cơm (Lịch Bếp):</span>
-                  </label>
-                  <input
-                    type="date"
-                    min={todayIsoDate}
-                    value={reservationDate}
-                    onChange={(e) => setReservationDate(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#dcd0bf] text-xs font-bold text-[#274e23] focus:outline-none focus:border-[#274e23] bg-[#fdfbf7] cursor-pointer"
-                  />
-                  {reservationDate && (
-                    <span className="text-[11px] font-semibold text-emerald-800 block mt-0.5">
-                      🗓️ {formatVietnameseDate(reservationDate)}
-                    </span>
-                  )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> Ngày Giao:</label>
+                  <input type="date" value={reservationDate} onChange={(e) => setReservationDate(e.target.value)} min={todayIsoDate} className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#274e23] flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5 text-amber-600" />
-                    <span>Giờ Muốn Nhận Mâm Cơm:</span>
-                  </label>
-                  <select
-                    value={reservationTime}
-                    onChange={(e) => setReservationTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dcd0bf] text-xs font-medium focus:outline-none focus:border-[#274e23] bg-[#fdfbf7]"
-                  >
-                    <option value="11:00">11:00 (Giao trưa sớm)</option>
-                    <option value="11:30">11:30 (Trưa)</option>
-                    <option value="12:00">12:00 (Trưa)</option>
-                    <option value="12:30">12:30 (Trưa)</option>
-                    <option value="17:30">17:30 (Giao chiều sớm)</option>
-                    <option value="18:00">18:00 (Tối)</option>
-                    <option value="18:30">18:30 (Tối)</option>
-                    <option value="19:00">19:00 (Tối)</option>
-                  </select>
+                <div>
+                  <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Giờ Giao:</label>
+                  <input type="time" value={reservationTime} onChange={(e) => setReservationTime(e.target.value)} className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
                 </div>
               </div>
             </div>
           )}
+
+          <div className="mt-4 bg-white p-4 rounded-xl border border-[#dcd0bf]">
+            <label className="text-xs font-bold text-[#5c4d43] mb-1 flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5" /> Ghi Chú Đơn Hàng (Khẩu vị, yêu cầu khác):</label>
+            <input type="text" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder="Vd: Không hành, không cay..." className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
+          </div>
         </div>
 
-        {/* STEP 5: CONDITIONAL RENDERING - ONLY SHOW AFTER DISHES AND DINING MODE ARE SELECTED */}
-        {totalPortionsSelected === 0 ? (
-          <div className="bg-amber-50/80 p-6 rounded-2xl border border-dashed border-amber-300 text-center space-y-2">
-            <Sparkles className="w-8 h-8 text-amber-600 mx-auto" />
-            <h5 className="font-bold text-[#274e23] font-serif text-base">
-              Vui lòng chọn món ăn ở Bước 3 để tiếp tục
-            </h5>
-            <p className="text-xs text-[#7a6858] max-w-lg mx-auto">
-              Quý khách vui lòng chọn ít nhất 1 món ăn trong thực đơn để bếp BiO Station có thể chuẩn bị khẩu phần và tổng hợp bảng giá.
-            </p>
-          </div>
-        ) : diningMode === null ? (
-          <div className="bg-amber-50/80 p-6 rounded-2xl border border-dashed border-amber-300 text-center space-y-2">
-            <Sparkles className="w-8 h-8 text-amber-600 mx-auto" />
-            <h5 className="font-bold text-[#274e23] font-serif text-base">
-              Vui lòng chọn hình thức trải nghiệm ở Bước 4 trên đây
-            </h5>
-            <p className="text-xs text-[#7a6858] max-w-lg mx-auto">
-              Nhấp chọn <strong>"Ăn Tại Bếp"</strong> hoặc <strong>"Giao Tận Nơi"</strong> để hiển thị tổng hóa đơn chi tiết, chính sách đặt cọc 50% và nút xác nhận đặt bữa ăn.
-            </p>
-          </div>
-        ) : (
-          /* STEP 5: FULL BILL BREAKDOWN & 50% DEPOSIT GUARANTEE POLICY */
-          <div className="bg-[#f8f5f0] p-6 rounded-2xl border border-[#dcd0bf] space-y-6 animate-fadeIn">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[#dcd0bf] pb-4">
-              <div>
-                <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
-                  Tổng Hợp Tất Cả Thông Tin Bữa Ăn & Quy Định Cọc 50%
-                </span>
-                <h4 className="text-xl font-bold font-serif text-[#274e23]">
-                  Bước 5: Tổng Hóa Đơn & Xác Nhận Đặt Bữa
-                </h4>
-              </div>
-
-              <div className="text-right">
-                <div className="text-xs text-[#7a6858]">Tổng giá trị mâm cơm ({peopleCount} người):</div>
-                <div className="text-2xl sm:text-3xl font-black text-[#a66e2c]">
-                  {grandTotal.toLocaleString('vi-VN')} VNĐ
-                </div>
-              </div>
-            </div>
-
-            {/* 50% Deposit Highlights Box */}
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 sm:p-5 rounded-2xl border border-amber-300 space-y-3">
-              <div className="flex items-center gap-2 text-[#274e23] font-bold text-sm font-serif">
-                <ShieldCheck className="w-5 h-5 text-amber-600" />
-                <span>Quy Định Chuyển Khoản Đặt Cọc 50% Giữ Chỗ:</span>
-              </div>
-
-              <p className="text-xs text-[#5c4d43] leading-relaxed">
-                {mealConfig.depositNoticeText}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] text-[#7a6858] block">Thanh toán cọc 50% ngay:</span>
-                    <span className="text-lg font-black text-amber-700">
-                      {depositRequired.toLocaleString('vi-VN')} VNĐ
-                    </span>
+        {/* ORDER SUMMARY */}
+        <div className="bg-[#274e23] p-5 sm:p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-white w-full md:w-auto">
+            <div className="text-sm text-emerald-100 mb-1">Tổng Cộng ({totalItemsCount} món)</div>
+            <div className="text-3xl font-black text-amber-400">{grandTotal.toLocaleString('vi-VN')} VNĐ</div>
+            {totalItemsCount > 0 && (
+              <div className="mt-2 space-y-1">
+                {selectedItemsDetails.map((item, idx) => (
+                  <div key={idx} className="text-xs text-emerald-50 flex justify-between gap-4 border-b border-emerald-800/30 pb-1">
+                    <span>{item.name} (x{item.qty})</span>
+                    <span className="font-bold">{item.total.toLocaleString('vi-VN')}đ</span>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px]">
-                    CỌC {Math.round(depositPercent * 100)}%
-                  </span>
-                </div>
-
-                <div className="bg-white p-3.5 rounded-xl border border-amber-200 shadow-sm flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] text-[#7a6858] block">50% còn lại thanh toán tại bếp / khi nhận mâm:</span>
-                    <span className="text-lg font-black text-[#274e23]">
-                      {remainingAtService.toLocaleString('vi-VN')} VNĐ
-                    </span>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-                    TẠI BẾP
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Order Item Summary Table */}
-            <div className="bg-white p-4 rounded-xl border border-[#e2d5c3] space-y-3 text-xs">
-              <div className="font-bold text-[#274e23] border-b border-[#f0e6d8] pb-2 flex items-center justify-between">
-                <span>Chi Tiết Mâm Cơm ({peopleCount} Khách • {totalPortionsSelected} Suất Món):</span>
-                <span>Gói Cơ Bản: {basePrice.toLocaleString('vi-VN')}đ</span>
-              </div>
-
-              <ul className="space-y-2 text-[#5c4d43]">
-                <li className="flex items-center justify-between bg-[#f8f5f0] p-2 rounded-lg">
-                  <span className="font-bold text-[#274e23]">🌾 Thố Cơm Dẻo Gạo ST25 Bách Mộc (Lúa Tôm):</span>
-                  <span className="font-bold text-emerald-700">Miễn phí theo suất</span>
-                </li>
-
-                {dishBillingBreakdown.map((item, idx) => (
-                  <li key={item.dish.id} className="flex items-center justify-between border-b border-[#f0e6d8] pb-1.5">
-                    <div>
-                      <span className="font-bold text-[#274e23]">
-                        Món {idx + 1}: {item.dish.name}
-                      </span>
-                      <span className="text-[11px] text-[#7a6858] block">
-                        Số lượng: {item.totalQty} phần {item.freeQty > 0 ? `(${item.freeQty} phần trong suất 50k)` : ''}
-                      </span>
-                    </div>
-
-                    <div>
-                      {item.cost > 0 ? (
-                        <span className="font-bold text-amber-700">
-                          +{item.cost.toLocaleString('vi-VN')}đ
-                        </span>
-                      ) : (
-                        <span className="font-bold text-emerald-700">0đ (Bao gồm)</span>
-                      )}
-                    </div>
-                  </li>
                 ))}
-              </ul>
-
-              {/* Note list for guests */}
-              <div className="pt-2 border-t border-[#f0e6d8] text-[11px] text-[#7a6858]">
-                <span className="font-bold text-[#274e23] block mb-1">Ghi chú khẩu vị khách hàng:</span>
-                <ul className="list-disc list-inside space-y-0.5">
-                  {guests.map((g) => (
-                    <li key={g.id}>
-                      <strong className="text-[#5c4d43]">{g.name}:</strong>{' '}
-                      {g.notes ? g.notes : 'Khẩu vị mộc tự nhiên'}
-                    </li>
-                  ))}
-                </ul>
               </div>
-            </div>
-
-            {/* CTA Submit Button */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-xs text-[#7a6858] flex items-center gap-1.5">
-                <Info className="w-4 h-4 text-[#274e23] shrink-0" />
-                <span>
-                  Sau khi thêm vào giỏ, nhân viên BiO Station sẽ gửi mã QR chuyển khoản cọc 50% ({depositRequired.toLocaleString('vi-VN')}đ) để giữ lịch hẹn.
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  added
-                    ? 'bg-emerald-700 text-white scale-105'
-                    : 'bg-[#274e23] hover:bg-[#1e3e1a] text-white hover:scale-105'
-                }`}
-              >
-                {added ? (
-                  <>
-                    <Check className="w-5 h-5 text-amber-300" />
-                    <span>Đã Tạo Đơn & Chuyển Sang Giỏ Hàng!</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="w-5 h-5 text-amber-300" />
-                    <span>
-                      Xác Nhận Đặt Bữa Ăn (Cọc 50%: {depositRequired.toLocaleString('vi-VN')}đ)
-                    </span>
-                  </>
-                )}
-              </button>
-            </div>
+            )}
           </div>
-        )}
+          
+          <button
+            onClick={handleAddToCart}
+            disabled={totalItemsCount === 0 || !diningMode}
+            className={`w-full md:w-auto px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+              added ? 'bg-emerald-500 text-white shadow-lg' : 
+              totalItemsCount === 0 || !diningMode ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 
+              'bg-amber-400 text-[#1f381c] hover:bg-amber-300 shadow-xl shadow-amber-900/20'
+            }`}
+          >
+            {added ? (
+              <><Check className="w-5 h-5" /> Đã Lên Đơn Thành Công</>
+            ) : (
+              <><ShoppingBag className="w-5 h-5" /> Đặt Hàng Ngay</>
+            )}
+          </button>
+        </div>
+        
       </div>
     </div>
   );
