@@ -265,6 +265,7 @@ export interface OrderRecord {
 
 export type AdminTabId =
   | 'brand'
+  | 'maps'
   | 'theme'
   | 'payment'
   | 'experience_meal'

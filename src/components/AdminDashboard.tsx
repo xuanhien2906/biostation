@@ -1193,6 +1193,7 @@ const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = 
 
 const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }> = [
   { id: 'brand', label: 'Thương Hiệu & Footer', icon: '🏷️' },
+  { id: 'maps', label: 'Bản Đồ Google Maps', icon: '📍' },
   { id: 'theme', label: 'Giao Diện & Font Chữ', icon: '🎨' },
   { id: 'payment', label: 'Thanh Toán & QR Code', icon: '💳' },
   { id: 'experience_meal', label: 'Menu Cơm Cháo', icon: '🍴' },
@@ -3209,6 +3210,17 @@ export const AdminDashboard: React.FC = () => {
             </button>
           )}
 
+          {isTabAllowed('maps') && (
+            <button
+              onClick={() => setActiveTab('maps')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'maps' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <MapPin className="w-4 h-4" /> Bản Đồ Google Maps
+            </button>
+          )}
+
           {isTabAllowed('theme') && (
             <button
               onClick={() => setActiveTab('theme')}
@@ -3500,33 +3512,6 @@ export const AdminDashboard: React.FC = () => {
                     onChange={(e) => updateBrandConfig({ address: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
                   />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Link Google Maps - BiO Station Trung tâm
-                    </label>
-                    <input
-                      type="text"
-                      value={siteData.brandConfig.mapLinkCenter || ''}
-                      onChange={(e) => updateBrandConfig({ mapLinkCenter: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
-                      placeholder="https://maps.app.goo.gl/..."
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Link Google Maps - Cơm Cháo Gạo Lứt Hữu Cơ
-                    </label>
-                    <input
-                      type="text"
-                      value={siteData.brandConfig.mapLinkStore || ''}
-                      onChange={(e) => updateBrandConfig({ mapLinkStore: e.target.value })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
-                      placeholder="https://maps.app.goo.gl/..."
-                    />
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -4115,6 +4100,56 @@ export const AdminDashboard: React.FC = () => {
                 className="w-full py-2.5 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
               >
                 <Save className="w-4 h-4 text-amber-300" /> Lưu Cấu Hình Hero Banner & Làm Mới Trang
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: MAPS */}
+        {activeTab === 'maps' && (
+          <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+            <div className="border-b border-[#f0e6d8] pb-4 space-y-1">
+              <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-amber-600" />
+                Cấu Hình Bản Đồ Google Maps
+              </h3>
+              <p className="text-xs text-[#7a6858]">
+                Cập nhật đường dẫn (link) Google Maps cho các điểm trạm BiO Station. Các link này sẽ được hiển thị khi người dùng bấm vào biểu tượng bản đồ nổi ở góc dưới bên phải.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                  Link Google Maps - BiO Station Trung tâm
+                </label>
+                <input
+                  type="text"
+                  value={siteData.brandConfig.mapLinkCenter || ''}
+                  onChange={(e) => updateBrandConfig({ mapLinkCenter: e.target.value })}
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] focus:ring-2 focus:ring-[#274e23] outline-none"
+                  placeholder="https://maps.app.goo.gl/..."
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                  Link Google Maps - Cơm Cháo Gạo Lứt Hữu Cơ BiO Station
+                </label>
+                <input
+                  type="text"
+                  value={siteData.brandConfig.mapLinkStore || ''}
+                  onChange={(e) => updateBrandConfig({ mapLinkStore: e.target.value })}
+                  className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3] focus:ring-2 focus:ring-[#274e23] outline-none"
+                  placeholder="https://maps.app.goo.gl/..."
+                />
+              </div>
+
+              <button
+                onClick={() => handleSaveAndRefresh('Đã lưu cấu hình Google Maps!')}
+                className="w-full py-2.5 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-xs rounded-xl shadow cursor-pointer flex items-center justify-center gap-2 transition-all hover:scale-[1.01] mt-4"
+              >
+                <Save className="w-4 h-4 text-amber-300" /> Lưu Cấu Hình Bản Đồ & Làm Mới Trang
               </button>
             </div>
           </div>
