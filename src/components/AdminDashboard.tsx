@@ -4516,101 +4516,21 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* General Settings Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#fbf8f3] p-5 rounded-2xl border border-[#e2d5c3]">
+            <div className="bg-[#fbf8f3] p-5 rounded-2xl border border-[#e2d5c3] mb-6">
               <div className="space-y-3">
                 <h4 className="font-bold text-sm text-[#274e23] font-serif border-b border-[#e2d5c3] pb-2">
-                  1. Tiêu Đề Banner & Giá Gói Cơ Bản
+                  Cấu Hình Tiêu Đề
                 </h4>
 
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Tiêu Đề Banner Trải Nghiệm
+                    Tiêu Đề Banner
                   </label>
                   <input
                     type="text"
                     value={siteData.experienceMealConfig?.bannerTitle || ''}
                     onChange={(e) => updateExperienceMealConfig({ bannerTitle: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Tiêu Đề Phụ (Subtitle)
-                  </label>
-                  <input
-                    type="text"
-                    value={siteData.experienceMealConfig?.bannerSubtitle || ''}
-                    onChange={(e) => updateExperienceMealConfig({ bannerSubtitle: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Mô Tả Khung Dịch Vụ
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={siteData.experienceMealConfig?.bannerDescription || ''}
-                    onChange={(e) => updateExperienceMealConfig({ bannerDescription: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="font-bold text-sm text-[#274e23] font-serif border-b border-[#e2d5c3] pb-2">
-                  2. Đơn Giá & Quy Định Đặt Cọc 50%
-                </h4>
-
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Giá Khách (VNĐ/Người)
-                    </label>
-                    <input
-                      type="number"
-                      value={siteData.experienceMealConfig?.pricePerPerson ?? 50000}
-                      onChange={(e) => updateExperienceMealConfig({ pricePerPerson: Number(e.target.value) })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-[#274e23]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Mức Cọc (%)
-                    </label>
-                    <input
-                      type="number"
-                      value={siteData.experienceMealConfig?.depositPercent ?? 50}
-                      onChange={(e) => updateExperienceMealConfig({ depositPercent: Number(e.target.value) })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-amber-700"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                      Suất Món / Người
-                    </label>
-                    <input
-                      type="number"
-                      value={siteData.experienceMealConfig?.includedDishesPerPerson ?? 2}
-                      onChange={(e) => updateExperienceMealConfig({ includedDishesPerPerson: Number(e.target.value) })}
-                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold text-[#274e23]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Nội Dung Lưu Ý Đặt Cọc & Giữ Chỗ Mâm Cơm
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={siteData.experienceMealConfig?.depositNoticeText || ''}
-                    onChange={(e) => updateExperienceMealConfig({ depositNoticeText: e.target.value })}
-                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white text-[#5c4d43]"
                   />
                 </div>
               </div>
