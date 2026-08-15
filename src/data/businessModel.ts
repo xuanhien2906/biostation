@@ -1,11 +1,15 @@
 import { BusinessBlock, RoadmapStage, Principle } from '../types';
 
 export const BUSINESS_MISSION = {
+  pageTitle: 'Hệ Sinh Thái BiO Station',
+  pageSubtitle: 'Mô hình kinh doanh tích hợp từ nông trại hữu cơ đến trạm trải nghiệm, mang lại giá trị thật cho sức khỏe người dùng và người nông dân.',
+  missionLabel: 'Sứ mệnh:',
+  missionText: 'BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, sản phẩm tử tế và cộng đồng yêu thiên nhiên.',
+  blocksSectionTitle: '7 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station',
+  blocksSectionSubtitle: 'Cấu trúc vận hành đồng bộ hóa từ nguồn hàng Bách Mộc tới trải nghiệm người dùng',
   partnershipImageUrl: '/partnership.png',
   title: 'KẾ HOẠCH KINH DOANH BiO Station',
   subTitle: 'MÔ HÌNH: TRẢI NGHIỆM – BÁN LẺ – KẾT NỐI THUẬN TỰ NHIÊN',
-  missionText:
-    'BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, sản phẩm tử tế và cộng đồng yêu thiên nhiên.',
   coreValues: [
     {
       name: 'Đúng',
@@ -31,7 +35,6 @@ export const BUSINESS_MISSION = {
 export const BUSINESS_BLOCKS: BusinessBlock[] = [
   {
     id: 1,
-    number: '1',
     title: 'MÔ HÌNH KINHN DOANH',
     icon: 'Store',
     items: [
@@ -44,7 +47,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 2,
-    number: '2',
     title: 'SẢN PHẨM CHÍNH',
     icon: 'Wheat',
     items: [
@@ -57,7 +59,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 3,
-    number: '3',
     title: 'KHÁCH HÀNG MỤC TIÊU',
     icon: 'Users',
     items: [
@@ -70,7 +71,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 4,
-    number: '4',
     title: 'DOANH THU DỰ KIẾN',
     icon: 'TrendingUp',
     items: [
@@ -83,7 +83,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 5,
-    number: '5',
     title: 'CHI PHÍ DỰ KIẾN',
     icon: 'PieChart',
     items: [
@@ -96,7 +95,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 6,
-    number: '6',
     title: 'KÊNH BÁN HÀNG',
     icon: 'ShoppingBag',
     items: [
@@ -109,7 +107,6 @@ export const BUSINESS_BLOCKS: BusinessBlock[] = [
   },
   {
     id: 7,
-    number: '7',
     title: 'KẾ HOẠCH MARKETING',
     icon: 'Megaphone',
     items: [

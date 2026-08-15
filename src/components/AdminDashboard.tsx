@@ -2913,7 +2913,6 @@ export const AdminDashboard: React.FC = () => {
     const nextNumber = ((siteData.businessBlocks?.length || 0) + 1).toString();
     const newBlock: BusinessBlock = {
       id: newId,
-      number: nextNumber,
       title: `TRỤ CỘT MỚI #${nextNumber}`,
       icon: 'Store',
       highlight: 'Điểm nổi bật của trụ cột mới...',
@@ -4833,24 +4832,72 @@ export const AdminDashboard: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Khẩu Hiệu Sứ Mệnh (Mission Quote)
+                    Tiêu Đề Trang
                   </label>
                   <input
                     type="text"
-                    value={siteData.businessMission?.quote || ''}
-                    onChange={(e) => updateBusinessMission({ quote: e.target.value as any })}
+                    value={siteData.businessMission?.pageTitle || ''}
+                    onChange={(e) => updateBusinessMission({ pageTitle: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Mô Tả Chi Tiết Sứ Mệnh
+                    Mô Tả Dưới Tiêu Đề
                   </label>
                   <textarea
                     rows={2}
-                    value={siteData.businessMission?.description || ''}
-                    onChange={(e) => updateBusinessMission({ description: e.target.value as any })}
+                    value={siteData.businessMission?.pageSubtitle || ''}
+                    onChange={(e) => updateBusinessMission({ pageSubtitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Nhãn Sứ Mệnh (VD: Sứ mệnh:)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.missionLabel || ''}
+                    onChange={(e) => updateBusinessMission({ missionLabel: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Nội Dung Sứ Mệnh
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={siteData.businessMission?.missionText || ''}
+                    onChange={(e) => updateBusinessMission({ missionText: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Tiêu Đề Phần Các Khối (VD: 7 Trụ Cột...)
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.businessMission?.blocksSectionTitle || ''}
+                    onChange={(e) => updateBusinessMission({ blocksSectionTitle: e.target.value })}
+                    className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                    Mô Tả Phần Các Khối
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={siteData.businessMission?.blocksSectionSubtitle || ''}
+                    onChange={(e) => updateBusinessMission({ blocksSectionSubtitle: e.target.value })}
                     className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:ring-2 focus:ring-[#274e23] outline-none"
                   />
                 </div>
@@ -4880,7 +4927,7 @@ export const AdminDashboard: React.FC = () => {
                       <div className="flex items-center justify-between gap-2 border-b border-[#e2d5c3] pb-3">
                         <div className="flex items-center gap-2 flex-1">
                           <span className="px-2.5 py-1 bg-[#274e23] text-white font-bold text-xs rounded-lg shrink-0">
-                            #{block.number || bIndex + 1}
+                            #{(bIndex + 1).toString().padStart(2, '0')}
                           </span>
                           <input
                             type="text"

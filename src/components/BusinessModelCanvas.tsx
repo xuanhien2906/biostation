@@ -102,15 +102,15 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black font-serif text-[#274e23] tracking-tight">
-                KẾ HOẠCH KINH DOANH BiO Station
+                {businessMission?.pageTitle || 'Hệ Sinh Thái BiO Station'}
               </h1>
 
               <p className="text-lg font-semibold text-[#a66e2c] font-serif">
-                MÔ HÌNH: TRẢI NGHIỆM – BÁN LẺ – KẾT NỐI THUẬN TỰ NHIÊN
+                {businessMission?.pageSubtitle || 'Mô hình kinh doanh tích hợp từ nông trại hữu cơ đến trạm trải nghiệm'}
               </p>
 
               <p className="text-base text-[#5c4d43] leading-relaxed max-w-2xl bg-[#f2e9dc] p-4 rounded-2xl border-l-4 border-[#274e23]">
-                <span className="font-bold text-[#274e23]">Sứ mệnh:</span>{' '}
+                <span className="font-bold text-[#274e23]">{businessMission?.missionLabel || 'Sứ mệnh:'}</span>{' '}
                 {businessMission?.missionText}
               </p>
             </div>
@@ -186,15 +186,15 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
         <div>
           <div className="text-center mb-8 space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black font-serif text-[#274e23]">
-              7 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station
+              {businessMission?.blocksSectionTitle || '7 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station'}
             </h2>
             <p className="text-sm text-[#7a6858]">
-              Cấu trúc vận hành đồng bộ hóa từ nguồn hàng Bách Mộc tới trải nghiệm người dùng
+              {businessMission?.blocksSectionSubtitle || 'Cấu trúc vận hành đồng bộ hóa từ nguồn hàng Bách Mộc tới trải nghiệm người dùng'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {businessBlocks.map((block) => (
+            {businessBlocks.map((block, idx) => (
               <div
                 key={block.id}
                 className="bg-white rounded-2xl p-6 border border-[#e2d5c3] hover:shadow-lg hover:border-[#274e23] transition-all flex flex-col justify-between"
@@ -207,7 +207,7 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
                       </div>
                       <div>
                         <span className="text-[10px] font-bold uppercase text-[#a66e2c] tracking-wider">
-                          Khối #{block.number}
+                          Khối #{(idx + 1).toString().padStart(2, '0')}
                         </span>
                         <h3 className="font-bold text-base text-[#274e23] leading-snug">
                           {block.title}
@@ -239,106 +239,7 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
           </div>
         </div>
 
-        {/* Financial Forecast Simulator Interactive Component */}
-        <div className="bg-[#274e23] text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold uppercase tracking-wider">
-              <Calculator className="w-4 h-4 text-amber-300" />
-              Mô Phỏng Doanh Thu & Chi Phí Trạm BiO
-            </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black font-serif">
-              Bảng Ước Tính Dòng Tiền Vận Hành
-            </h2>
-
-            <p className="text-sm text-emerald-100 leading-relaxed">
-              Theo kế hoạch: Tháng 1 đạt 150–200 triệu, Tháng 6 đạt 400–600 triệu, Tháng 12 đạt 700M–1 Tỷ VNĐ.
-              Sử dụng thanh trượt bên dưới để mô phỏng bài toán kinh doanh cho 1 điểm Station.
-            </p>
-
-            {/* Range Slider */}
-            <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-emerald-200 font-semibold uppercase">
-                  Mục Tiêu Doanh Thu Tháng:
-                </span>
-                <span className="text-2xl font-black text-amber-300">
-                  {targetRevenueMonth.toLocaleString('vi-VN')} VNĐ
-                </span>
-              </div>
-
-              <input
-                type="range"
-                min={150000000}
-                max={1000000000}
-                step={25000000}
-                value={targetRevenueMonth}
-                onChange={(e) => setTargetRevenueMonth(Number(e.target.value))}
-                className="w-full accent-amber-400 cursor-pointer h-2 bg-emerald-950/60 rounded-lg"
-              />
-
-              <div className="flex justify-between text-[11px] text-emerald-200">
-                <span>150 Triệu (Tháng 1)</span>
-                <span>500 Triệu (Tháng 6)</span>
-                <span>1 Tỷ (Tháng 12)</span>
-              </div>
-
-              {/* Calculated Breakdown Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/10">
-                <div className="bg-black/20 p-3 rounded-xl">
-                  <span className="text-[10px] text-emerald-200 block font-semibold">
-                    Nhập hàng (40%)
-                  </span>
-                  <span className="text-sm font-bold text-white">
-                    {inventoryCost.toLocaleString('vi-VN')}đ
-                  </span>
-                </div>
-                <div className="bg-black/20 p-3 rounded-xl">
-                  <span className="text-[10px] text-emerald-200 block font-semibold">
-                    Mặt bằng & vận hành (30%)
-                  </span>
-                  <span className="text-sm font-bold text-white">
-                    {spaceOpsCost.toLocaleString('vi-VN')}đ
-                  </span>
-                </div>
-                <div className="bg-black/20 p-3 rounded-xl">
-                  <span className="text-[10px] text-emerald-200 block font-semibold">
-                    Nhân sự (25%)
-                  </span>
-                  <span className="text-sm font-bold text-white">
-                    {staffCost.toLocaleString('vi-VN')}đ
-                  </span>
-                </div>
-                <div className="bg-black/20 p-3 rounded-xl">
-                  <span className="text-[10px] text-emerald-200 block font-semibold">
-                    Marketing (5%)
-                  </span>
-                  <span className="text-sm font-bold text-white">
-                    {mktgCost.toLocaleString('vi-VN')}đ
-                  </span>
-                </div>
-              </div>
-
-              <div className="bg-amber-500/20 p-4 rounded-xl border border-amber-400/40 flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-amber-200 font-bold block">
-                    Lợi Nhuận Ròng Dự Kiến (~18%):
-                  </span>
-                  <span className="text-xl font-black text-amber-300">
-                    +{estimatedProfit.toLocaleString('vi-VN')} VNĐ / tháng
-                  </span>
-                </div>
-                <button
-                  onClick={onGoToNetwork}
-                  className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>Mạng Lưới Station</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* 4 Development Stages (Lộ Trình Phát Triển) */}
         <div className="space-y-8">

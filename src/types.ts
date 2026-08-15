@@ -326,9 +326,21 @@ export interface QuizQuestion {
   }[];
 }
 
+export interface BusinessMissionConfig {
+  pageTitle: string;
+  pageSubtitle: string;
+  missionLabel: string;
+  missionText: string;
+  blocksSectionTitle: string;
+  blocksSectionSubtitle: string;
+  partnershipImageUrl?: string;
+  title?: string;
+  subTitle?: string;
+  coreValues?: any[]; // Keep backward compatibility
+}
+
 export interface BusinessBlock {
   id: number;
-  number: string;
   title: string;
   icon: string;
   items: string[];

@@ -15,6 +15,7 @@ import {
   ExperienceMealConfig,
   DishOption,
   BioCategoryOption,
+  BusinessMissionConfig,
 } from '../types';
 
 export const DEFAULT_BIO_CATEGORIES: BioCategoryOption[] = [
@@ -312,7 +313,7 @@ export interface SiteDataState {
   themeConfig: ThemeConfig;
   paymentConfig: PaymentConfig;
   experienceMealConfig: ExperienceMealConfig;
-  businessMission: typeof BUSINESS_MISSION;
+  businessMission: BusinessMissionConfig;
   businessBlocks: BusinessBlock[];
   roadmapStages: RoadmapStage[];
   principles: Principle[];
@@ -773,8 +774,8 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setExperienceMealConfig((prev) => ({ ...prev, ...config }));
   };
 
-  const updateBusinessMission = (mission: Partial<typeof BUSINESS_MISSION>) => {
-    setBusinessMissionState((prev: typeof BUSINESS_MISSION) => ({ ...prev, ...mission }));
+  const updateBusinessMission = (mission: Partial<BusinessMissionConfig>) => {
+    setBusinessMissionState((prev: BusinessMissionConfig) => ({ ...prev, ...mission }));
   };
 
   const toggleMainSaleProduct = (productId: string) => {
