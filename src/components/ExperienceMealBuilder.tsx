@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSite } from '../context/SiteContext';
 import {
   Utensils, Plus, Minus, Check, Truck, 
-  MapPin, Clock, Calendar, MessageSquare
+  MapPin, Clock, Calendar, MessageSquare, ShoppingBag
 } from 'lucide-react';
 import { Product } from '../types';
 
