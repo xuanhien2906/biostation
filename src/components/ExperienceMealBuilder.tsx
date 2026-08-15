@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSite } from '../context/SiteContext';
 import {
   Utensils, Plus, Minus, Check, Truck, 
-  MapPin, Clock, Calendar, MessageSquare, ShoppingBag
+  MapPin, Clock, Calendar, MessageSquare, ShoppingBag, Info
 } from 'lucide-react';
 import { Product } from '../types';
 
@@ -240,11 +240,16 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
       {/* HEADER BANNER */}
       <div className="bg-gradient-to-r from-[#1b3318] via-[#274e23] to-[#172e15] p-6 sm:p-8 text-white relative overflow-hidden">
         <h3 className="text-2xl sm:text-3xl font-black font-serif text-white tracking-tight mb-2">
-          Thực Đơn Cơm & Cháo Bách Mộc
+          {siteData.experienceMealConfig?.bannerTitle || 'Thực Đơn Cơm & Cháo Bách Mộc'}
         </h3>
         <p className="text-sm text-emerald-100">
-          Chế biến từ nguyên liệu hữu cơ chuẩn BMQ. Chọn món, lên đơn và thưởng thức trọn vị tự nhiên.
+          {siteData.experienceMealConfig?.bannerSubtitle || 'Chế biến từ nguyên liệu hữu cơ chuẩn BMQ. Chọn món, lên đơn và thưởng thức trọn vị tự nhiên.'}
         </p>
+        {siteData.experienceMealConfig?.bannerDescription && (
+          <div className="mt-4 p-4 bg-white/10 rounded-xl border border-white/20 text-sm text-white/90 leading-relaxed whitespace-pre-wrap">
+            {siteData.experienceMealConfig.bannerDescription}
+          </div>
+        )}
       </div>
 
       <div className="p-4 sm:p-6 space-y-6">
@@ -388,6 +393,19 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
             <input type="text" value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)} placeholder="Vd: Không hành, không cay..." className="w-full p-2.5 rounded-lg border border-[#dcd0bf] text-sm" />
           </div>
         </div>
+
+        {/* DEPOSIT NOTICE */}
+        {siteData.experienceMealConfig?.depositNoticeText && (
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs text-amber-900 mt-4 flex gap-3 items-start shadow-sm">
+             <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+             <div>
+               <strong className="block mb-1 text-sm text-amber-800">Lưu ý Đặt Cọc & Giữ Chỗ</strong>
+               <div className="whitespace-pre-wrap leading-relaxed">
+                 {siteData.experienceMealConfig.depositNoticeText}
+               </div>
+             </div>
+          </div>
+        )}
 
         {/* ORDER SUMMARY */}
         <div className="bg-[#274e23] p-5 sm:p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
