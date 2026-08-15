@@ -70,7 +70,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
   const { siteData } = useSite();
   const allItems = siteData.experienceMealConfig?.dishes || [];
   
-  const MENU_COM = allItems.filter(d => d.category === 'Cơm');
+  const MENU_COM = allItems.filter(d => ['Cơm', 'Món Mặn', 'Món Xào', 'Món Canh', 'Món Phụ & Tráng Miệng'].includes(d.category));
   const MENU_NUOC = allItems.filter(d => d.category === 'Nước');
   const MENU_CHAO_CHINH = allItems.filter(d => d.category === 'Cháo');
   const MENU_CHAO_TOPPING = allItems.filter(d => d.category === 'Topping');
