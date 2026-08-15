@@ -139,7 +139,7 @@ export interface Product {
   id: string;
   name: string;
   subtitle: string;
-  category: 'Gạo & Nông Sản' | 'Rau Củ Hữu Cơ' | 'Thịt & Hải Sản Sạch' | 'Bữa Ăn Trải Nghiệm' | 'Mật Ong & Tự Nhiên' | 'Chăm Sóc & Gia Dụng' | 'Bộ Sản Phẩm Gia Đình';
+  category: 'Gạo' | 'Cafe' | 'Nước nhàu' | 'Màng cám gạo' | 'Trà' | 'Nước Mắm' | 'Viên cám gạo' | string;
   is_hidden?: boolean;
   price: number;
   originalPrice?: number;
