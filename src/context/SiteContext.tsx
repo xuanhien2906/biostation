@@ -629,7 +629,18 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (parsed.heroConfig) setHeroConfig(parsed.heroConfig);
             if (parsed.themeConfig) setThemeConfig(parsed.themeConfig);
             if (parsed.paymentConfig) setPaymentConfig(parsed.paymentConfig);
-            if (parsed.experienceMealConfig) setExperienceMealConfig(parsed.experienceMealConfig);
+            if (parsed.experienceMealConfig) {
+              // FORCED SANITIZATION: Eliminate any cached "50k" or "Thiết Kế Mâm Cơm" garbage
+              const config = parsed.experienceMealConfig;
+              if (config.bannerTitle?.includes("Thiết Kế") || config.bannerTitle?.includes("50k")) {
+                config.bannerTitle = "Menu cơm cháo hữu cơ tại Bio Station";
+                config.bannerSubtitle = "Chế biến từ nguyên liệu hữu cơ chuẩn BMQ. Chọn món, lên đơn và thưởng thức trọn vị tự nhiên.";
+                config.bannerDescription = "";
+                config.depositNoticeText = "";
+                config.pricePerPerson = 0;
+              }
+              setExperienceMealConfig(config);
+            }
             if (parsed.businessMission) setBusinessMissionState(parsed.businessMission);
             if (parsed.stations && Array.isArray(parsed.stations)) setStations(parsed.stations);
             if (parsed.bioCategories && Array.isArray(parsed.bioCategories)) setBioCategories(parsed.bioCategories);
