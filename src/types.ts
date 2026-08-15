@@ -96,6 +96,10 @@ export interface BrandConfig {
   cleanMeatLabel?: string;         // e.g. "Thịt & Thực Phẩm Sinh Thái"
   bioStationLabel?: string;        // e.g. "Hệ Sinh Thái BiO Station"
   mainSaleProductTitle?: string;   // e.g. "Sản Phẩm Bán Chính Trang Chủ"
+  
+  // Maps links
+  mapLinkCenter?: string;
+  mapLinkStore?: string;
 }
 
 export interface FooterConfig {

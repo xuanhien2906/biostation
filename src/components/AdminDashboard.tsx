@@ -3502,6 +3502,33 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                      Link Google Maps - BiO Station Trung tâm
+                    </label>
+                    <input
+                      type="text"
+                      value={siteData.brandConfig.mapLinkCenter || ''}
+                      onChange={(e) => updateBrandConfig({ mapLinkCenter: e.target.value })}
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
+                      placeholder="https://maps.app.goo.gl/..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                      Link Google Maps - Cơm Cháo Gạo Lứt Hữu Cơ
+                    </label>
+                    <input
+                      type="text"
+                      value={siteData.brandConfig.mapLinkStore || ''}
+                      onChange={(e) => updateBrandConfig({ mapLinkStore: e.target.value })}
+                      className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
+                      placeholder="https://maps.app.goo.gl/..."
+                    />
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-semibold text-[#5c4d43] block mb-1">

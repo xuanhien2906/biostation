@@ -13,6 +13,7 @@ import { AiAdvisor } from './components/AiAdvisor';
 import { SuccessStories } from './components/SuccessStories';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
+import { FloatingActions } from './components/FloatingActions';
 import { PRODUCTS } from './data/products';
 
 export default function App() {
@@ -162,6 +163,9 @@ export default function App() {
 
       {/* Global Footer */}
       <Footer setActiveTab={setActiveTab} />
+      
+      {/* Floating Actions */}
+      <FloatingActions />
     </div>
   );
 }
