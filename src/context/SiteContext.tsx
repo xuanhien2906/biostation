@@ -353,6 +353,7 @@ interface SiteContextType {
   resetToDefaults: () => void;
   importJSON: (jsonString: string) => boolean;
   exportJSON: () => string;
+  forceSync: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'BIO_STATION_SITE_DATA_V12';
@@ -1004,6 +1005,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         resetToDefaults,
         importJSON,
         exportJSON,
+        forceSync: syncCloudConfig,
       }}
     >
       {children}

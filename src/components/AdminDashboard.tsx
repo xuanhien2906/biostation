@@ -2672,6 +2672,7 @@ export const AdminDashboard: React.FC = () => {
     resetToDefaults,
     importJSON,
     exportJSON,
+    forceSync,
   } = useSite();
 
   // Multi-User RBAC Authentication State
@@ -2877,12 +2878,13 @@ export const AdminDashboard: React.FC = () => {
     setTimeout(() => setSaveSuccess(''), 3000);
   };
 
-  const handleSaveAndRefresh = (msg: string) => {
+  const handleSaveAndRefresh = async (msg: string) => {
     logAuditEvent(currentAdminUser, 'config', 'UPDATE', 'Cấu hình Website Toàn Hệ Thống', msg);
-    setSaveSuccess(`${msg} Đang làm mới và cập nhật giao diện toàn trang...`);
+    setSaveSuccess(`${msg} Đang đồng bộ cấu hình lên máy chủ, vui lòng đợi...`);
+    await forceSync();
     setTimeout(() => {
       window.location.reload();
-    }, 600);
+    }, 400);
   };
 
   const handleExport = () => {
