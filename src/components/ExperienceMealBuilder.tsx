@@ -22,11 +22,12 @@ interface OrderItem {
   id: string;
   name: string;
   price: number;
+  image?: string;
 }
 
 const MENU_COM: OrderItem[] = [
-  { id: 'com_huu_co', name: '16. Cơm hữu cơ Bách Mộc (Gồm: Cơm, Canh, Rau luộc, Món mặn)', price: 59000 },
-  { id: 'com_lut_huu_co', name: '17. Cơm lứt hữu cơ Bách Mộc (Gồm: Cơm lứt, Canh, Rau, Món mặn)', price: 75000 },
+  { id: 'com_huu_co', name: '16. Cơm hữu cơ Bách Mộc (Gồm: Cơm, Canh, Rau luộc, Món mặn)', price: 59000, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80' },
+  { id: 'com_lut_huu_co', name: '17. Cơm lứt hữu cơ Bách Mộc (Gồm: Cơm lứt, Canh, Rau, Món mặn)', price: 75000, image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80' },
   { id: 'do_an_them', name: '18. Đồ ăn thêm', price: 30000 },
   { id: 'com_them_huu_co', name: '19. Cơm thêm - Hữu cơ', price: 10000 },
   { id: 'com_them_lut', name: '20. Cơm thêm - Lứt', price: 15000 },
@@ -167,54 +168,66 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
   const renderMenuItem = (item: OrderItem, isMainDish?: boolean, isChao1Loai?: boolean) => {
     const qty = quantities[item.id] || 0;
     return (
-      <div key={item.id} className="mb-2">
-        <div className={`flex items-center justify-between p-3 sm:p-4 rounded-xl border transition-all ${
-          isMainDish 
-            ? (qty > 0 ? 'bg-[#274e23] border-[#274e23] text-white shadow-lg' : 'bg-[#1e3e1a] border-[#1e3e1a] text-white hover:bg-[#274e23]') 
-            : (qty > 0 ? 'bg-[#274e23]/5 border-[#274e23]' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]/50')
-        }`}>
-          <div className="flex-1 pr-2">
-            <div className={`font-bold text-sm ${isMainDish ? 'text-white' : 'text-[#274e23]'}`}>{item.name}</div>
-            <div className={`text-sm font-bold mt-1 ${isMainDish ? 'text-[#f0e6d8]' : 'text-[#a66e2c]'}`}>{item.price.toLocaleString('vi-VN')}đ</div>
-          </div>
-          <div className="flex items-center gap-3 bg-[#f0e6d8] p-1.5 rounded-xl border border-[#dcd0bf] shrink-0">
-            <button
-              onClick={() => handleDecrease(item.id)}
-              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${qty > 0 ? 'bg-white text-[#274e23] shadow-sm' : 'text-gray-400 cursor-not-allowed'}`}
-              disabled={qty === 0}
-            >
-              <Minus className="w-4 h-4 stroke-[3]" />
-            </button>
-            <span className="w-6 text-center font-bold text-sm text-[#274e23]">{qty}</span>
-            <button
-              onClick={() => handleIncrease(item.id)}
-              className="w-7 h-7 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] shadow-sm flex items-center justify-center transition-colors"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" />
-            </button>
-          </div>
-        </div>
-        {isChao1Loai && qty > 0 && (
-          <div className="mt-2 ml-2 p-3 bg-amber-50/80 rounded-lg border border-amber-200 flex flex-col gap-2">
-             <span className="text-xs font-bold text-amber-900">Vui lòng chọn 1 loại dùng kèm:</span>
-             <select 
-               className="w-full p-2.5 rounded-md border border-amber-300 text-sm bg-white outline-none focus:border-[#274e23] font-medium text-[#2d241e]"
-               value={chaoToppings[item.id] || ''}
-               onChange={(e) => setChaoToppings(prev => ({...prev, [item.id]: e.target.value}))}
-             >
-               <option value="" disabled>-- Chọn 1 loại topping --</option>
-               <option value="Thịt heo băm">Thịt heo băm</option>
-               <option value="Rau củ">Rau củ</option>
-               <option value="Thịt gà">Thịt gà</option>
-               <option value="Nấm">Nấm</option>
-               <option value="Ruốc cá">Ruốc cá</option>
-               <option value="Thịt bò băm">Thịt bò băm</option>
-               <option value="Tôm">Tôm</option>
-               <option value="Tim - Cật">Tim - Cật</option>
-               <option value="Trứng">Trứng</option>
-             </select>
+      <div key={item.id} className={`flex flex-col h-full rounded-3xl border transition-all shadow-sm hover:shadow-md overflow-hidden ${
+        isMainDish 
+          ? (qty > 0 ? 'bg-[#274e23] border-[#274e23] text-white' : 'bg-white border-[#e2d5c3] hover:border-[#274e23]') 
+          : (qty > 0 ? 'bg-amber-50/50 border-amber-500' : 'bg-white border-[#e2d5c3] hover:border-amber-500/50')
+      }`}>
+        {item.image && (
+          <div className="w-full aspect-[4/3] bg-[#f0e6d8] relative overflow-hidden shrink-0 border-b border-black/5">
+            <img src={item.image} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
           </div>
         )}
+        <div className="p-4 flex flex-col flex-1">
+          <div className={`font-bold text-base leading-snug line-clamp-3 mb-2 ${isMainDish && qty > 0 ? 'text-white' : 'text-[#274e23]'}`}>
+            {item.name}
+          </div>
+          
+          <div className="mt-auto pt-3 flex items-center justify-between border-t border-black/5">
+            <div className={`text-lg sm:text-xl font-black ${isMainDish && qty > 0 ? 'text-amber-300' : 'text-orange-600'}`}>
+              {item.price.toLocaleString('vi-VN')}đ
+            </div>
+            
+            <div className={`flex items-center gap-3 p-1 rounded-xl border shrink-0 ${isMainDish && qty > 0 ? 'bg-white/10 border-white/20' : 'bg-[#f0e6d8] border-[#dcd0bf]'}`}>
+              <button
+                onClick={() => handleDecrease(item.id)}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${qty > 0 ? 'bg-white text-[#274e23] shadow-sm' : 'text-gray-400 cursor-not-allowed'}`}
+                disabled={qty === 0}
+              >
+                <Minus className="w-4 h-4 stroke-[3]" />
+              </button>
+              <span className={`w-6 text-center font-bold text-base ${isMainDish && qty > 0 ? 'text-white' : 'text-[#274e23]'}`}>{qty}</span>
+              <button
+                onClick={() => handleIncrease(item.id)}
+                className="w-8 h-8 rounded-lg bg-[#274e23] text-white hover:bg-[#1e3e1a] shadow-sm flex items-center justify-center transition-colors"
+              >
+                <Plus className="w-4 h-4 stroke-[3]" />
+              </button>
+            </div>
+          </div>
+
+          {isChao1Loai && qty > 0 && (
+            <div className={`mt-4 p-3 rounded-xl border flex flex-col gap-2 shadow-inner ${isMainDish && qty > 0 ? 'bg-white/10 border-white/20' : 'bg-white/80 border-amber-200'}`}>
+               <span className={`text-xs font-bold ${isMainDish && qty > 0 ? 'text-white' : 'text-amber-900'}`}>Vui lòng chọn 1 loại dùng kèm:</span>
+               <select 
+                 className={`w-full p-2.5 rounded-lg border text-sm outline-none font-medium ${isMainDish && qty > 0 ? 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-amber-300 [&>option]:text-[#2d241e]' : 'bg-white border-amber-300 text-[#2d241e] focus:border-[#274e23]'}`}
+                 value={chaoToppings[item.id] || ''}
+                 onChange={(e) => setChaoToppings(prev => ({...prev, [item.id]: e.target.value}))}
+               >
+                 <option value="" disabled>-- Chọn 1 loại topping --</option>
+                 <option value="Thịt heo băm">Thịt heo băm</option>
+                 <option value="Rau củ">Rau củ</option>
+                 <option value="Thịt gà">Thịt gà</option>
+                 <option value="Nấm">Nấm</option>
+                 <option value="Ruốc cá">Ruốc cá</option>
+                 <option value="Thịt bò băm">Thịt bò băm</option>
+                 <option value="Tôm">Tôm</option>
+                 <option value="Tim - Cật">Tim - Cật</option>
+                 <option value="Trứng">Trứng</option>
+               </select>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -251,16 +264,20 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
         {/* MENU CONTENT */}
         <div className="min-h-[400px]">
           {activeTab === 'com_nuoc' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-8">
               <div>
-                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 flex items-center gap-2">
-                  <Utensils className="w-5 h-5 text-amber-500" /> Cơm (Rice Meals)
+                <h4 className="font-bold text-xl text-[#274e23] font-serif mb-4 flex items-center gap-2 border-b border-[#e2d5c3] pb-2">
+                  <Utensils className="w-6 h-6 text-amber-500" /> Cơm (Rice Meals)
                 </h4>
-                {MENU_COM.map((item, index) => renderMenuItem(item, index < 2))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {MENU_COM.map((item, index) => renderMenuItem(item, index < 2))}
+                </div>
               </div>
               <div>
-                <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4">Nước (Drinks)</h4>
-                {MENU_NUOC.map(item => renderMenuItem(item))}
+                <h4 className="font-bold text-xl text-[#274e23] font-serif mb-4 border-b border-[#e2d5c3] pb-2">Nước (Drinks)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {MENU_NUOC.map(item => renderMenuItem(item))}
+                </div>
               </div>
             </div>
           )}
@@ -271,7 +288,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                 <h4 className="font-bold text-xl text-[#274e23] font-serif mb-4 flex items-center gap-2 border-b border-[#e2d5c3] pb-2">
                   <Utensils className="w-6 h-6 text-amber-500" /> Loại Cháo (Porridge)
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {MENU_CHAO_CHINH.map(item => renderMenuItem(item, true, item.id.includes('chao_1_loai')))}
                 </div>
                 <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800">
@@ -284,7 +301,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({ on
                 <h4 className="font-bold text-lg text-[#274e23] font-serif mb-4 border-b border-[#e2d5c3] pb-2">
                   Giá tách lẻ gọi thêm (Toppings)
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {MENU_CHAO_TOPPING.map(item => renderMenuItem(item))}
                 </div>
               </div>
