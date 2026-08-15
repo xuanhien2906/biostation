@@ -51,10 +51,9 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
   pricePerPerson: 50000,
   depositPercent: 50,
   includedDishesPerPerson: 2,
-  bannerTitle: 'Thiết Kế Mâm Cơm Trải Nghiệm Cá Nhân Hóa',
-  bannerSubtitle: 'Dịch Vụ Bữa Ăn Trải Nghiệm Độc Quyền BiO Station',
-  bannerDescription:
-    'Phục vụ từ 1 đến 10 khách. Mỗi phần ăn 50.000đ / người đã bao gồm Cơm ST25 Bách Mộc dẻo ngọt và 2 suất món ăn tự chọn. Quý khách có thể thoải mái ghi chú khẩu vị riêng cho từng thành viên, chọn số lượng phần ăn, đặt lịch hẹn ăn tại chỗ hoặc giao mâm cơm tận nơi.',
+  bannerTitle: 'Menu cơm cháo hữu cơ tại Bio Station',
+  bannerSubtitle: '',
+  bannerDescription: '',
   depositNoticeText:
     'Để đảm bảo nguyên liệu hữu cơ (thịt sinh thái Củ Chi, rau hái sáng, cá lóc đồng) luôn được chuẩn bị tươi mới tuyệt đối và bếp không bị lãng phí food waste, BiO Station yêu cầu thanh toán cọc 50% sau khi quý khách xác nhận đơn.',
   dishes: [

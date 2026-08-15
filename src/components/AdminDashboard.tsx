@@ -818,7 +818,7 @@ const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = 
             className="text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-bold"
           >
             <option value="all">📋 Tất Cả Loại Đơn</option>
-            <option value="experience_meal">🍱 Mâm Cơm Trải Nghiệm 50k</option>
+            <option value="experience_meal">🍱 Menu Cơm Cháo Hữu Cơ</option>
             <option value="product">🛒 Đơn Nông Sản & Bán Lẻ</option>
           </select>
 
@@ -902,7 +902,7 @@ const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = 
                   <td className="p-3 whitespace-nowrap">
                     {ord.orderType === 'experience_meal' ? (
                       <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold text-[10px]">
-                        🍱 Mâm Cơm 50k
+                        🍱 Menu Cơm Cháo Hữu Cơ
                       </span>
                     ) : (
                       <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-300 font-bold text-[10px]">
@@ -1095,7 +1095,7 @@ const OrdersManagerSection: React.FC<{ currentAdminUser?: AdminUser | null }> = 
                 <div className="pt-1">
                   <span className="font-bold text-[#274e23] text-[11px] block">Loại hình:</span>
                   <span className="font-semibold text-stone-700">
-                    {selectedOrder.orderType === 'experience_meal' ? '🍱 Mâm Cơm Trải Nghiệm 50k' : '🛒 Đơn Bán Lẻ Nông Sản'}
+                    {selectedOrder.orderType === 'experience_meal' ? '🍱 Menu Cơm Cháo Hữu Cơ' : '🛒 Đơn Bán Lẻ Nông Sản'}
                   </span>
                 </div>
               </div>
@@ -4486,11 +4486,11 @@ export const AdminDashboard: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#f0e6d8] pb-4">
               <div>
                 <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
-                  Quản Lý Dịch Vụ Mâm Cơm Trải Nghiệm Cá Nhân Hóa
+                  Quản Lý Menu Cơm Cháo Hữu Cơ
                 </span>
                 <h3 className="text-xl font-bold font-serif text-[#274e23] flex items-center gap-2">
                   <Utensils className="w-5 h-5 text-amber-600" />
-                  Cấu Hình Mâm Cơm 50k & Danh Sách Món Ăn Tự Chọn
+                  Cấu Hình Menu Cơm Cháo Hữu Cơ & Danh Sách Món Ăn Tự Chọn
                 </h3>
               </div>
 
