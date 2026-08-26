@@ -6548,6 +6548,35 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
+              {/* Linked Products */}
+              <div className="space-y-2 border-t border-[#f0e6d8] pt-3 pb-2">
+                <label className="font-bold text-[#274e23] uppercase tracking-wider text-xs">
+                  Sản Phẩm Khuyên Dùng / Liên Kết Hệ Sinh Thái
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                  {(siteData.products || []).map((prod) => (
+                    <label key={prod.id} className="flex items-center gap-2 p-2 border border-[#f0e6d8] rounded-xl hover:bg-[#fbf8f3] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={(editingArticle.recommendedProductIds || []).includes(prod.id)}
+                        onChange={(e) => {
+                          const currentIds = editingArticle.recommendedProductIds || [];
+                          const newIds = e.target.checked 
+                            ? [...currentIds, prod.id] 
+                            : currentIds.filter(id => id !== prod.id);
+                          setEditingArticle({ ...editingArticle, recommendedProductIds: newIds });
+                        }}
+                        className="w-4 h-4 text-[#274e23] rounded border-gray-300 focus:ring-[#274e23]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-[#5c4d43] line-clamp-1">{prod.name}</span>
+                        <span className="text-[10px] text-stone-500">{prod.price.toLocaleString()}đ</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               {/* Transcript / Full Text Snippet */}
               <div>
                 <label className="font-bold text-[#5c4d43] block mb-1">Trích Đoạn / Nội Dung Chi Tiết Nổi Bật</label>
@@ -6715,6 +6744,35 @@ export const AdminDashboard: React.FC = () => {
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Linked Products */}
+              <div className="space-y-2 border-t border-[#f0e6d8] pt-3 pb-2">
+                <label className="font-bold text-[#274e23] uppercase tracking-wider text-xs">
+                  Sản Phẩm Khuyên Dùng / Liên Kết Hệ Sinh Thái
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                  {(siteData.products || []).map((prod) => (
+                    <label key={prod.id} className="flex items-center gap-2 p-2 border border-[#f0e6d8] rounded-xl hover:bg-[#fbf8f3] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={(editingChaoLuaMeArticle.recommendedProductIds || []).includes(prod.id)}
+                        onChange={(e) => {
+                          const currentIds = editingChaoLuaMeArticle.recommendedProductIds || [];
+                          const newIds = e.target.checked 
+                            ? [...currentIds, prod.id] 
+                            : currentIds.filter(id => id !== prod.id);
+                          setEditingChaoLuaMeArticle({ ...editingChaoLuaMeArticle, recommendedProductIds: newIds });
+                        }}
+                        className="w-4 h-4 text-[#274e23] rounded border-gray-300 focus:ring-[#274e23]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-xs font-bold text-[#5c4d43] line-clamp-1">{prod.name}</span>
+                        <span className="text-[10px] text-stone-500">{prod.price.toLocaleString()}đ</span>
+                      </div>
+                    </label>
                   ))}
                 </div>
               </div>
