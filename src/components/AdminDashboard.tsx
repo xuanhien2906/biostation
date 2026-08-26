@@ -3327,6 +3327,17 @@ export const AdminDashboard: React.FC = () => {
             </button>
           )}
 
+          {isTabAllowed('chaoluame') && (
+            <button
+              onClick={() => setActiveTab('chaoluame')}
+              className={`px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'chaoluame' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
+              }`}
+            >
+              <BookOpen className="w-4 h-4 text-amber-600" /> Cháo Lúa Mẹ ({(siteData.chaoLuaMeArticles || []).length})
+            </button>
+          )}
+
           {isTabAllowed('stories') && (
             <button
               onClick={() => setActiveTab('stories')}
