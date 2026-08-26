@@ -319,7 +319,7 @@ export interface AdminUser {
 export interface Article {
   id: string;
   title: string;
-  category: 'Trồng Cây Thuận Tự Nhiên' | 'Mô Hình BiO Station' | 'Tiêu Chuẩn BMQ' | 'Sống Xanh & Sức Khỏe';
+  category: 'Trồng Cây Thuận Tự Nhiên' | 'Mô Hình BiO Station' | 'Tiêu Chuẩn BMQ' | 'Sống Xanh & Sức Khỏe' | 'Chương Trình' | 'Dữ Liệu Dinh Dưỡng' | 'Câu Chuyện';
   duration: string;
   views: string;
   date: string;
