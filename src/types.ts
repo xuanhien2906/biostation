@@ -8,6 +8,7 @@ export type TabType =
   | 'quiz' 
   | 'advisor' 
   | 'stories'
+  | 'chaoluame'
   | 'admin';
 
 export interface DishOption {
@@ -280,6 +281,7 @@ export type AdminTabId =
   | 'tools'
   | 'users'
   | 'logs'
+  | 'chaoluame'
   | 'backups';
 
 export interface AuditLogEntry {

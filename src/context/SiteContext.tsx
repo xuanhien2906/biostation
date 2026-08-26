@@ -326,6 +326,7 @@ export interface SiteDataState {
   recipes: Recipe[];
   articles: Article[];
   stories: SuccessStory[];
+  chaoLuaMeArticles: Article[];
   bioCategories: BioCategoryOption[];
 }
 
@@ -346,6 +347,7 @@ interface SiteContextType {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
   setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
+  setChaoLuaMeArticles: React.Dispatch<React.SetStateAction<Article[]>>;
   setStories: React.Dispatch<React.SetStateAction<SuccessStory[]>>;
   setBioCategories: React.Dispatch<React.SetStateAction<BioCategoryOption[]>>;
   toggleMainSaleProduct: (productId: string) => void;
@@ -384,6 +386,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       tabs: [
         { id: 'home', label: 'Tổng Quan' },
         { id: 'model', label: 'Mô Hình 7 Trụ Cột' },
+        { id: 'chaoluame', label: 'Cháo Lúa Mẹ' },
         { id: 'shop', label: 'Cửa Hàng Hữu Cơ' },
         { id: 'network', label: 'Trạm Giao Điểm' },
         { id: 'recipes', label: 'Bếp Ăn Lành' },
@@ -452,6 +455,11 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return saved ? JSON.parse(saved) : ARTICLES;
   });
 
+  const [chaoLuaMeArticles, setChaoLuaMeArticles] = useState<Article[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}_chao_lua_me_articles`);
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [stories, setStories] = useState<SuccessStory[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_stories`);
     return saved ? JSON.parse(saved) : SUCCESS_STORIES;
@@ -514,6 +522,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_articles`, JSON.stringify(articles));
   }, [articles]);
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_chao_lua_me_articles`, JSON.stringify(chaoLuaMeArticles));
+  }, [chaoLuaMeArticles]);
 
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_stories`, JSON.stringify(stories));
@@ -601,6 +613,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         products: dataOverride?.products || products,
         recipes: dataOverride?.recipes || recipes,
         articles: dataOverride?.articles || articles,
+        chaoLuaMeArticles: dataOverride?.chaoLuaMeArticles || chaoLuaMeArticles,
         stories: dataOverride?.stories || stories,
         updatedAt: new Date().toISOString(),
       };
@@ -631,7 +644,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (err) {
       console.error('[AutoBackup] ❌ Error syncing site_config to Supabase:', err);
     }
-  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, stories]);
+  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, chaoLuaMeArticles, stories]);
 
   // ===== MASTER AUTO-SYNC useEffect =====
   // This effect watches ALL primary state variables. Whenever ANY state changes
@@ -657,7 +670,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clearTimeout(syncDebounceTimer.current);
       }
     };
-  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, stories, syncCloudConfig]);
+  }, [brandConfig, heroConfig, themeConfig, paymentConfig, experienceMealConfig, businessMission, stations, bioCategories, products, recipes, articles, chaoLuaMeArticles, stories, syncCloudConfig]);
 
   // FETCH FROM SUPABASE WITH SMART MERGING & FALLBACKS
   useEffect(() => {
@@ -694,6 +707,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (parsed.products && Array.isArray(parsed.products) && parsed.products.length > 0) setProducts(parsed.products);
             if (parsed.recipes && Array.isArray(parsed.recipes) && parsed.recipes.length > 0) setRecipes(parsed.recipes);
             if (parsed.articles && Array.isArray(parsed.articles) && parsed.articles.length > 0) setArticles(parsed.articles);
+            if (parsed.chaoLuaMeArticles && Array.isArray(parsed.chaoLuaMeArticles)) setChaoLuaMeArticles(parsed.chaoLuaMeArticles);
             if (parsed.stories && Array.isArray(parsed.stories) && parsed.stories.length > 0) setStories(parsed.stories);
           }
         } catch (e) {
@@ -888,6 +902,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProducts(PRODUCTS);
     setRecipes(RECIPES);
     setArticles(ARTICLES);
+    setChaoLuaMeArticles([]);
     setStories(SUCCESS_STORIES);
     setBioCategories(DEFAULT_BIO_CATEGORIES);
 
@@ -904,6 +919,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem(`${STORAGE_KEY}_products`);
     localStorage.removeItem(`${STORAGE_KEY}_recipes`);
     localStorage.removeItem(`${STORAGE_KEY}_articles`);
+    localStorage.removeItem(`${STORAGE_KEY}_chao_lua_me_articles`);
     localStorage.removeItem(`${STORAGE_KEY}_stories`);
     localStorage.removeItem(`${STORAGE_KEY}_bio_categories`);
   };
@@ -925,6 +941,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       products,
       recipes,
       articles,
+      chaoLuaMeArticles,
       stories,
       bioCategories,
     };
@@ -949,6 +966,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (parsed.products) setProducts(parsed.products);
       if (parsed.recipes) setRecipes(parsed.recipes);
       if (parsed.articles) setArticles(parsed.articles);
+      if (parsed.chaoLuaMeArticles) setChaoLuaMeArticles(parsed.chaoLuaMeArticles);
       if (parsed.stories) setStories(parsed.stories);
       if (parsed.bioCategories) setBioCategories(parsed.bioCategories);
       syncCloudConfig(parsed);
@@ -975,6 +993,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     products,
     recipes,
     articles,
+    chaoLuaMeArticles,
     stories,
     bioCategories,
   };
@@ -998,6 +1017,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setProducts,
         setRecipes,
         setArticles,
+        setChaoLuaMeArticles,
         setStories,
         setBioCategories,
         toggleMainSaleProduct,

@@ -2665,6 +2665,7 @@ export const AdminDashboard: React.FC = () => {
     setProducts,
     setRecipes,
     setArticles,
+    setChaoLuaMeArticles,
     setStories,
     setBioCategories,
     toggleMainSaleProduct,
@@ -2732,6 +2733,8 @@ export const AdminDashboard: React.FC = () => {
 
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [isAddingArticle, setIsAddingArticle] = useState(false);
+  const [editingChaoLuaMeArticle, setEditingChaoLuaMeArticle] = useState<Article | null>(null);
+  const [isAddingChaoLuaMeArticle, setIsAddingChaoLuaMeArticle] = useState(false);
 
   const [editingStory, setEditingStory] = useState<SuccessStory | null>(null);
   const [isAddingStory, setIsAddingStory] = useState(false);
@@ -5902,6 +5905,89 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
+        {/* TAB: CHAO LUA ME */}
+        {activeTab === 'chaoluame' && (
+          <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">
+            <div className="flex items-center justify-between border-b border-[#f0e6d8] pb-4">
+              <div>
+                <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-amber-600" />
+                  Chỉnh Sửa Cháo Lúa Mẹ ({(siteData.chaoLuaMeArticles || []).length})
+                </h3>
+              </div>
+              <button
+                onClick={() => {
+                  const newArt: Article = {
+                    id: `art-${Date.now()}`,
+                    title: 'Lợi Ích Của Lối Sống Thuận Tự Nhiên Bách Mộc',
+                    category: 'Sống Xanh & Sức Khỏe',
+                    duration: '5 phút đọc',
+                    views: '1.2k',
+                    date: 'Hôm nay',
+                    image: SAMPLE_IMAGES[1].url,
+                    summary: 'Sống thuận tự nhiên bắt đầu từ việc lựa chọn nguồn thực phẩm hữu cơ minh bạch.',
+                    keyTakeaways: [
+                      'Lựa chọn thực phẩm kiểm định BMQ rõ ràng.',
+                      'Ăn thực phẩm nguyên bản giàu vi chất.',
+                      'Gia nhập điểm trạm cộng đồng địa phương.',
+                    ],
+                    transcriptSnippet:
+                      'Chạm để trở về với mẹ thiên nhiên là chìa khóa bảo vệ sức khỏe và mang lại nguồn năng lượng an lành cho mỗi gia đình.',
+                    recommendedProductIds: [siteData.products[0]?.id || 'p-st25'],
+                  };
+                  setEditingChaoLuaMeArticle(newArt);
+                  setIsAddingChaoLuaMeArticle(true);
+                }}
+                className="px-4 py-2 bg-[#274e23] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow"
+              >
+                <Plus className="w-4 h-4" /> Thêm Bài Viết Mới
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {((siteData.chaoLuaMeArticles || []) || []).map((a) => (
+                <div key={a.id} className="p-4 rounded-2xl border border-[#e2d5c3] bg-[#fbf8f3] space-y-3 flex flex-col justify-between">
+                  <div>
+                    <div className="relative h-36 rounded-xl overflow-hidden bg-[#e2d5c3] mb-3">
+                      <img src={a.image} alt={a.title} className="w-full h-full object-cover" />
+                      <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                        {a.category}
+                      </span>
+                    </div>
+                    <h4 className="font-bold text-sm text-[#274e23] font-serif leading-snug">{a.title}</h4>
+                    <p className="text-xs text-[#5c4d43] line-clamp-2 mt-1">{a.summary}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-[#f0e6d8]">
+                    <button
+                      onClick={() => {
+                        setEditingChaoLuaMeArticle(a);
+                        setIsAddingChaoLuaMeArticle(false);
+                      }}
+                      className="w-full py-2 bg-[#274e23] text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-amber-300" /> Sửa Bài Viết & Ý Chính
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Xóa bài viết "${a.title}"?`)) {
+                          setChaoLuaMeArticles((prev) => prev.filter((item) => item.id !== a.id));
+                          logAuditEvent(currentAdminUser, 'content', 'DELETE', `Cháo lúa mẹ ${a.title}`, 'Xóa bài viết thư viện');
+                          showNotification('Đã xóa bài viết!');
+                        }
+                      }}
+                      className="px-2.5 py-2 bg-red-100 hover:bg-red-200 text-red-800 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        
         {/* TAB 8: SUCCESS STORIES */}
         {activeTab === 'stories' && (
           <div className="bg-white p-6 rounded-3xl border border-[#e2d5c3] shadow-sm space-y-6">

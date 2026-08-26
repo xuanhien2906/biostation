@@ -11,7 +11,7 @@ export const FloatingActions: React.FC = () => {
   const mapStore = siteData?.brandConfig?.mapLinkStore || 'https://maps.google.com';
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col items-end gap-5 z-50 select-none">
+    <div className="fixed bottom-24 right-6 flex flex-col items-end gap-5 z-50 select-none">
       {/* ================= 1. GOOGLE MAPS FLOATING BUTTON ================= */}
       <div className="relative group flex items-center gap-3">
         {/* Hover Tooltip Label */}

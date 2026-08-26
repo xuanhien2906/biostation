@@ -11,6 +11,7 @@ import { RecipeDirectory } from './components/RecipeDirectory';
 import { KnowledgeBase } from './components/KnowledgeBase';
 import { AiAdvisor } from './components/AiAdvisor';
 import { SuccessStories } from './components/SuccessStories';
+import { ChaoLuaMe } from './components/ChaoLuaMe';
 import { AdminDashboard } from './components/AdminDashboard';
 import { Footer } from './components/Footer';
 import { FloatingActions } from './components/FloatingActions';
@@ -126,6 +127,8 @@ export default function App() {
             }}
           />
         )}
+
+        {activeTab === 'chaoluame' && <ChaoLuaMe />}
 
         {activeTab === 'network' && <StationNetwork />}
 
