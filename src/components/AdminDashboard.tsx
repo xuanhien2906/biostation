@@ -1203,6 +1203,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
   { id: 'stations', label: 'Trạm BiO Station', icon: '📍' },
   { id: 'recipes', label: 'Công Thức Bếp Ăn', icon: '🍳' },
   { id: 'articles', label: 'Thư Viện Bài Viết', icon: '📖' },
+  { id: 'chaoluame', label: 'Bài Viết Cháo Lúa Mẹ', icon: '🌾' },
   { id: 'stories', label: 'Câu Chuyện Trải Nghiệm', icon: '💖' },
   { id: 'media', label: 'Kho Ảnh Media', icon: '🖼️' },
   { id: 'tools', label: 'Sao Lưu & Import', icon: '⚙️' },
@@ -1231,6 +1232,7 @@ const StaffManagerSection: React.FC<{
     'orders',
     'recipes',
     'articles',
+    'chaoluame',
     'stories',
   ]);
   const [canCreate, setCanCreate] = useState(true);
