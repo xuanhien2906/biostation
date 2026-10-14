@@ -51,12 +51,12 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
   const categories = [
     'Tất Cả',
     'Gạo',
+    'Màng cám gạo',
+    'Viên cám gạo',
     'Cafe',
     'Nước nhàu',
-    'Màng cám gạo',
     'Trà',
-    'Nước Mắm',
-    'Viên cám gạo',
+    'Sản Phẩm Khác',
   ];
 
   const filteredProducts =
