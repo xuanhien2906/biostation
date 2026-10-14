@@ -17,7 +17,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 3820,
     badge: 'CHUẨN QUỐC TẾ',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-trang-xat-doi.jpg',
     description: 'Gạo Trắng Xát Dối Bách Mộc đạt đồng thời 4 chứng nhận hữu cơ quốc tế khắt khe: USDA Organic (Mỹ), JAS (Nhật Bản), Liên minh Châu Âu (EU) và Canada. Hạt gạo chỉ xát dối nhẹ lớp vỏ trấu, giữ lại lớp cám mỏng giàu vitamin nhóm B, khoáng chất và chất xơ tự nhiên. Cơm mềm dẻo, ngọt hậu đậm đà và an lành tuyệt đối.',
     keyBenefits: [
       'Chứng nhận hữu cơ quốc tế: USDA, JAS, EU, Canada',
@@ -42,7 +42,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 2950,
     badge: 'GIÀU DINH DƯỠNG',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-trang-nguyen-cam.jpg',
     description: 'Gạo Trắng Nguyên Cám Bách Mộc giữ nguyên 100% lớp vỏ cám và phôi mầm gạo - nơi tập trung hơn 70% giá trị dinh dưỡng của hạt lúa. Đạt đầy đủ các chứng nhận hữu cơ uy tín toàn cầu (USDA, JAS, EU, Canada). Rất thích hợp cho người theo đuổi lối sống thực dưỡng, bảo vệ tim mạch và duy trì chỉ số đường huyết ổn định.',
     keyBenefits: [
       '100% Nguyên cám & mầm phôi dinh dưỡng tự nhiên',
@@ -67,7 +67,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 2180,
     badge: 'HỮU CƠ CAO CẤP',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-do-nguyen-cam.jpg',
     description: 'Gạo Đỏ Nguyên Cám Bách Mộc sở hữu sắc đỏ ruby tự nhiên từ chất chống oxy hóa Iron & Antioxidant hữu cơ. Canh tác thuận tự nhiên đạt chuẩn USDA, JAS, EU và Canada. Hạt gạo đậm vị, thơm bùi, cung cấp lượng sắt và chất xơ dồi dào, hỗ trợ tái tạo máu và thanh lọc cơ thể hiệu quả.',
     keyBenefits: [
       'Sắc đỏ tự nhiên giàu Sắt hữu cơ và hợp chất chống oxy hóa',
@@ -92,7 +92,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 1890,
     badge: 'THƯỢNG HẠNG ANTHOCYANIN',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-tim-nguyen-cam.jpg',
     description: 'Dòng gạo tím thượng hạng của Bách Mộc chứa hàm lượng sắc tố Anthocyanin tự nhiên cực kỳ cao - hoạt chất chống oxy hóa mạnh mẽ giúp ngăn ngừa lão hóa và bảo vệ tế bào. Đạt chuẩn 4 chứng nhận hữu cơ quốc tế hàng đầu thế giới (USDA, JAS, EU, Canada).',
     keyBenefits: [
       'Giàu chất chống oxy hóa Anthocyanin tự nhiên quý giá',
@@ -121,7 +121,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 3120,
     badge: 'LÚA MẸ YANG VCO',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-lua-me-yang.jpg',
     description: 'Gạo Lúa Mẹ (YANG) Nguyên Cám mang năng lượng thuần khiết từ giống lúa cổ bản địa canh tác theo triết lý thuận tự nhiên, đạt chứng nhận Vietnam Certified Organic (VCO). Hạt gạo lưu giữ trọn vẹn tinh túy đất trời, mang lại sự cân bằng âm dương và dinh dưỡng trọn lành cho cơ thể.',
     keyBenefits: [
       'Đạt chuẩn Chứng Nhận Hữu Cơ Việt Nam (VCO)',
@@ -149,7 +149,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.91,
     reviewCount: 1640,
     badge: 'VÙNG ĐỆM XANH',
-    image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-vung-dem-xat-doi.jpg',
     description: 'Được gieo trồng tại các vùng đệm sinh thái bao quanh khu bảo tồn tự nhiên, canh tác theo hướng hữu cơ chuyển đổi nghiêm ngặt, cách ly tuyệt đối hóa chất độc hại. Hạt gạo xát dối thơm mềm, giá thành hợp lý để mọi gia đình đều dễ dàng tiếp cận nguồn lương thực an toàn mỗi ngày.',
     keyBenefits: [
       'Canh tác vùng đệm sinh thái thuận tự nhiên',
@@ -173,7 +173,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.93,
     reviewCount: 1530,
     badge: 'NGUYÊN CÁM VÙNG ĐỆM',
-    image: 'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/gao-vung-dem-nguyen-cam.jpg',
     description: 'Gạo vùng đệm sinh thái giữ nguyên vỏ cám dinh dưỡng, vừa bổ dưỡng vừa kinh tế. Cung cấp trọn vẹn chất xơ, vitamin và khoáng chất tự nhiên từ vùng đất lành sinh thái.',
     keyBenefits: [
       '100% Nguyên cám tự nhiên giàu chất xơ và vitamin B',
@@ -201,7 +201,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.92,
     reviewCount: 980,
     badge: 'LÊN MEN TỰ NHIÊN',
-    image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/nuoc-chiet-gao-len-men.jpg',
     description: 'Nước chiết từ tinh chất gạo hữu cơ lên men theo công nghệ sinh học tự nhiên, giàu enzyme sống, lợi khuẩn probiotic và axit amin thiết yếu. Giúp làm dịu hệ tiêu hóa, thanh mát cơ thể và bổ sung năng lượng thuần khiết.',
     keyBenefits: [
       '100% Chiết xuất từ gạo hữu cơ Bách Mộc lên men',
@@ -226,7 +226,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 1420,
     badge: 'TINH HOA DINH DƯỠNG',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/vien-dan-mang-gao.jpg',
     description: 'Viên Đan Màng Gạo là sản phẩm chế biến sâu độc quyền của Bách Mộc, cô đọng tinh chất dinh dưỡng quý giá nhất từ lớp màng cám gạo hữu cơ vào dạng viên nang tiện lợi. Giàu Gamma-Oryzanol, Vitamin E tự nhiên và khoáng chất vi lượng, giúp cải thiện giấc ngủ, tăng cường tuần hoàn và chống oxy hóa mạnh mẽ.',
     keyBenefits: [
       'Hàm lượng Gamma-Oryzanol tự nhiên đậm đặc',
@@ -251,7 +251,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 890,
     badge: 'HỮU CƠ ĐẬM ĐẶC',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/mang-cam-gao-huu-co.jpg',
     description: 'Màng Cám Gạo Bách Mộc Hữu Cơ là "trái tim dinh dưỡng" của hạt thóc hữu cơ đạt chuẩn quốc tế. Qua công nghệ bóc tách và ổn định enzym sinh học độc quyền, giữ trọn 120+ chất chống oxy hóa, vitamin và khoáng chất quý hiếm. Siêu thực phẩm vàng giúp phục hồi tế bào, cân bằng chuyển hóa và tăng cường sinh lực.',
     keyBenefits: [
       'Chiết xuất từ 100% màng cám gạo hữu cơ quốc tế',
@@ -276,7 +276,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 760,
     badge: 'HŨ LỚN 450G',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/mang-gao-vung-dem.jpg',
     description: 'Màng Gạo Bách Mộc Vùng Đệm quy cách hũ lớn 450g, được thu hoạch từ vùng lúa sinh thái vùng đệm. Sản phẩm mang lại nguồn dưỡng chất dồi dào, hàm lượng dinh dưỡng cao và khối lượng nhiều hơn, đáp ứng nhu cầu bổ sung dinh dưỡng đều đặn cho cả gia đình.',
     keyBenefits: [
       'Thu hoạch từ màng cám lúa vùng đệm sinh thái thuận tự nhiên',
@@ -304,7 +304,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.93,
     reviewCount: 840,
     badge: 'THUẦN TỰ NHIÊN',
-    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/bot-chuoi-hot-rung.jpg',
     description: 'Bột chuối hột rừng nguyên chất thu hái từ rừng sinh thái tự nhiên, sấy lạnh công nghệ cao để bảo toàn dược tính. Hỗ trợ tiêu hóa, giải nhiệt, hỗ trợ bài sỏi thận và giảm đau nhức xương khớp theo kinh nghiệm dân gian.',
     keyBenefits: [
       '100% Chuối hột rừng tự nhiên, không pha trộn',
@@ -329,7 +329,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 1680,
     badge: 'NANO LÊN MEN',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/nuoc-ep-nhau-nano.jpg',
     description: 'Nước ép từ trái nhàu chín tự nhiên qua quá trình lên men yếm khí kết hợp công nghệ phân tách Nano sinh học giúp khử hoàn toàn mùi nồng khó chịu, giữ lại hàm lượng Proxeronine và enzyme quý báu ở mức cao nhất. Giúp hạ huyết áp, giảm đau nhức cơ xương và tăng cường miễn dịch vượt trội.',
     keyBenefits: [
       'Công nghệ Nano lên men sinh học dễ uống, thơm dịu',
@@ -354,7 +354,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 1190,
     badge: 'THẢO MỘC THANH LỌC',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/tra-thach-chau.jpg',
     description: 'Trà Thạch Châu là sự phối hòa tinh tế giữa các loại thảo dược rừng tự nhiên thu hái thủ công. Trà có vị ngọt thanh dịu mát, hương thơm thảo mộc an lành, giúp thanh nhiệt, mát gan, tiêu độc và mang lại giấc ngủ sâu êm dịu.',
     keyBenefits: [
       'Thảo mộc tự nhiên 100% không hương liệu hóa chất',
@@ -379,7 +379,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 2240,
     badge: 'ĐẶNG FARM ORGANIC',
     isMainSaleProduct: true,
-    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80',
+    image: 'https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/products/cafe-dang-farm.jpg',
     description: 'Cafe Hữu Cơ Đặng Farm canh tác dưới tán rừng tự nhiên trên cao nguyên bazan màu mỡ. Thu hái thủ công 100% quả chín mọng, sơ chế mật ong (honey process) và rang mộc nguyên chất. Giữ trọn vị chua thanh trái cây, hậu vị ngọt kéo dài và hương thơm quyến rũ không hương liệu.',
     keyBenefits: [
       'Canh tác hữu cơ dưới tán rừng Đặng Farm',
