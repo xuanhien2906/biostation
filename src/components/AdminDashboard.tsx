@@ -4416,6 +4416,128 @@ export const AdminDashboard: React.FC = () => {
                 </button>
               </div>
 
+              {/* CÔNG TẮC BẬT / TẮT TÍNH NĂNG THANH TOÁN ONLINE */}
+              <div className={`p-6 rounded-3xl border transition-all duration-300 ${
+                siteData.paymentConfig?.isOnlinePaymentEnabled
+                  ? 'bg-gradient-to-r from-emerald-50 via-green-50 to-emerald-100/50 border-emerald-300 shadow-sm'
+                  : 'bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100/50 border-amber-300 shadow-sm'
+              }`}>
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+                  <div className="space-y-1.5 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wide uppercase shadow-sm ${
+                        siteData.paymentConfig?.isOnlinePaymentEnabled
+                          ? 'bg-emerald-700 text-white'
+                          : 'bg-amber-700 text-white'
+                      }`}>
+                        {siteData.paymentConfig?.isOnlinePaymentEnabled ? '🟢 ĐANG BẬT THANH TOÁN ONLINE' : '🔴 ĐANG TẮT (CHẾ ĐỘ XEM MENU & GIÁ)'}
+                      </span>
+                      <span className="text-xs font-bold text-[#5c4d43]">CÔNG TẮC HỆ THỐNG</span>
+                    </div>
+
+                    <h4 className="text-base sm:text-lg font-bold font-serif text-[#274e23]">
+                      {siteData.paymentConfig?.isOnlinePaymentEnabled
+                        ? 'Website đang cho phép Đặt Hàng & Quét Mã QR Thanh Toán Trực Tuyến'
+                        : 'Website đang ở chế độ CHỈ XEM MENU & BÁO GIÁ (Khách gọi điện hoặc đến địa điểm kinh doanh)'}
+                    </h4>
+
+                    <p className="text-xs text-[#5c4d43] leading-relaxed max-w-3xl">
+                      {siteData.paymentConfig?.isOnlinePaymentEnabled
+                        ? 'Khách hàng có thể thêm sản phẩm/bữa ăn vào giỏ, điền địa chỉ giao hàng và quét mã VietQR để chuyển khoản thanh toán.'
+                        : 'Theo chế độ này, giỏ hàng và danh mục sản phẩm chỉ hiển thị menu và đơn giá để khách hàng nắm chi phí. Khách hàng không quét mã QR thanh toán trên web; thay vào đó hệ thống hiển thị nút Gọi Hotline và hướng dẫn đến trực tiếp địa điểm kinh doanh / điểm trạm.'}
+                    </p>
+                  </div>
+
+                  {/* Toggle Button */}
+                  <div className="flex items-center gap-3 shrink-0 bg-white p-3 rounded-2xl border border-[#dcd0bf] shadow-sm">
+                    <div className="text-right">
+                      <div className="text-xs font-bold text-[#274e23]">
+                        {siteData.paymentConfig?.isOnlinePaymentEnabled ? 'Đang Mở' : 'Đang Tắt'}
+                      </div>
+                      <div className="text-[10px] text-[#7a6858]">
+                        {siteData.paymentConfig?.isOnlinePaymentEnabled ? 'Khách thanh toán online' : 'Chỉ xem menu & giá'}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextVal = !siteData.paymentConfig?.isOnlinePaymentEnabled;
+                        updatePaymentConfig({ isOnlinePaymentEnabled: nextVal });
+                        showNotification(nextVal ? 'Đã BẬT thanh toán online & QR Code!' : 'Đã TẮT thanh toán online (Chuyển sang chế độ chỉ xem menu & giá)!');
+                      }}
+                      className={`relative inline-flex h-9 w-20 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none shadow-inner ${
+                        siteData.paymentConfig?.isOnlinePaymentEnabled ? 'bg-emerald-600' : 'bg-gray-300'
+                      }`}
+                      role="switch"
+                      aria-checked={Boolean(siteData.paymentConfig?.isOnlinePaymentEnabled)}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-8 w-8 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out flex items-center justify-center text-xs font-black ${
+                          siteData.paymentConfig?.isOnlinePaymentEnabled ? 'translate-x-11 text-emerald-700' : 'translate-x-0 text-gray-500'
+                        }`}
+                      >
+                        {siteData.paymentConfig?.isOnlinePaymentEnabled ? 'ON' : 'OFF'}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Additional Settings when Offline (Show Menu Only) */}
+                {!siteData.paymentConfig?.isOnlinePaymentEnabled && (
+                  <div className="mt-5 pt-4 border-t border-amber-200/80 space-y-4 bg-white/90 p-5 rounded-2xl border border-amber-200 shadow-sm animate-fade-in">
+                    <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wide">
+                      <Store className="w-4 h-4 text-amber-700" />
+                      <span>Cấu hình hướng dẫn khách hàng khi tắt thanh toán online (Chế độ Menu & Báo Giá):</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                          Số điện thoại Hotline gọi đặt hàng / tư vấn nhanh:
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={siteData.paymentConfig?.offlineCallPhone ?? siteData.paymentConfig?.supportPhone ?? siteData.brandConfig?.hotline ?? '0388 500 500'}
+                            onChange={(e) => updatePaymentConfig({ offlineCallPhone: e.target.value })}
+                            placeholder="0388 500 500"
+                            className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-mono font-bold text-[#274e23]"
+                          />
+                        </div>
+                        <span className="text-[10px] text-[#7a6858]">Khách bấm nút "Gọi Hotline" trên giỏ hàng & menu sẽ gọi trực tiếp số này</span>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                          Địa chỉ / Ghi chú địa điểm kinh doanh đón khách:
+                        </label>
+                        <input
+                          type="text"
+                          value={siteData.paymentConfig?.offlineAddressNote ?? siteData.brandConfig?.address ?? 'Đường Nguyễn Văn Linh, KĐT Phú Mỹ Hưng, Quận 7, TP. HCM'}
+                          onChange={(e) => updatePaymentConfig({ offlineAddressNote: e.target.value })}
+                          placeholder="Đường Nguyễn Văn Linh, KĐT Phú Mỹ Hưng, Quận 7, TP. HCM"
+                          className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white font-medium text-[#2d241e]"
+                        />
+                        <span className="text-[10px] text-[#7a6858]">Hướng dẫn địa chỉ khi khách muốn đến trực tiếp địa điểm để thưởng thức hoặc mua hàng</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
+                        Lời nhắn / Thông báo hiển thị cho khách hàng trên website:
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={siteData.paymentConfig?.offlineNoticeText ?? 'Hiện tại BiO Station đang phục vụ trực tiếp tại các điểm trạm và nhận đơn qua Hotline. Website hiển thị menu và bảng giá để Quý khách nắm chi phí. Quý khách có nhu cầu dùng bữa hoặc đặt mua sản phẩm vui lòng gọi Hotline hoặc ghé trực tiếp địa điểm kinh doanh!'}
+                        onChange={(e) => updatePaymentConfig({ offlineNoticeText: e.target.value })}
+                        placeholder="Thông báo hiển thị cho khách..."
+                        className="w-full text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white leading-relaxed text-[#5c4d43]"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* 1. BANK ACCOUNT & SUPPORT CONTACT */}
                 <div className="space-y-4 bg-[#fbf8f3] p-5 rounded-2xl border border-[#e2d5c3]">
@@ -4792,10 +4914,12 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <h5 className="font-bold text-[#b45309] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase">Phân hệ Cơm & Nước</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <h5 className="font-bold text-[#274e23] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase flex items-center gap-2">
+                  <span>🍚 1. Các Khẩu Phần Cơm Chính (Mâm Cơm 79k, 99k & Cơm Văn Phòng 59k)</span>
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {(siteData.experienceMealConfig?.dishes || []).map((dish, index, array) => {
-                    if (dish.category === 'Cháo' || dish.category === 'Topping') return null;
+                    if (!dish.isMain && dish.category !== 'Cơm' && (!dish.price || dish.price === 0)) return null;
                     return (
                       <div
                         key={dish.id}
@@ -4803,7 +4927,14 @@ export const AdminDashboard: React.FC = () => {
                       >
                         <div className="space-y-2">
                           <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
-                            <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                            {dish.image ? (
+                              <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex flex-col items-center justify-center bg-[#f0e6d8] text-[#8c7868]">
+                                <Utensils className="w-6 h-6 text-amber-600 mb-1" />
+                                <span className="text-[10px] font-bold">Khẩu Phần Cơm</span>
+                              </div>
+                            )}
                             <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
                               {dish.category}
                             </span>
@@ -4905,33 +5036,36 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <h5 className="font-bold text-[#b45309] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase">Phân hệ Cháo & Topping</h5>
+                <h5 className="font-bold text-[#b45309] mb-3 border-b border-[#f0e6d8] pb-1 text-sm uppercase flex items-center gap-2">
+                  <span>🌿 2. Các Món Trong Thực Đơn (Cá, Gà, Đậu, Thịt, Rau & Món Khác - Đi Kèm Suất Cơm)</span>
+                </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {(siteData.experienceMealConfig?.dishes || []).map((dish, index, array) => {
-                    if (dish.category !== 'Cháo' && dish.category !== 'Topping') return null;
+                    if (dish.category === 'Cơm' || dish.isMain || (dish.price && dish.price > 0)) return null;
                     return (
                       <div
                         key={dish.id}
-                        className={`bg-white p-3.5 rounded-2xl border ${dish.isMain ? 'border-amber-500 shadow-amber-200' : 'border-[#e2d5c3]'} shadow-sm flex flex-col justify-between space-y-3 relative`}
+                        className="bg-white p-3.5 rounded-2xl border border-[#e2d5c3] shadow-sm flex flex-col justify-between space-y-3 relative"
                       >
                         <div className="space-y-2">
-                          <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8]">
-                            <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                          <div className="relative aspect-16/10 rounded-xl overflow-hidden bg-[#f0e6d8] flex flex-col items-center justify-center text-center p-2">
+                            {dish.image ? (
+                              <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="flex flex-col items-center justify-center text-[#7a6858]">
+                                <Utensils className="w-5 h-5 text-amber-600 mb-1" />
+                                <span className="text-[11px] font-bold text-[#274e23]">{dish.name}</span>
+                              </div>
+                            )}
                             <span className="absolute top-2 left-2 bg-[#274e23] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
                               {dish.category}
                             </span>
-                            {dish.isMain && (
-                              <span className="absolute top-2 right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow">
-                                <Star className="w-3 h-3 fill-white" /> Món Chính
-                              </span>
-                            )}
                           </div>
 
                           <div>
                             <h5 className="font-bold text-xs text-[#274e23] line-clamp-1">{dish.name}</h5>
-                            {dish.flavor && <p className="text-[10px] text-[#7a6858] line-clamp-2 mt-0.5">{dish.flavor}</p>}
-                            <div className="text-[11px] font-bold text-amber-700 mt-1" style={{ color: dish.color || '#b45309' }}>
-                              Giá: {((dish.price ?? (dish as any).extraPrice) || 0).toLocaleString('vi-VN')}đ
+                            <div className="text-[10px] font-semibold text-emerald-800 mt-1">
+                              Món đi kèm trong suất cơm
                             </div>
                           </div>
                         </div>
@@ -4966,18 +5100,6 @@ export const AdminDashboard: React.FC = () => {
                             title="Đưa xuống sau"
                           >
                             <ArrowDown className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newList = [...(siteData.experienceMealConfig?.dishes || [])];
-                              newList[index] = { ...newList[index], isMain: !newList[index].isMain };
-                              updateExperienceMealConfig({ dishes: newList });
-                            }}
-                            className={`p-1.5 rounded-lg ${dish.isMain ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} cursor-pointer`}
-                            title="Đánh dấu nổi bật (Món Chính)"
-                          >
-                            <Star className={`w-3.5 h-3.5 ${dish.isMain ? 'fill-amber-500' : ''}`} />
                           </button>
 
                           <div className="flex-1"></div>

@@ -24,6 +24,7 @@ import {
   CreditCard,
   Building2,
   Sparkles,
+  Store,
 } from 'lucide-react';
 
 import { sendOrderEmail } from '../utils/emailService';
@@ -51,6 +52,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   // Flow step state: 'cart' | 'info' | 'payment' | 'completed'
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'info' | 'payment' | 'completed'>('cart');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Auto reset step to cart if online payment is disabled
+  React.useEffect(() => {
+    if (!paymentConfig?.isOnlinePaymentEnabled && (checkoutStep === 'info' || checkoutStep === 'payment')) {
+      setCheckoutStep('cart');
+    }
+  }, [paymentConfig?.isOnlinePaymentEnabled, checkoutStep]);
 
   // Check if cart contains any Experience Meal / Food Order items
   const hasFoodOrder = cartItems.some(
@@ -222,13 +230,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <ShoppingBag className="w-5 h-5 text-[#274e23]" />
               <div>
                 <h2 className="font-bold font-serif text-base sm:text-lg text-[#274e23]">
-                  {checkoutStep === 'cart' && `Giỏ Hàng BiO (${cartItems.reduce((acc, i) => acc + i.quantity, 0)})`}
+                  {checkoutStep === 'cart' && (!paymentConfig?.isOnlinePaymentEnabled ? `Menu & Giá Món Đã Chọn (${cartItems.reduce((acc, i) => acc + i.quantity, 0)})` : `Giỏ Hàng BiO (${cartItems.reduce((acc, i) => acc + i.quantity, 0)})`)}
                   {checkoutStep === 'info' && (hasFoodOrder ? 'Thông Tin Khách Hàng Đặt Món' : 'Thông Tin Nhận Hàng & VAT')}
                   {checkoutStep === 'payment' && 'Thanh Toán QR Code / Chuyển Khoản'}
                   {checkoutStep === 'completed' && 'Đơn Hàng Đã Được Xác Nhận'}
                 </h2>
                 <p className="text-[11px] text-[#7a6858]">
-                  {checkoutStep === 'cart' && 'Thực phẩm sạch Bách Mộc chọn lọc'}
+                  {checkoutStep === 'cart' && (!paymentConfig?.isOnlinePaymentEnabled ? 'Chế độ xem menu & tham khảo giá - Gọi Hotline hoặc ghé điểm trạm' : 'Thực phẩm sạch Bách Mộc chọn lọc')}
                   {checkoutStep === 'info' && (hasFoodOrder ? 'Bước 2/3: Điền Họ tên & Số điện thoại' : 'Bước 2/3: Điền địa chỉ & chọn cước vận chuyển')}
                   {checkoutStep === 'payment' && 'Bước 3/3: Quét mã QR thanh toán ngân hàng'}
                   {checkoutStep === 'completed' && 'Thông báo xác nhận email đã gửi'}
@@ -258,34 +266,70 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             {/* STEP 1: CART ITEMS LIST */}
             {checkoutStep === 'cart' && (
               <>
-                {/* Shipping Threshold Progress */}
-                <div className="px-4 py-3 bg-[#f2e9dc] rounded-2xl border border-[#e2d5c3] text-xs">
-                  {isFreeShipping ? (
-                    <div className="flex items-center gap-1.5 text-[#274e23] font-bold">
-                      <Truck className="w-4 h-4 text-amber-600" />
-                      <span>Chúc mừng! Bạn được MIỄN PHÍ VẬN CHUYỂN Nội Thành!</span>
-                    </div>
-                  ) : (
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[#5c4d43]">
-                        <span>
-                          Mua thêm {((paymentConfig.freeShippingThreshold || 300000) - subtotal).toLocaleString('vi-VN')}đ để miễn phí ship nội thành
-                        </span>
-                        <span className="font-bold">
-                          {Math.round((subtotal / (paymentConfig.freeShippingThreshold || 300000)) * 100)}%
-                        </span>
+                {/* Offline Notice Banner - When Online Payment is OFF */}
+                {!paymentConfig?.isOnlinePaymentEnabled ? (
+                  <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-300 text-xs space-y-2.5 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 font-bold text-amber-900 text-sm">
+                        <Store className="w-4 h-4 text-amber-700" />
+                        <span>Chế Độ Xem Menu & Báo Giá</span>
                       </div>
-                      <div className="w-full h-1.5 bg-[#e2d5c3] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#274e23] transition-all duration-300"
-                          style={{
-                            width: `${Math.min(100, (subtotal / (paymentConfig.freeShippingThreshold || 300000)) * 100)}%`,
-                          }}
-                        />
-                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 border border-amber-300">
+                        Giá Niêm Yết
+                      </span>
                     </div>
-                  )}
-                </div>
+
+                    <p className="text-[#5c4d43] leading-relaxed">
+                      {paymentConfig?.offlineNoticeText ||
+                        'Hiện tại website đang hiển thị menu để Quý khách nắm bảng giá. Để đặt món hoặc mua nông sản, Quý khách vui lòng gọi Hotline hoặc ghé trực tiếp điểm kinh doanh!'}
+                    </p>
+
+                    <div className="pt-2 border-t border-amber-200/80 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                      <a
+                        href={`tel:${(paymentConfig?.offlineCallPhone || paymentConfig?.supportPhone || siteData.brandConfig?.hotline || '0388500500').replace(/\s+/g, '')}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#274e23] text-white font-bold hover:bg-[#1f381c] transition-colors shadow-sm"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Hotline: {paymentConfig?.offlineCallPhone || paymentConfig?.supportPhone || siteData.brandConfig?.hotline || '0388 500 500'}</span>
+                      </a>
+                      {paymentConfig?.offlineAddressNote && (
+                        <div className="flex items-center gap-1 text-[#7a6858] w-full pt-1">
+                          <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                          <span className="truncate">{paymentConfig.offlineAddressNote}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  /* Shipping Threshold Progress when Online Payment is ON */
+                  <div className="px-4 py-3 bg-[#f2e9dc] rounded-2xl border border-[#e2d5c3] text-xs">
+                    {isFreeShipping ? (
+                      <div className="flex items-center gap-1.5 text-[#274e23] font-bold">
+                        <Truck className="w-4 h-4 text-amber-600" />
+                        <span>Chúc mừng! Bạn được MIỄN PHÍ VẬN CHUYỂN Nội Thành!</span>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[#5c4d43]">
+                          <span>
+                            Mua thêm {((paymentConfig.freeShippingThreshold || 300000) - subtotal).toLocaleString('vi-VN')}đ để miễn phí ship nội thành
+                          </span>
+                          <span className="font-bold">
+                            {Math.round((subtotal / (paymentConfig.freeShippingThreshold || 300000)) * 100)}%
+                          </span>
+                        </div>
+                        <div className="w-full h-1.5 bg-[#e2d5c3] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#274e23] transition-all duration-300"
+                            style={{
+                              width: `${Math.min(100, (subtotal / (paymentConfig.freeShippingThreshold || 300000)) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {cartItems.length === 0 ? (
                   <div className="text-center py-16 space-y-4">
@@ -806,57 +850,119 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             
             {checkoutStep === 'cart' && cartItems.length > 0 && (
               <>
-                {/* Promo Code Input */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Mã giảm giá (BIOSTATION)"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:border-[#274e23]"
-                  />
-                  <button
-                    onClick={applyPromoCode}
-                    className="px-3.5 py-2 bg-[#274e23] text-white font-bold text-xs rounded-xl cursor-pointer"
-                  >
-                    Áp Dụng
-                  </button>
-                </div>
-                {promoError && <p className="text-[11px] text-red-600">{promoError}</p>}
-                {discountPercent > 0 && (
-                  <p className="text-[11px] text-[#274e23] font-bold flex items-center gap-1">
-                    <Check className="w-3.5 h-3.5 text-amber-600" /> Đã áp dụng giảm giá {discountPercent}%!
-                  </p>
+                {/* Promo Code Input - Chỉ hiển thị khi bật thanh toán online */}
+                {paymentConfig?.isOnlinePaymentEnabled && (
+                  <>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Mã giảm giá (BIOSTATION)"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        className="flex-1 text-xs p-2.5 rounded-xl border border-[#dcd0bf] bg-white focus:outline-none focus:border-[#274e23]"
+                      />
+                      <button
+                        onClick={applyPromoCode}
+                        className="px-3.5 py-2 bg-[#274e23] text-white font-bold text-xs rounded-xl cursor-pointer"
+                      >
+                        Áp Dụng
+                      </button>
+                    </div>
+                    {promoError && <p className="text-[11px] text-red-600">{promoError}</p>}
+                    {discountPercent > 0 && (
+                      <p className="text-[11px] text-[#274e23] font-bold flex items-center gap-1">
+                        <Check className="w-3.5 h-3.5 text-amber-600" /> Đã áp dụng giảm giá {discountPercent}%!
+                      </p>
+                    )}
+                  </>
                 )}
 
-                <div className="space-y-1 text-xs text-[#5c4d43] pt-2 border-t border-[#e2d5c3]">
-                  <div className="flex justify-between">
-                    <span>Tạm tính:</span>
-                    <span className="font-bold">{subtotal.toLocaleString('vi-VN')}đ</span>
-                  </div>
-                  {discountAmount > 0 && (
-                    <div className="flex justify-between text-emerald-700">
-                      <span>Giảm giá:</span>
-                      <span className="font-bold">-{discountAmount.toLocaleString('vi-VN')}đ</span>
+                {!paymentConfig?.isOnlinePaymentEnabled ? (
+                  <div className="space-y-1 text-xs text-[#5c4d43] pt-2 border-t border-[#e2d5c3]">
+                    <div className="flex justify-between text-sm font-black text-[#274e23]">
+                      <span>Tổng tiền ước tính (theo menu):</span>
+                      <span className="text-amber-800">{subtotal.toLocaleString('vi-VN')} VNĐ</span>
                     </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span>Dự kiến VAT ({vatRate}%):</span>
-                    <span className="font-bold">+{vatAmount.toLocaleString('vi-VN')}đ</span>
+                    <p className="text-[11px] text-[#7a6858]">
+                      Giá niêm yết theo menu đã bao gồm đầy đủ thành phần.
+                    </p>
                   </div>
-                  <div className="flex justify-between text-sm font-black text-[#274e23] pt-1.5 border-t border-[#e2d5c3]">
-                    <span>Tổng đơn hàng:</span>
-                    <span className="text-amber-800">{grandTotal.toLocaleString('vi-VN')} VNĐ</span>
+                ) : (
+                  <div className="space-y-1 text-xs text-[#5c4d43] pt-2 border-t border-[#e2d5c3]">
+                    <div className="flex justify-between">
+                      <span>Tạm tính:</span>
+                      <span className="font-bold">{subtotal.toLocaleString('vi-VN')}đ</span>
+                    </div>
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-emerald-700">
+                        <span>Giảm giá:</span>
+                        <span className="font-bold">-{discountAmount.toLocaleString('vi-VN')}đ</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span>Dự kiến VAT ({vatRate}%):</span>
+                      <span className="font-bold">+{vatAmount.toLocaleString('vi-VN')}đ</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-black text-[#274e23] pt-1.5 border-t border-[#e2d5c3]">
+                      <span>Tổng đơn hàng:</span>
+                      <span className="text-amber-800">{grandTotal.toLocaleString('vi-VN')} VNĐ</span>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <button
-                  onClick={() => setCheckoutStep('info')}
-                  className="w-full py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide uppercase shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Tiến Hành Đặt Hàng & Thanh Toán</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                {!paymentConfig?.isOnlinePaymentEnabled ? (
+                  <div className="space-y-2.5 pt-1">
+                    {/* Primary Button: Gọi Hotline Đặt Hàng */}
+                    <a
+                      href={`tel:${(paymentConfig?.offlineCallPhone || paymentConfig?.supportPhone || siteData.brandConfig?.hotline || '0388500500').replace(/\s+/g, '')}`}
+                      className="w-full py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide uppercase shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Phone className="w-4 h-4 text-amber-300" />
+                      <span>Gọi Hotline Đặt Hàng: {paymentConfig?.offlineCallPhone || paymentConfig?.supportPhone || siteData.brandConfig?.hotline || '0388 500 500'}</span>
+                    </a>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* Secondary 1: Sao chép danh sách để gửi Zalo */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const orderSummaryText = cartItems
+                            .map((item, idx) => `${idx + 1}. ${item.product.name} (x${item.quantity}) - ${(item.product.price * item.quantity).toLocaleString('vi-VN')}đ`)
+                            .join('\n');
+                          const fullCopyText = `DANH SÁCH MÓN ĐÃ CHỌN TẠI BIO STATION:\n${orderSummaryText}\n------------------------\nTổng dự kiến: ${grandTotal.toLocaleString('vi-VN')} VNĐ\nHotline liên hệ: ${paymentConfig?.offlineCallPhone || paymentConfig?.supportPhone || siteData.brandConfig?.hotline || '0388 500 500'}`;
+                          handleCopyText(fullCopyText, 'danh sách món & giá');
+                        }}
+                        className="py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow transition-all cursor-pointer"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Sao Chép Đơn</span>
+                      </button>
+
+                      {/* Secondary 2: Chỉ đường đến địa điểm kinh doanh */}
+                      <a
+                        href={siteData.brandConfig?.mapLinkStore || siteData.brandConfig?.mapLinkCenter || 'https://maps.google.com'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3 rounded-xl bg-white hover:bg-[#f0e6d8] text-[#274e23] border border-[#274e23]/30 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-amber-700" />
+                        <span>Đến Địa Điểm</span>
+                      </a>
+                    </div>
+
+                    <p className="text-[11px] text-center text-[#7a6858]">
+                      💡 Tính năng thanh toán online đang tạm đóng. Quý khách có thể sao chép đơn để gửi Zalo hoặc gọi Hotline để phục vụ ngay!
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setCheckoutStep('info')}
+                    className="w-full py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide uppercase shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Tiến Hành Đặt Hàng & Thanh Toán</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
               </>
             )}
 

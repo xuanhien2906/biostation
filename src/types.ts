@@ -14,10 +14,10 @@ export type TabType =
 export interface DishOption {
   id: string;
   name: string;
-  category: 'Cơm' | 'Nước' | 'Cháo' | 'Topping' | 'Món Mặn' | 'Món Xào' | 'Món Canh' | 'Món Phụ & Tráng Miệng';
+  category: 'Cơm' | 'Nước' | 'Cháo' | 'Topping' | 'Món Mặn' | 'Món Xào' | 'Món Canh' | 'Món Phụ & Tráng Miệng' | 'Cá' | 'Gà' | 'Đậu' | 'Thịt' | 'Rau & Món Khác' | string;
   origin?: string;
   flavor?: string;
-  price: number;
+  price?: number;
   image?: string;
   color?: string;
   isMain?: boolean;
@@ -222,6 +222,10 @@ export interface PaymentConfig {
   freeShippingThreshold: number;
   emailSender: string;
   supportPhone: string;
+  isOnlinePaymentEnabled?: boolean;
+  offlineNoticeText?: string;
+  offlineCallPhone?: string;
+  offlineAddressNote?: string;
 }
 
 export interface OrderRecipient {

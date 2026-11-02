@@ -3,10 +3,10 @@
     "logoType": "image",
     "logoImageUrl": "/custom-logo.png",
     "footerLogoImageUrl": "/footer-logo.png",
-    "logoScale": 300,
+    "logoScale": 133,
     "logoOffsetX": 82,
-    "logoOffsetY": 3,
-    "logoHeight": 59,
+    "logoOffsetY": 2,
+    "logoHeight": 54,
     "logoMainText": "BiO",
     "logoSubText": "Station",
     "slogan": "Chạm Để Trở Về",
@@ -59,6 +59,10 @@
     "fontScale": "standard"
   },
   "paymentConfig": {
+    "isOnlinePaymentEnabled": false,
+    "offlineNoticeText": "Hiện tại hệ thống phục vụ trực tiếp tại điểm trạm và nhận đặt hàng qua Hotline. Website hiển thị menu và bảng giá để Quý khách tham khảo.",
+    "offlineCallPhone": "0388 500 500",
+    "offlineAddressNote": "Đường Nguyễn Văn Linh, KĐT Phú Mỹ Hưng, Quận 7, TP. HCM (và các điểm trạm BiO Station)",
     "bankName": "VP Bank",
     "accountNumber": "0813 13 13 85",
     "accountName": "HE SINH THAI BIO STATION BACH MOC",
@@ -70,7 +74,7 @@
     "outerCityShippingFee": 35000,
     "freeShippingThreshold": 300000,
     "emailSender": "donhang@biostation.vn",
-    "supportPhone": "0813 13 13 85"
+    "supportPhone": "0388 500 500"
   },
   "experienceMealConfig": {
     "pricePerPerson": 0,
@@ -83,103 +87,52 @@
     "dishes": [
       {
         "id": "dish-com-trai-nghiem-79",
-        "name": "Mâm Cơm Hữu Cơ Bách Mộc (Trải Nghiệm)",
+        "name": "Mâm Cơm Trải Nghiệm (79.000đ)",
         "category": "Cơm",
-        "flavor": "Cơm gạo Bách Mộc, thịt heo luộc mắm chấm, cá kho đậm đà, canh rau củ, rau luộc, cà pháo, dưa cải, tráng miệng hoa quả",
+        "flavor": "Không gian sạch sẽ, thưởng thức trọn vẹn \"Hương mộc mạc, vị tự nhiên\" của gạo Bách Mộc và nông sản thuần tự nhiên.",
         "price": 79000,
         "isMain": true,
-        "image": "https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/dishes/mam-com-trai-nghiem.jpg"
+        "image": "/mam-com-trai-nghiem.jpg"
       },
       {
         "id": "dish-com-trai-nghiem-99",
-        "name": "Mâm Cơm Hữu Cơ Bách Mộc (Đặc Biệt)",
+        "name": "Mâm Cơm Trải Nghiệm (Đặc Biệt 99.000đ)",
         "category": "Cơm",
-        "flavor": "Thịnh soạn với gạo Bách Mộc cao cấp, thêm món mặn thượng hạng, canh củ quả hầm & tráng miệng hoa quả",
+        "flavor": "Thịnh soạn hơn với món mặn cao cấp (cá dứa Cần Giờ, thịt quay...), canh củ quả hầm & tráng miệng hoa quả tươi theo ngày.",
         "price": 99000,
         "isMain": true,
-        "image": "https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/dishes/mam-com-trai-nghiem.jpg"
+        "image": "/mam-com-trai-nghiem.jpg"
       },
       {
         "id": "dish-com-van-phong-59",
-        "name": "Cơm Văn Phòng Hữu Cơ (Hộp Giấy Thân Thiện)",
+        "name": "Cơm Văn Phòng Hộp Giấy (59.000đ)",
         "category": "Cơm",
-        "flavor": "Cơm hữu cơ, đầy đặn, món phong phú, tươi ngon. Hộp giấy sinh học, thích hợp mang đi, ship tận nơi (+/- 20%)",
+        "flavor": "Cơm hữu cơ, đầy đặn, món phong phú, tươi ngon. Hộp giấy thân thiện môi trường, thích hợp mang đi, ship tận nơi (Có thể điều chỉnh +/- 20% theo yêu cầu của Quý khách hàng).",
         "price": 59000,
         "isMain": true,
-        "image": "https://llkbikqnfqrdrmwslniw.supabase.co/storage/v1/object/public/biostation_images/dishes/com-van-phong.jpg"
+        "image": "/com-van-phong.jpg"
       },
-      {
-        "id": "dish-thit-kho-to",
-        "name": "Thịt Ba Chỉ Sinh Thái Kho Tộ",
-        "category": "Món Mặn",
-        "origin": "Thịt heo sinh thái Củ Chi nuôi thảo mộc, không chất tạo nạc",
-        "flavor": "Đậm đà, béo ngậy vừa phải, thơm nức mùi hành ớt tiêu đen",
-        "extraPrice": 20000,
-        "image": "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-ca-loc-kho",
-        "name": "Cá Lóc Đồng Kho Riềng Bách Mộc",
-        "category": "Món Mặn",
-        "origin": "Cá lóc đồng tự nhiên miền Tây, riềng củ tươi Lâm Đồng",
-        "flavor": "Thịt cá săn chắc, thấm vị mặn ngọt cay nồng chuẩn vị Nam Bộ",
-        "extraPrice": 20000,
-        "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-ga-xao-sa-ot",
-        "name": "Gà Ta Đồi Xào Sả Ớt",
-        "category": "Món Mặn",
-        "origin": "Gà ta thả vườn đồi Lâm Đồng chạy bộ, sả tươi Củ Chi",
-        "flavor": "Thịt gà dai ngọt, thơm nồng mùi sả tươi và ớt hiểm",
-        "extraPrice": 20000,
-        "image": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-rau-muong-xao",
-        "name": "Rau Muống Hữu Cơ Xào Tỏi",
-        "category": "Món Xào",
-        "origin": "Rau muống hữu cơ Củ Chi thu hoạch trong ngày",
-        "flavor": "Giòn ngọt tự nhiên, thơm lừng tỏi tép đập dập",
-        "extraPrice": 15000,
-        "image": "https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-cai-xao-nam",
-        "name": "Cải Thìa Xào Nấm Tươi",
-        "category": "Món Xào",
-        "origin": "Cải thìa hữu cơ Lâm Đồng & Nấm đùi gà tươi",
-        "flavor": "Thanh mát, giòn ngọt, giàu chất xơ & khoáng chất",
-        "extraPrice": 15000,
-        "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-canh-chua-ca",
-        "name": "Canh Chua Cá Lóc Đồng Bách Mộc",
-        "category": "Món Canh",
-        "origin": "Cá lóc đồng, bạc hà, đậu okras, cà chua & me tươi Củ Chi",
-        "flavor": "Chua thanh dịu mát, ngọt nước cá tự nhiên, rất đưa cơm",
-        "extraPrice": 20000,
-        "image": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-canh-suon-cu-qua",
-        "name": "Canh Sườn Hầm Củ Quả Lâm Đồng",
-        "category": "Món Canh",
-        "origin": "Sườn heo sinh thái & Củ khoai tây, cà rốt, su su hữu cơ",
-        "flavor": "Nước canh ngọt lịm đậm đà từ xương hầm và củ quả tươi",
-        "extraPrice": 20000,
-        "image": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80"
-      },
-      {
-        "id": "dish-trung-chien-thao-moc",
-        "name": "Trứng Gà Thảo Mộc Chiên Đốm Hành",
-        "category": "Món Phụ & Tráng Miệng",
-        "origin": "Trứng gà thảo mộc đốm tía tô & hành lá hữu cơ",
-        "flavor": "Béo ngậy, vàng ươm, thơm lừng bơ thực vật & hành lá",
-        "extraPrice": 15000,
-        "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=400&q=80"
-      }
+      { "id": "dish-ca-tram-kho-rieng", "name": "Cá trắm kho riềng", "category": "Cá", "price": 0 },
+      { "id": "dish-ca-chien", "name": "Cá chiên", "category": "Cá", "price": 0 },
+      { "id": "dish-ca-nuc-kho-dua", "name": "Cá nục kho dứa", "category": "Cá", "price": 0 },
+      { "id": "dish-ca-dua-can-gio", "name": "Cá dứa Cần Giờ", "category": "Cá", "price": 0 },
+      { "id": "dish-ca-basa-kho", "name": "Cá basa kho", "category": "Cá", "price": 0 },
+      { "id": "dish-ga-rang-gung", "name": "Gà rang gừng", "category": "Gà", "price": 0 },
+      { "id": "dish-canh-ga-chien-nuoc-mam", "name": "Cánh gà chiên nước mắm", "category": "Gà", "price": 0 },
+      { "id": "dish-dau-chien", "name": "Đậu chiên", "category": "Đậu", "price": 0 },
+      { "id": "dish-dau-sot-ca-chua", "name": "Đậu sốt cà chua", "category": "Đậu", "price": 0 },
+      { "id": "dish-dau-tam-hanh", "name": "Đậu tẩm hành", "category": "Đậu", "price": 0 },
+      { "id": "dish-thit-kho-tau", "name": "Thịt kho tàu", "category": "Thịt", "price": 0 },
+      { "id": "dish-thit-luoc", "name": "Thịt luộc", "category": "Thịt", "price": 0 },
+      { "id": "dish-thit-ba-chi-rang-chay-canh", "name": "Thịt ba chỉ rang cháy cạnh", "category": "Thịt", "price": 0 },
+      { "id": "dish-thit-chien", "name": "Thịt chiên", "category": "Thịt", "price": 0 },
+      { "id": "dish-thit-quay", "name": "Thịt quay", "category": "Thịt", "price": 0 },
+      { "id": "dish-rau-theo-mua", "name": "Rau theo mùa (luộc/xào)", "category": "Rau & Món Khác", "price": 0 },
+      { "id": "dish-canh-theo-ngay", "name": "Canh theo ngày", "category": "Rau & Món Khác", "price": 0 },
+      { "id": "dish-trung-luoc-kho", "name": "Trứng (luộc/kho)", "category": "Rau & Món Khác", "price": 0 },
+      { "id": "dish-dua-muoi", "name": "Dưa muối", "category": "Rau & Món Khác", "price": 0 },
+      { "id": "dish-nuoc-cham-nha-lam", "name": "Nước chấm nhà làm", "category": "Rau & Món Khác", "price": 0 },
+      { "id": "dish-trang-mieng-theo-ngay", "name": "Tráng miệng (theo ngày)", "category": "Rau & Món Khác", "price": 0 }
     ]
   },
   "businessMission": {
@@ -390,7 +343,7 @@
       "type": "center",
       "typeName": "Station Trung Tâm",
       "address": "Đường Nguyễn Văn Linh, Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM",
-      "phone": "0813 13 13 85",
+      "phone": "0388 500 500",
       "hours": "07:00 - 21:00 Hàng ngày",
       "status": "Đang vận hành",
       "features": [

@@ -315,9 +315,16 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
         <div className="bg-[#f0e6d8] p-6 sm:p-8 rounded-3xl border border-[#dcd0bf] space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 border-b border-[#dcd0bf] pb-4">
             <div>
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
-                Nông Sản Bán Lẻ
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-amber-700 uppercase tracking-wider">
+                  Nông Sản Bán Lẻ
+                </span>
+                {!siteData?.paymentConfig?.isOnlinePaymentEnabled && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 border border-amber-300">
+                    Bảng Giá Tham Khảo
+                  </span>
+                )}
+              </div>
               <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#274e23]">
                 Gạo ST25 & Thực Phẩm Sạch Cốt Lõi Tại Cửa Hàng
               </h2>

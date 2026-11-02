@@ -61,189 +61,52 @@ export const DEFAULT_EXPERIENCE_MEAL_CONFIG: ExperienceMealConfig = {
   dishes: [
     {
       id: 'dish-com-trai-nghiem-79',
-      name: 'Mâm Cơm Hữu Cơ Bách Mộc (Trải Nghiệm)',
+      name: 'Mâm Cơm Trải Nghiệm (79.000đ)',
       category: 'Cơm',
-      flavor: 'Cơm gạo Bách Mộc, thịt heo luộc mắm chấm, cá kho đậm đà, canh rau củ, rau luộc, cà pháo, dưa cải, tráng miệng hoa quả',
+      flavor: 'Không gian sạch sẽ, thưởng thức trọn vẹn "Hương mộc mạc, vị tự nhiên" của gạo Bách Mộc và nông sản thuần tự nhiên.',
       price: 79000,
       isMain: true,
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+      image: '/mam-com-trai-nghiem.jpg',
     },
     {
       id: 'dish-com-trai-nghiem-99',
-      name: 'Mâm Cơm Hữu Cơ Bách Mộc (Đặc Biệt)',
+      name: 'Mâm Cơm Trải Nghiệm (Đặc Biệt 99.000đ)',
       category: 'Cơm',
-      flavor: 'Thịnh soạn với gạo Bách Mộc cao cấp, thêm món mặn thượng hạng, canh củ quả hầm & tráng miệng hoa quả',
+      flavor: 'Thịnh soạn hơn với món mặn cao cấp (cá dứa Cần Giờ, thịt quay...), canh củ quả hầm & tráng miệng hoa quả tươi theo ngày.',
       price: 99000,
       isMain: true,
-      image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
+      image: '/mam-com-trai-nghiem.jpg',
     },
     {
       id: 'dish-com-van-phong-59',
-      name: 'Cơm Văn Phòng Hữu Cơ (Hộp Giấy Thân Thiện)',
+      name: 'Cơm Văn Phòng Hộp Giấy (59.000đ)',
       category: 'Cơm',
-      flavor: 'Cơm hữu cơ, đầy đặn, món phong phú, tươi ngon. Hộp giấy sinh học, thích hợp mang đi, ship tận nơi (+/- 20%)',
+      flavor: 'Cơm hữu cơ, đầy đặn, món phong phú, tươi ngon. Hộp giấy thân thiện môi trường, thích hợp mang đi, ship tận nơi (Có thể điều chỉnh +/- 20% theo yêu cầu của Quý khách hàng).',
       price: 59000,
       isMain: true,
-      image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?auto=format&fit=crop&w=600&q=80',
+      image: '/com-van-phong.jpg',
     },
-    {
-      id: 'dish-do-an-them',
-      name: 'Đồ ăn thêm (Extra dishes)',
-      category: 'Món Phụ & Tráng Miệng',
-      price: 30000,
-    },
-    {
-      id: 'dish-com-them-huu-co',
-      name: 'Cơm thêm - Hữu cơ (Extra organic rice)',
-      category: 'Món Phụ & Tráng Miệng',
-      price: 10000,
-    },
-    {
-      id: 'dish-com-them-lut',
-      name: 'Cơm thêm - Lứt (Extra brown rice)',
-      category: 'Món Phụ & Tráng Miệng',
-      price: 15000,
-    },
-    {
-      id: 'dish-mang-cam-gao',
-      name: 'Màng cám gạo dinh dưỡng Bách Mộc',
-      category: 'Món Phụ & Tráng Miệng',
-      flavor: 'Trộn cùng cơm gia tăng dinh dưỡng cho bữa ăn',
-      price: 10000,
-    },
-    {
-      id: 'drink-tra-chanh',
-      name: 'Trà chanh (Lemon tea)',
-      category: 'Nước',
-      price: 15000,
-    },
-    {
-      id: 'drink-tra-tac',
-      name: 'Trà tắc (Kumquat tea)',
-      category: 'Nước',
-      price: 15000,
-    },
-    {
-      id: 'drink-tra-bm',
-      name: 'Trà Bách Mộc (Tea)',
-      category: 'Nước',
-      price: 5000,
-    },
-    {
-      id: 'drink-khan-lanh',
-      name: 'Khăn lạnh (Cold towel)',
-      category: 'Nước',
-      price: 3000,
-    },
-    {
-      id: 'chao_1_loai_m',
-      name: 'Cháo + 1 loại (Size M)',
-      category: 'Cháo',
-      price: 39000,
-    },
-    {
-      id: 'chao_1_loai_l',
-      name: 'Cháo + 1 loại (Size L)',
-      category: 'Cháo',
-      price: 59000,
-    },
-    {
-      id: 'chao-ca-hoi-m',
-      name: 'Cháo Cá hồi (Size M)',
-      category: 'Cháo',
-      price: 65000,
-    },
-    {
-      id: 'chao-ca-hoi-l',
-      name: 'Cháo Cá hồi (Size L)',
-      category: 'Cháo',
-      price: 85000,
-    },
-    {
-      id: 'chao-suon-non-m',
-      name: 'Cháo Sườn non (Size M)',
-      category: 'Cháo',
-      price: 50000,
-    },
-    {
-      id: 'chao-suon-non-l',
-      name: 'Cháo Sườn non (Size L)',
-      category: 'Cháo',
-      price: 65000,
-    },
-    {
-      id: 'chao-dac-biet-l',
-      name: 'Cháo đặc biệt (Size L)',
-      category: 'Cháo',
-      price: 89000,
-      isMain: true,
-    },
-    {
-      id: 'topping-chao-lua-me',
-      name: 'Cháo Lúa Mẹ',
-      category: 'Topping',
-      price: 9000,
-    },
-    {
-      id: 'topping-chao-them',
-      name: 'Cháo thêm',
-      category: 'Topping',
-      price: 5000,
-    },
-    {
-      id: 'topping-thit-heo-bam',
-      name: 'Thịt heo băm',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-rau-cu',
-      name: 'Rau củ',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-thit-ga',
-      name: 'Thịt gà',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-nam',
-      name: 'Nấm',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-ruoc-ca',
-      name: 'Ruốc cá',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-thit-bo-bam',
-      name: 'Thịt bò băm',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-tom',
-      name: 'Tôm',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-tim-cat',
-      name: 'Tim - Cật',
-      category: 'Topping',
-      price: 20000,
-    },
-    {
-      id: 'topping-trung',
-      name: 'Trứng',
-      category: 'Topping',
-      price: 10000,
-    },
+    { id: 'dish-ca-tram-kho-rieng', name: 'Cá trắm kho riềng', category: 'Cá', price: 0 },
+    { id: 'dish-ca-chien', name: 'Cá chiên', category: 'Cá', price: 0 },
+    { id: 'dish-ca-nuc-kho-dua', name: 'Cá nục kho dứa', category: 'Cá', price: 0 },
+    { id: 'dish-ca-dua-can-gio', name: 'Cá dứa Cần Giờ', category: 'Cá', price: 0 },
+    { id: 'dish-ca-basa-kho', name: 'Cá basa kho', category: 'Cá', price: 0 },
+    { id: 'dish-ga-rang-gung', name: 'Gà rang gừng', category: 'Gà', price: 0 },
+    { id: 'dish-canh-ga-chien-nuoc-mam', name: 'Cánh gà chiên nước mắm', category: 'Gà', price: 0 },
+    { id: 'dish-dau-chien', name: 'Đậu chiên', category: 'Đậu', price: 0 },
+    { id: 'dish-dau-sot-ca-chua', name: 'Đậu sốt cà chua', category: 'Đậu', price: 0 },
+    { id: 'dish-dau-tam-hanh', name: 'Đậu tẩm hành', category: 'Đậu', price: 0 },
+    { id: 'dish-thit-kho-tau', name: 'Thịt kho tàu', category: 'Thịt', price: 0 },
+    { id: 'dish-thit-luoc', name: 'Thịt luộc', category: 'Thịt', price: 0 },
+    { id: 'dish-thit-ba-chi-rang-chay-canh', name: 'Thịt ba chỉ rang cháy cạnh', category: 'Thịt', price: 0 },
+    { id: 'dish-thit-chien', name: 'Thịt chiên', category: 'Thịt', price: 0 },
+    { id: 'dish-thit-quay', name: 'Thịt quay', category: 'Thịt', price: 0 },
+    { id: 'dish-rau-theo-mua', name: 'Rau theo mùa (luộc/xào)', category: 'Rau & Món Khác', price: 0 },
+    { id: 'dish-canh-theo-ngay', name: 'Canh theo ngày', category: 'Rau & Món Khác', price: 0 },
+    { id: 'dish-trung-luoc-kho', name: 'Trứng (luộc/kho)', category: 'Rau & Món Khác', price: 0 },
+    { id: 'dish-dua-muoi', name: 'Dưa muối', category: 'Rau & Món Khác', price: 0 },
+    { id: 'dish-nuoc-cham-nha-lam', name: 'Nước chấm nhà làm', category: 'Rau & Món Khác', price: 0 },
+    { id: 'dish-trang-mieng-theo-ngay', name: 'Tráng miệng (theo ngày)', category: 'Rau & Món Khác', price: 0 },
   ],
 };
 import { PRODUCTS } from '../data/products';
@@ -274,7 +137,7 @@ export const DEFAULT_STATIONS: StationItem[] = [
     type: 'center',
     typeName: 'Station Trung Tâm',
     address: 'Đường Nguyễn Văn Linh, Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM',
-    phone: '0813 13 13 85',
+    phone: '0388 500 500',
     hours: '07:00 - 21:00 Hàng ngày',
     status: 'Đang vận hành',
     features: ['Trải nghiệm nếm thử nông sản', 'Thưởng trà & nước ép', 'Trung tâm đào tạo & điều phối'],
@@ -374,7 +237,24 @@ const SiteContext = createContext<SiteContextType | undefined>(undefined);
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [brandConfig, setBrandConfig] = useState<BrandConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_brand`);
-    return saved ? JSON.parse(saved) : DEFAULT_BRAND_CONFIG;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.logoScale === 300) {
+          parsed.logoScale = 133;
+          parsed.logoHeight = 54;
+          parsed.logoOffsetX = 82;
+          parsed.logoOffsetY = 2;
+        }
+        if (parsed.hotline?.includes('0813')) {
+          parsed.hotline = '0388 500 500';
+        }
+        return parsed;
+      } catch {
+        return DEFAULT_BRAND_CONFIG;
+      }
+    }
+    return DEFAULT_BRAND_CONFIG;
   });
 
   const [footerConfig, setFooterConfig] = useState<FooterConfig>(() => {
@@ -416,12 +296,48 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [paymentConfig, setPaymentConfig] = useState<PaymentConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_payment`);
-    return saved ? JSON.parse(saved) : DEFAULT_PAYMENT_CONFIG;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const merged = { ...DEFAULT_PAYMENT_CONFIG, ...parsed };
+        if (!merged.offlineCallPhone || merged.offlineCallPhone.includes('0813')) {
+          merged.offlineCallPhone = '0388 500 500';
+        }
+        if (!merged.supportPhone || merged.supportPhone.includes('0813')) {
+          merged.supportPhone = '0388 500 500';
+        }
+        if (!merged.supportHotline || merged.supportHotline.includes('0813')) {
+          merged.supportHotline = '0388 500 500';
+        }
+        return merged;
+      } catch {
+        return DEFAULT_PAYMENT_CONFIG;
+      }
+    }
+    return DEFAULT_PAYMENT_CONFIG;
   });
 
   const [experienceMealConfig, setExperienceMealConfig] = useState<ExperienceMealConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_experience_meal`);
-    return saved ? JSON.parse(saved) : DEFAULT_EXPERIENCE_MEAL_CONFIG;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const hasOldDishes = parsed.dishes?.some(
+          (d: any) =>
+            d.id === 'dish-do-an-them' ||
+            d.category === 'Cháo' ||
+            d.category === 'Topping' ||
+            d.category === 'Nước' ||
+            d.category === 'Món Mặn'
+        );
+        if (!hasOldDishes && parsed.dishes?.length > 0) {
+          return parsed;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    return DEFAULT_EXPERIENCE_MEAL_CONFIG;
   });
 
   const [businessMission, setBusinessMissionState] = useState(() => {
@@ -633,6 +549,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await supabase.storage.from('biostation_images').upload('config/site_config.json', blob, {
         upsert: true,
         contentType: 'application/json',
+        cacheControl: '0',
       });
 
       // 2. Automated Real-time Timestamped Cloud Snapshot Backup
@@ -687,17 +604,52 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         // Fetch Cloud Config (Brand, Logo, Banners, Stations, Theme) from Supabase Cloud Storage
         try {
-          const { data: cloudBlob, error: cloudErr } = await supabase.storage
-            .from('biostation_images')
-            .download('config/site_config.json');
+          let text: string | null = null;
+          try {
+            const { data: pubData } = supabase.storage
+              .from('biostation_images')
+              .getPublicUrl('config/site_config.json');
+            if (pubData?.publicUrl) {
+              const res = await fetch(`${pubData.publicUrl}?t=${Date.now()}`, { cache: 'no-store' });
+              if (res.ok) {
+                text = await res.text();
+              }
+            }
+          } catch {
+            // Fallback to direct download
+          }
 
-          if (!cloudErr && cloudBlob) {
-            const text = await cloudBlob.text();
+          if (!text) {
+            const { data: cloudBlob, error: cloudErr } = await supabase.storage
+              .from('biostation_images')
+              .download('config/site_config.json');
+            if (!cloudErr && cloudBlob) {
+              text = await cloudBlob.text();
+            }
+          }
+
+          if (text) {
             const parsed = JSON.parse(text);
-            if (parsed.brandConfig) setBrandConfig(parsed.brandConfig);
+            if (parsed.brandConfig) {
+              const b = { ...parsed.brandConfig };
+              b.hotline = '0388 500 500';
+              if (b.logoScale === 300) {
+                b.logoScale = 133;
+                b.logoHeight = 54;
+                b.logoOffsetX = 82;
+                b.logoOffsetY = 2;
+              }
+              setBrandConfig(b);
+            }
             if (parsed.heroConfig) setHeroConfig(parsed.heroConfig);
             if (parsed.themeConfig) setThemeConfig(parsed.themeConfig);
-            if (parsed.paymentConfig) setPaymentConfig(parsed.paymentConfig);
+            if (parsed.paymentConfig) {
+              const p = { ...parsed.paymentConfig };
+              p.offlineCallPhone = '0388 500 500';
+              p.supportPhone = '0388 500 500';
+              p.supportHotline = '0388 500 500';
+              setPaymentConfig(p);
+            }
             if (parsed.experienceMealConfig) {
               // FORCED SANITIZATION: Eliminate any cached "50k" or "Thiết Kế Mâm Cơm" garbage
               const config = parsed.experienceMealConfig;

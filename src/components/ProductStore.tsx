@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
-import { ShoppingBag, Star, CheckCircle, ShieldCheck, Info, X, Plus, Sprout, Award } from 'lucide-react';
+import { ShoppingBag, Star, CheckCircle, ShieldCheck, Info, X, Plus, Sprout, Award, Phone, MapPin, Store } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
 import { ExperienceMealBuilder } from './ExperienceMealBuilder';
 
@@ -82,6 +82,50 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
           không chất bảo quản, thông tin minh bạch từng túi hàng.
         </p>
       </div>
+
+      {/* Offline Mode Banner: Menu & Pricing Only */}
+      {!siteData?.paymentConfig?.isOnlinePaymentEnabled && (
+        <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100/70 p-4 sm:p-5 rounded-3xl border border-amber-300 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-900 shrink-0 mt-0.5 border border-amber-400/40">
+              <Store className="w-5 h-5 text-amber-700" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-amber-950 uppercase tracking-wider">
+                  Menu & Bảng Giá Nông Sản Tham Khảo
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-900 border border-amber-300">
+                  Tạm tắt thanh toán online
+                </span>
+              </div>
+              <p className="text-xs text-[#5c4d43] leading-relaxed max-w-3xl">
+                {siteData?.paymentConfig?.offlineNoticeText ||
+                  'Giá niêm yết công khai & minh bạch. Quý khách có nhu cầu đặt hàng hoặc tư vấn mua nông sản vui lòng gọi Hotline hoặc ghé trực tiếp các điểm trạm BiO Station.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto">
+            <a
+              href={`tel:${(siteData?.paymentConfig?.offlineCallPhone || siteData?.paymentConfig?.supportPhone || siteData?.brandConfig?.hotline || '0388500500').replace(/\s+/g, '')}`}
+              className="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow transition-all cursor-pointer"
+            >
+              <Phone className="w-3.5 h-3.5 text-amber-300" />
+              <span>Gọi Hotline: {siteData?.paymentConfig?.offlineCallPhone || siteData?.paymentConfig?.supportPhone || siteData?.brandConfig?.hotline || '0388 500 500'}</span>
+            </a>
+            <a
+              href={siteData?.brandConfig?.mapLinkStore || siteData?.brandConfig?.mapLinkCenter || 'https://maps.google.com'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl bg-white hover:bg-[#f0e6d8] text-[#274e23] border border-[#274e23]/30 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <MapPin className="w-3.5 h-3.5 text-amber-700" />
+              <span>Ghé Điểm Trạm</span>
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Category Pills Filter */}
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -237,15 +281,46 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
                     {activeModalProduct.price ? activeModalProduct.price.toLocaleString('vi-VN') : 0} VNĐ
                   </div>
 
-                  <button
-                    onClick={() => {
-                      onAddToCart(activeModalProduct);
-                      handleCloseModal();
-                    }}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-sm tracking-wide transition-all shadow cursor-pointer"
-                  >
-                    <ShoppingBag className="w-4 h-4 text-amber-300" /> Thêm Vào Giỏ Hàng
-                  </button>
+                  {!siteData?.paymentConfig?.isOnlinePaymentEnabled ? (
+                    <div className="space-y-2 pt-1">
+                      <a
+                        href={`tel:${(siteData?.paymentConfig?.offlineCallPhone || siteData?.paymentConfig?.supportPhone || siteData?.brandConfig?.hotline || '0388500500').replace(/\s+/g, '')}`}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-sm tracking-wide transition-all shadow cursor-pointer"
+                      >
+                        <Phone className="w-4 h-4 text-amber-300" /> Gọi Hotline Mua Hàng ({siteData?.paymentConfig?.offlineCallPhone || siteData?.paymentConfig?.supportPhone || siteData?.brandConfig?.hotline || '0388 500 500'})
+                      </a>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onAddToCart(activeModalProduct);
+                            handleCloseModal();
+                          }}
+                          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] font-bold text-xs transition-all cursor-pointer border border-[#dcd0bf]"
+                        >
+                          <ShoppingBag className="w-3.5 h-3.5" /> Thêm Để Tính Giá
+                        </button>
+                        <a
+                          href={siteData?.brandConfig?.mapLinkStore || siteData?.brandConfig?.mapLinkCenter || 'https://maps.google.com'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white hover:bg-[#f0e6d8] text-[#5c4d43] font-bold text-xs transition-all cursor-pointer border border-[#dcd0bf]"
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-amber-700" /> Ghé Trạm Gần Nhất
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        onAddToCart(activeModalProduct);
+                        handleCloseModal();
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-sm tracking-wide transition-all shadow cursor-pointer"
+                    >
+                      <ShoppingBag className="w-4 h-4 text-amber-300" /> Thêm Vào Giỏ Hàng
+                    </button>
+                  )}
                 </div>
               </div>
 
