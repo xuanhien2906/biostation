@@ -380,27 +380,10 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                             </div>
 
                             <div className="flex items-center gap-1.5">
-                              <button
-                                type="button"
-                                onClick={(e) => handleQuickAdd(e, product)}
-                                className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow ${
-                                  addedProductId === product.id
-                                    ? 'bg-emerald-700 text-white'
-                                    : 'bg-[#274e23] hover:bg-[#1e3e1a] text-white'
-                                }`}
-                              >
-                                {addedProductId === product.id ? (
-                                  <>
-                                    <Check className="w-3.5 h-3.5 text-amber-300" />
-                                    <span>Đã Chọn</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Plus className="w-3.5 h-3.5" />
-                                    <span>Đặt Mua</span>
-                                  </>
-                                )}
-                              </button>
+                              <span className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all bg-[#274e23]/10 text-[#274e23] group-hover:bg-[#274e23] group-hover:text-white border border-[#274e23]/20">
+                                <span>Chi tiết</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -632,16 +615,13 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                 <p className="text-xs text-[#5c4d43] leading-relaxed">
                   {detailModalProduct.description}
                 </p>
-                <button
-                  onClick={() => {
-                    onAddToCart(detailModalProduct);
-                    setDetailModalProduct(null);
-                  }}
-                  className="w-full py-3 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow cursor-pointer"
+                <a
+                  href="tel:0388500500"
+                  className="w-full py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow cursor-pointer transition-all hover:scale-[1.02]"
                 >
-                  <ShoppingBag className="w-4 h-4 text-amber-300" />
-                  <span>Thêm Vào Giỏ Đặt Hàng</span>
-                </button>
+                  <Phone className="w-4 h-4 text-amber-300" />
+                  <span>Gọi Hotline Đặt Mua: 0388 500 500</span>
+                </a>
               </div>
             </div>
 

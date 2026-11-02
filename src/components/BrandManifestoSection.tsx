@@ -67,45 +67,9 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
               </div>
               <span className="text-[11px] text-[#7a6858] font-normal hidden xl:inline">• Sản vật thuận mùa đạt chuẩn hữu cơ cao nhất</span>
             </div>
-
-            {/* MAIN CTAS */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
-              {setActiveTab && (
-                <button
-                  onClick={() => {
-                    setActiveTab('model');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all hover:scale-105 cursor-pointer"
-                >
-                  <Store className="w-4 h-4 text-amber-300" />
-                  <span>Xem Mô Hình Kinh Doanh</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-
-              {setActiveTab && (
-                <button
-                  onClick={() => {
-                    setActiveTab('shop');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow hover:scale-105 cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>Nông Sản BMQ Qualified</span>
-                </button>
-              )}
-
-              <button
-                onClick={() => setShowPosterModal(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-[#274e23] hover:text-amber-800 bg-white/90 hover:bg-white px-5 py-3.5 rounded-xl border border-[#dcd0bf] transition-all shadow-sm cursor-pointer"
-              >
-                <Maximize2 className="w-4 h-4 text-amber-600" />
-                <span>Xem Poster Tuyên Ngôn Gốc</span>
-              </button>
-            </div>
           </div>
+
+            
 
           {/* BÊN PHẢI: Logo BiO Station Tách Nền Hiển Thị To & Nổi Bật */}
           <div className="lg:col-span-5 flex items-center justify-center lg:justify-end order-2">

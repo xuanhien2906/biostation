@@ -339,7 +339,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
             d.category === 'Cháo' ||
             d.category === 'Topping' ||
             d.category === 'Nước' ||
-            d.category === 'Món Mặn'
+            d.category === 'Món Mặn' ||
+            d.name?.includes('Cá Lóc Đồng') ||
+            d.name?.includes('Gà Ta Đồi') ||
+            d.name?.includes('Trứng Gà Thảo Mộc')
         );
         if (!hasOldDishes && parsed.dishes?.length > 0) {
           return parsed;
@@ -555,6 +558,26 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setBusinessMissionState(parsed);
         }
       }
+
+      const savedExpMeal = localStorage.getItem(`${STORAGE_KEY}_experience_meal`);
+      if (savedExpMeal) {
+        const parsed = JSON.parse(savedExpMeal);
+        const hasOldDishes = parsed.dishes?.some(
+          (d: any) =>
+            d.id === 'dish-do-an-them' ||
+            d.category === 'Cháo' ||
+            d.category === 'Topping' ||
+            d.category === 'Nước' ||
+            d.category === 'Món Mặn' ||
+            d.name?.includes('Cá Lóc Đồng') ||
+            d.name?.includes('Gà Ta Đồi') ||
+            d.name?.includes('Trứng Gà Thảo Mộc')
+        );
+        if (hasOldDishes) {
+          localStorage.setItem(`${STORAGE_KEY}_experience_meal`, JSON.stringify(DEFAULT_EXPERIENCE_MEAL_CONFIG));
+          setExperienceMealConfig(DEFAULT_EXPERIENCE_MEAL_CONFIG);
+        }
+      }
     } catch (e) {
       console.warn('Cache migration warning:', e);
     }
@@ -725,6 +748,18 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 config.bannerDescription = "";
                 config.depositNoticeText = "";
                 config.pricePerPerson = 0;
+              }
+              if (Array.isArray(config.dishes)) {
+                config.dishes = config.dishes.filter((d: any) =>
+                  !d.name?.includes('Cá Lóc Đồng') &&
+                  !d.name?.includes('Gà Ta Đồi') &&
+                  !d.name?.includes('Trứng Gà Thảo Mộc') &&
+                  d.id !== 'dish-do-an-them' &&
+                  d.category !== 'Cháo' &&
+                  d.category !== 'Topping' &&
+                  d.category !== 'Nước' &&
+                  d.category !== 'Món Mặn'
+                );
               }
               setExperienceMealConfig(config);
             }

@@ -185,19 +185,21 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-2 md:gap-3 shrink-0 order-2 md:order-3">
             <div className="hidden sm:flex"><LanguageSwitcher /></div>
 
-            {/* Cart Button */}
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-2.5 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] transition-colors border border-[#dcd0bf] cursor-pointer shadow-sm flex items-center justify-center"
-              aria-label="Giỏ hàng"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#d97706] text-white font-black text-[11px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            {/* Cart Button - Chỉ hiển thị khi bật thanh toán / đặt hàng online */}
+            {siteData?.paymentConfig?.isOnlinePaymentEnabled && (
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-2.5 rounded-full bg-[#f0e6d8] hover:bg-[#e4d6c2] text-[#274e23] transition-colors border border-[#dcd0bf] cursor-pointer shadow-sm flex items-center justify-center"
+                aria-label="Giỏ hàng"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#d97706] text-white font-black text-[11px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button

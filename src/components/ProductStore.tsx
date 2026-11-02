@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
 import { PRODUCTS } from '../data/products';
-import { ShoppingBag, Star, CheckCircle, ShieldCheck, Info, X, Plus, Sprout, Award, Phone, MapPin, Store } from 'lucide-react';
+import { ShoppingBag, Star, CheckCircle, ShieldCheck, Info, X, Plus, Sprout, Award, Phone, MapPin, Store, ArrowRight } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
 import { ExperienceMealBuilder } from './ExperienceMealBuilder';
 
@@ -247,12 +247,22 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
                   )}
                 </div>
 
-                <button
-                  onClick={() => onAddToCart(product)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs tracking-wide transition-all shadow cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" /> Thêm
-                </button>
+                {siteData?.paymentConfig?.isOnlinePaymentEnabled ? (
+                  <button
+                    onClick={() => onAddToCart(product)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs tracking-wide transition-all shadow cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" /> Thêm
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleOpenModal(product)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#274e23]/10 hover:bg-[#274e23] text-[#274e23] hover:text-white font-bold text-xs tracking-wide transition-all cursor-pointer border border-[#274e23]/20"
+                  >
+                    <span>Chi Tiết</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
           </div>
