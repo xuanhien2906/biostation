@@ -180,26 +180,71 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = ({
   const [added, setAdded] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
-  // Sync main meal sets from config if available, or fallback
+  // Sync main meal sets from config (bao gồm cả khẩu phần mới do Admin thêm!)
   const mainMeals = React.useMemo(() => {
-    const configDishes = (siteData.experienceMealConfig?.dishes || []).filter(
-      (d) => d.category === "Cơm" || (d.price && d.price > 0),
+    const allConfigDishes = siteData.experienceMealConfig?.dishes || [];
+    const mainConfigDishes = allConfigDishes.filter(
+      (d) => d.category === "Cơm" || d.isMain === true
     );
-    if (configDishes.length >= 3) {
-      return configDishes.map((cd) => {
+    if (mainConfigDishes.length > 0) {
+      return mainConfigDishes.map((cd) => {
         const fallback = DEFAULT_MAIN_MEAL_SETS.find((f) => f.id === cd.id);
         return {
           id: cd.id,
           name: cd.name,
-          price: cd.price || 0,
-          badge: fallback?.badge || "Khẩu Phần Cơm",
+          price: cd.price ?? fallback?.price ?? 0,
+          badge: fallback?.badge || cd.category || "Khẩu Phần Cơm",
           image: cd.image || fallback?.image || "/mam-com-trai-nghiem.jpg",
           flavor: cd.flavor || fallback?.flavor || "",
-          details: fallback?.details || [],
+          details: fallback?.details || (cd.origin ? [cd.origin] : []),
         };
       });
     }
     return DEFAULT_MAIN_MEAL_SETS;
+  }, [siteData.experienceMealConfig?.dishes]);
+
+  // Đồng bộ ĐỘNG danh sách Các Món Trong Thực Đơn từ Admin (siteData.experienceMealConfig.dishes) + Poster gốc
+  const dynamicMenuGroups = React.useMemo(() => {
+    const allConfigDishes = siteData.experienceMealConfig?.dishes || [];
+    const sideDishes = allConfigDishes.filter(
+      (d) => d.category !== "Cơm" && !d.isMain
+    );
+
+    // Khởi tạo từ 5 nhóm chuẩn trên Poster
+    const groups = MENU_DISH_GROUPS.map((g) => ({
+      ...g,
+      dishes: [...g.dishes],
+    }));
+
+    sideDishes.forEach((sd) => {
+      const catUpper = (sd.category || "").toUpperCase().trim();
+      const nameLower = (sd.name || "").toLowerCase();
+
+      // Tìm nhóm phù hợp theo category hoặc tên món
+      let targetGroup = groups.find(
+        (g) => g.category.toUpperCase() === catUpper
+      );
+
+      if (!targetGroup) {
+        if (catUpper.includes("CÁ") || nameLower.startsWith("cá ")) {
+          targetGroup = groups.find((g) => g.id === "group-ca");
+        } else if (catUpper.includes("GÀ") || nameLower.includes("gà ")) {
+          targetGroup = groups.find((g) => g.id === "group-ga");
+        } else if (catUpper.includes("ĐẬU") || nameLower.startsWith("đậu ")) {
+          targetGroup = groups.find((g) => g.id === "group-dau");
+        } else if (catUpper.includes("THỊT") || nameLower.startsWith("thịt ") || nameLower.includes("sườn")) {
+          targetGroup = groups.find((g) => g.id === "group-thit");
+        } else {
+          targetGroup = groups.find((g) => g.id === "group-rau-khac");
+        }
+      }
+
+      if (targetGroup && sd.name && !targetGroup.dishes.includes(sd.name)) {
+        targetGroup.dishes.unshift(sd.name);
+      }
+    });
+
+    return groups;
   }, [siteData.experienceMealConfig?.dishes]);
 
   // Quantity controllers
@@ -567,7 +612,7 @@ Hotline: ${siteData.paymentConfig?.offlineCallPhone || siteData.paymentConfig?.s
 
           {/* 5 Menu Groups */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {MENU_DISH_GROUPS.map((group) => (
+            {dynamicMenuGroups.map((group) => (
               <div
                 key={group.id}
                 className="bg-white/90 backdrop-blur-sm p-4 rounded-2xl border border-[#dcd0bf] shadow-sm flex flex-col space-y-3"

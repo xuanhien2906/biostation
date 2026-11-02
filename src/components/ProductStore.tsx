@@ -40,17 +40,17 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
 }) => {
   const { siteData } = useSite();
   const rawProducts = siteData?.products && siteData.products.length > 0 ? siteData.products : PRODUCTS;
+  const extraProducts = rawProducts.filter((p) => !p.is_hidden && !PRODUCTS.some((dp) => dp.id === p.id));
   const mergedProducts: Product[] = PRODUCTS.map((defaultProd) => {
     const found = rawProducts.find((p) => p.id === defaultProd.id);
-    if (!found) return { ...defaultProd, image: LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || defaultProd.image };
+    if (!found) return { ...defaultProd, image: defaultProd.image || LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] };
     return {
       ...defaultProd,
       ...found,
-      image: LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || found.image || defaultProd.image,
+      image: found.image || LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || defaultProd.image,
     };
   });
-  const extraProducts = rawProducts.filter((p) => !p.is_hidden && !PRODUCTS.some((dp) => dp.id === p.id));
-  const products = [...mergedProducts.filter(p => !p.is_hidden), ...extraProducts];
+  const products = [...extraProducts, ...mergedProducts.filter(p => !p.is_hidden)];
 
   const [activeCategory, setActiveCategory] = useState<string>(selectedCategory);
   const [activeModalProduct, setActiveModalProduct] = useState<Product | null>(
@@ -79,7 +79,7 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
     }
   }, [selectedProductId]);
 
-  const categories = [
+  const baseCategories = [
     'Tất Cả',
     'Gạo',
     'Màng cám gạo',
@@ -88,6 +88,11 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
     'Nước nhàu',
     'Trà',
     'Sản Phẩm Khác',
+  ];
+  const dynamicCategories = Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+  const categories = [
+    ...baseCategories,
+    ...dynamicCategories.filter((c) => !baseCategories.includes(c)),
   ];
 
   const filteredProducts =

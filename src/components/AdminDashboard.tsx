@@ -5695,6 +5695,7 @@ export const AdminDashboard: React.FC = () => {
                     origin: 'Đồng Bằng Sông Cửu Long',
                     certification: 'Tiêu chuẩn BMQ Qualified',
                     bmqNote: 'Kiểm định 100% sạch.',
+                    isMainSaleProduct: true,
                   };
                   setEditingProduct(newProd);
                   setIsAddingProduct(true);
@@ -6967,11 +6968,17 @@ export const AdminDashboard: React.FC = () => {
                     }
                     className="w-full p-2 rounded-xl border border-[#dcd0bf] bg-white"
                   >
+                    <option value="Gạo">Gạo (Bảng Giá Gạo Bách Mộc)</option>
+                    <option value="Màng cám gạo">Màng cám gạo (Chế biến sâu)</option>
+                    <option value="Viên cám gạo">Viên cám gạo (Chế biến sâu)</option>
+                    <option value="Trà">Trà (Thuần tự nhiên)</option>
+                    <option value="Cafe">Cafe (Thuần tự nhiên)</option>
+                    <option value="Nước nhàu">Nước nhàu (Thuần tự nhiên)</option>
+                    <option value="Sản Phẩm Khác">Sản Phẩm Thuần Tự Nhiên Khác</option>
+                    <option value="Bộ Sản Phẩm Gia Đình">Bộ Sản Phẩm Gia Đình</option>
                     <option value="Gạo & Nông Sản">Gạo & Nông Sản</option>
                     <option value="Rau Củ Hữu Cơ">Rau Củ Hữu Cơ</option>
                     <option value="Mật Ong & Tự Nhiên">Mật Ong & Tự Nhiên</option>
-                    <option value="Chăm Sóc & Gia Dụng">Chăm Sóc & Gia Dụng</option>
-                    <option value="Bộ Sản Phẩm Gia Đình">Bộ Sản Phẩm Gia Đình</option>
                   </select>
                 </div>
               </div>
@@ -7307,10 +7314,12 @@ export const AdminDashboard: React.FC = () => {
                     }
                     className="w-full p-2.5 rounded-xl border border-[#dcd0bf] bg-[#fbf8f3]"
                   >
-                    <option value="Cơm">Cơm</option>
-                    <option value="Nước">Nước</option>
-                    <option value="Cháo">Cháo</option>
-                    <option value="Topping">Topping</option>
+                    <option value="Cơm">Cơm (Khẩu phần chính có giá)</option>
+                    <option value="Cá">Cá (Món trong thực đơn)</option>
+                    <option value="Gà">Gà (Món trong thực đơn)</option>
+                    <option value="Đậu">Đậu (Món trong thực đơn)</option>
+                    <option value="Thịt">Thịt (Món trong thực đơn)</option>
+                    <option value="Rau & Món Khác">Rau & Món Khác (Món trong thực đơn)</option>
                     <option value="Món Mặn">Món Mặn</option>
                     <option value="Món Xào">Món Xào</option>
                     <option value="Món Canh">Món Canh</option>

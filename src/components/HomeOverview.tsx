@@ -121,8 +121,14 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
   const [detailModalProduct, setDetailModalProduct] = useState<Product | null>(null);
 
   const rawProducts = siteData?.products && siteData.products.length > 0 ? siteData.products : PRODUCTS;
-  // Đảm bảo luôn có đủ 15 sản phẩm chuẩn từ PRODUCTS nếu cache thiếu
-  const mergedProducts: Product[] = PRODUCTS.map((defaultProd) => {
+  
+  // 1. Các sản phẩm mới do Admin thêm (không nằm trong 15 ID gốc) -> đưa lên đầu để luôn thấy ngay
+  const extraProducts: Product[] = rawProducts.filter(
+    (p) => !p.is_hidden && !PRODUCTS.some((dp) => dp.id === p.id)
+  );
+
+  // 2. 15 sản phẩm gốc (ưu tiên toàn bộ thông tin & ảnh mới nhất từ Admin/Cloud)
+  const mergedDefaultProducts: Product[] = PRODUCTS.map((defaultProd) => {
     const found = rawProducts.find((p) => p.id === defaultProd.id);
     if (!found) return defaultProd;
     return {
@@ -130,12 +136,9 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
       ...found,
       image: found.image || LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || defaultProd.image,
     };
-  });
-  // Thêm các sản phẩm mới do Admin tạo thêm (nếu có)
-  const extraProducts = rawProducts.filter(
-    (p) => !p.is_hidden && !PRODUCTS.some((dp) => dp.id === p.id)
-  );
-  const allProducts = [...mergedProducts.filter((p) => !p.is_hidden), ...extraProducts];
+  }).filter((p) => !p.is_hidden);
+
+  const allProducts: Product[] = [...extraProducts, ...mergedDefaultProducts];
 
   const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -144,8 +147,48 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
     setTimeout(() => setAddedProductId(null), 1800);
   };
 
+  // Ưu tiên ảnh từ Admin (product.image), nếu trống mới dùng ảnh local dự phòng
   const getProductImg = (product: Product) => {
-    return LOCAL_PRODUCT_IMAGE_MAP[product.id] || product.image || '/gao-bach-moc-pack.jpg';
+    if (product.image && product.image.trim().length > 0) {
+      return product.image;
+    }
+    return LOCAL_PRODUCT_IMAGE_MAP[product.id] || '/gao-bach-moc-pack.jpg';
+  };
+
+  // Hàm lấy danh sách sản phẩm cho từng nhóm Bảng Giá (bao gồm cả sản phẩm mới do Admin thêm!)
+  const getSectionProducts = (sectionId: string, defaultIds: string[]): Product[] => {
+    const baseList = defaultIds
+      .map((id) => allProducts.find((p) => p.id === id))
+      .filter((p): p is Product => Boolean(p));
+
+    // Phân loại các sản phẩm mới do Admin thêm vào đúng nhóm tương ứng
+    const matchingExtras = extraProducts.filter((ep) => {
+      const cat = (ep.category || '').toLowerCase();
+      const name = (ep.name || '').toLowerCase();
+      if (sectionId === 'sec-1') {
+        return cat === 'gạo' && (name.includes('quốc tế') || name.includes('usda'));
+      }
+      if (sectionId === 'sec-2') {
+        return cat === 'gạo' && (name.includes('lúa mẹ') || name.includes('yang') || name.includes('việt nam'));
+      }
+      if (sectionId === 'sec-3') {
+        return (cat === 'gạo' || cat === 'gạo & nông sản') && !name.includes('quốc tế') && !name.includes('usda') && !name.includes('lúa mẹ') && !name.includes('yang');
+      }
+      if (sectionId === 'sec-4') {
+        return cat.includes('cám') || cat.includes('màng') || name.includes('cám') || name.includes('màng gạo');
+      }
+      if (sectionId === 'sec-5') {
+        // Tất cả các sản phẩm mới còn lại (Bộ Sản Phẩm Gia Đình, Sản Phẩm Khác, Trà, Cafe, Nước nhàu, Thảo dược...)
+        const inSec1 = cat === 'gạo' && (name.includes('quốc tế') || name.includes('usda'));
+        const inSec2 = cat === 'gạo' && (name.includes('lúa mẹ') || name.includes('yang') || name.includes('việt nam'));
+        const inSec3 = (cat === 'gạo' || cat === 'gạo & nông sản') && !inSec1 && !inSec2;
+        const inSec4 = cat.includes('cám') || cat.includes('màng') || name.includes('cám') || name.includes('màng gạo');
+        return !inSec1 && !inSec2 && !inSec3 && !inSec4;
+      }
+      return false;
+    });
+
+    return [...matchingExtras, ...baseList];
   };
 
   return (
@@ -243,9 +286,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
           {/* BODY: LIST CHI TIẾT 5 NHÓM SẢN PHẨM KÈM HÌNH ẢNH & BẢNG GIÁ RÕ RÀNG */}
           <div className="p-4 sm:p-8 space-y-10">
             {PRICE_LIST_SECTIONS.map((section) => {
-              const sectionProducts = section.productIds
-                .map((id) => allProducts.find((p) => p.id === id))
-                .filter((p): p is Product => Boolean(p));
+              const sectionProducts = getSectionProducts(section.id, section.productIds);
 
               if (sectionProducts.length === 0) return null;
 
@@ -321,12 +362,20 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                                 Giá niêm yết
                               </span>
                               <div className="flex items-baseline gap-1">
-                                <span className="text-lg sm:text-xl font-black text-[#c2410c]">
-                                  {product.price.toLocaleString('vi-VN')}đ
-                                </span>
-                                <span className="text-[11px] text-[#7a6858] font-medium">
-                                  / {product.unit || 'sp'}
-                                </span>
+                                {product.price > 0 ? (
+                                  <>
+                                    <span className="text-lg sm:text-xl font-black text-[#c2410c]">
+                                      {product.price.toLocaleString('vi-VN')}đ
+                                    </span>
+                                    <span className="text-[11px] text-[#7a6858] font-medium">
+                                      / {product.unit || 'gói'}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm sm:text-base font-black text-[#274e23]">
+                                    {product.badge || 'Liên hệ báo giá'}
+                                  </span>
+                                )}
                               </div>
                             </div>
 
