@@ -5,7 +5,6 @@ import {
   MapPin,
   Phone,
   Store,
-  Image as ImageIcon,
   X,
   Sparkles,
 } from "lucide-react";
@@ -140,9 +139,6 @@ interface ExperienceMealBuilderProps {
 export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = () => {
   const { siteData } = useSite();
 
-  // State: modal xem ảnh poster menu gốc
-  const [showPosterModal, setShowPosterModal] = useState<boolean>(false);
-
   // Sync main meal sets from config
   const mainMeals = React.useMemo(() => {
     const allConfigDishes = siteData.experienceMealConfig?.dishes || [];
@@ -198,14 +194,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = () =>
               <span>BiO Station • Chạm để trở về</span>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowPosterModal(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-emerald-100 hover:text-white border border-white/20 text-xs font-bold transition-all cursor-pointer shadow-sm"
-            >
-              <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-              <span>Xem Ảnh Menu Poster Gốc</span>
-            </button>
+            
           </div>
 
           <div>
@@ -365,14 +354,7 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = () =>
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowPosterModal(true)}
-              className="text-[11px] font-bold text-[#274e23] hover:text-amber-800 bg-white/80 hover:bg-white px-3 py-1.5 rounded-full border border-[#dcd0bf] transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-            >
-              <ImageIcon className="w-3.5 h-3.5 text-amber-600" />
-              <span>Xem Menu Poster Gốc</span>
-            </button>
+            
           </div>
 
           {/* 5 Menu Groups */}
@@ -451,54 +433,11 @@ export const ExperienceMealBuilder: React.FC<ExperienceMealBuilderProps> = () =>
               <MapPin className="w-4 h-4 text-red-600" />
               <span>Vị Trí Google Maps</span>
             </a>
-            <button
-              type="button"
-              onClick={() => setShowPosterModal(true)}
-              className="flex-1 lg:flex-initial px-4 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <ImageIcon className="w-4 h-4 text-amber-300" />
-              <span>Ảnh Poster Gốc</span>
-            </button>
+            
           </div>
         </div>
       </div>
 
-      {/* POSTER MODAL LIGHTBOX */}
-      {showPosterModal && (
-        <div
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-fade-in"
-          onClick={() => setShowPosterModal(false)}
-        >
-          <div
-            className="relative max-w-4xl w-full bg-[#1f381c] rounded-3xl overflow-hidden shadow-2xl border border-emerald-700/50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-4 bg-[#142912] text-white border-b border-emerald-800">
-              <div className="flex items-center gap-2">
-                <Utensils className="w-5 h-5 text-amber-400" />
-                <h3 className="font-serif font-bold text-sm sm:text-base text-amber-200">
-                  Menu Cơm Hữu Cơ Bách Mộc – BiO Station (Poster Gốc)
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPosterModal(false)}
-                className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-2 sm:p-4 max-h-[82vh] overflow-y-auto flex items-center justify-center bg-[#0d1b0c]">
-              <img
-                src="/menu-com-huu-co-bach-moc.jpg"
-                alt="Menu Cơm Hữu Cơ Bách Mộc"
-                className="w-full h-auto max-h-[78vh] object-contain rounded-xl shadow-lg"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };

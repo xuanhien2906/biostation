@@ -15,7 +15,6 @@ import {
   Plus,
   Check,
   Phone,
-  Maximize2,
   X,
   ExternalLink,
   Award,
@@ -117,7 +116,6 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
 }) => {
   const { siteData } = useSite();
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
-  const [showPricePosterModal, setShowPricePosterModal] = useState(false);
   const [detailModalProduct, setDetailModalProduct] = useState<Product | null>(null);
 
   const rawProducts = siteData?.products && siteData.products.length > 0 ? siteData.products : PRODUCTS;
@@ -218,14 +216,7 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
                   <span>Niêm Yết Chính Thức • Chuẩn Hữu Cơ BMQ</span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowPricePosterModal(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition-all cursor-pointer shadow-md"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Xem Ảnh Poster Bảng Giá Gốc</span>
-                </button>
+                
               </div>
 
               <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
@@ -658,41 +649,6 @@ export const HomeOverview: React.FC<HomeOverviewProps> = ({
         </div>
       )}
 
-      {/* MODAL XEM POSTER BẢNG GIÁ GỐC */}
-      {showPricePosterModal && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowPricePosterModal(false)}
-        >
-          <div
-            className="relative max-w-3xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-700"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-4 bg-[#274e23] text-white">
-              <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-400" />
-                <h3 className="font-serif font-bold text-sm sm:text-base text-amber-200">
-                  Bảng Giá Sản Phẩm Gạo Bách Mộc & Nông Sản BiO Station
-                </h3>
-              </div>
-              <button
-                onClick={() => setShowPricePosterModal(false)}
-                className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-2 sm:p-4 max-h-[80vh] overflow-y-auto flex items-center justify-center bg-[#f5ede2]">
-              <img
-                src="/bang-gia-san-pham-gao-bach-moc.jpg"
-                alt="Bảng Giá Sản Phẩm Gạo Bách Mộc"
-                className="w-full h-auto max-h-[75vh] object-contain rounded-xl shadow-md"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </div>
   );
 };

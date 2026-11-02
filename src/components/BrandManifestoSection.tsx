@@ -7,7 +7,6 @@ import {
   Phone,
   Globe,
   ArrowRight,
-  Maximize2,
   X,
   Eye,
   Heart,
@@ -22,7 +21,6 @@ interface BrandManifestoSectionProps {
 }
 
 export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ setActiveTab }) => {
-  const [showPosterModal, setShowPosterModal] = useState(false);
 
   return (
     <section className="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 bg-gradient-to-b from-[#f2e9dc] via-[#f8f5f0] to-[#f4ece1] border-b border-[#dfd2bf] text-[#2d241e]">
@@ -332,54 +330,6 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
 
       </div>
 
-      {/* MODAL PHÓNG TO POSTER TUYÊN NGÔN GỐC */}
-      {showPosterModal && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowPosterModal(false)}
-        >
-          <div 
-            className="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-stone-700 animate-in fade-in zoom-in duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-4 bg-[#274e23] text-white">
-              <div className="flex items-center gap-2">
-                <Sprout className="w-5 h-5 text-amber-400" />
-                <h3 className="font-serif font-bold text-base text-amber-200">
-                  Poster Tuyên Ngôn Thương Hiệu BiO Station
-                </h3>
-              </div>
-              <button
-                onClick={() => setShowPosterModal(false)}
-                className="p-1.5 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-2 sm:p-4 max-h-[80vh] overflow-y-auto flex items-center justify-center bg-[#f5ede2]">
-              <img
-                src="/tuyen-ngon-thuong-hieu.jpg"
-                alt="Tuyên Ngôn Thương Hiệu BiO Station"
-                className="w-full h-auto max-h-[75vh] object-contain rounded-xl shadow-md border border-[#dfd2bf]"
-                onError={(e) => {
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80';
-                }}
-              />
-            </div>
-
-            <div className="p-3 bg-[#f8f5f0] border-t border-[#dfd2bf] flex items-center justify-between text-xs text-[#5c4d43]">
-              <span className="font-semibold">Chạm để trở về – trở về với thiên nhiên, với bản thể gốc của chính mình</span>
-              <button
-                onClick={() => setShowPosterModal(false)}
-                className="px-4 py-1.5 bg-[#274e23] text-white rounded-lg font-bold text-xs hover:bg-[#1e3e1a] cursor-pointer"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
+      </section>
   );
 };
