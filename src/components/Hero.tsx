@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sprout, Store, ArrowRight, ShieldCheck, CheckCircle2, Users, ShoppingBag, Sparkles, MapPin } from 'lucide-react';
+import { Sprout, Store, Wheat, ArrowRight, ShieldCheck, CheckCircle2, Users, ShoppingBag, Sparkles, MapPin } from 'lucide-react';
 import { TabType } from '../types';
 import { useSite } from '../context/SiteContext';
 
@@ -10,17 +10,18 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
   const { siteData } = useSite();
   const heroConfig = siteData?.heroConfig || {
-    badgeTag: 'Hệ Sinh Thái Nông Sản Hữu Cơ & Sống Xanh Bách Mộc',
+    badgeTag: 'Tuyên Ngôn Thương Hiệu BiO Station',
     titlePart1: 'BiO Station –',
     titleHighlight: 'Chạm Để Trở Về',
-    subTitle: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
-    descriptionText: 'BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày.',
-    coreValue1Title: 'Đúng',
-    coreValue1Desc: 'Nguồn gốc rõ ràng',
-    coreValue2Title: 'Thật',
-    coreValue2Desc: 'Sản phẩm & thông tin thật',
-    coreValue3Title: 'Thuận tự nhiên',
-    coreValue3Desc: 'Sống hài hòa sinh thái',
+    subTitle: 'Trở về với thiên nhiên, với bản thể gốc của chính mình',
+    descriptionText:
+      'Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên. Nơi bạn được Nhìn - Chạm - Ngửi - Nếm sản vật thuận mùa, đạt chuẩn hữu cơ cao nhất và sống chậm để tìm về giá trị nguyên sơ.',
+    coreValue1Title: 'Bản Chất & Trải Nghiệm',
+    coreValue1Desc: 'Nhìn • Chạm • Ngửi • Nếm',
+    coreValue2Title: 'Sứ Mệnh Vận Hành',
+    coreValue2Desc: 'Chia sẻ • Trải nghiệm • Kết nối',
+    coreValue3Title: 'Tiêu Chuẩn BMQ',
+    coreValue3Desc: 'Canh tác thuận tự nhiên',
     ctaPrimaryText: 'Xem Mô Hình Kinh Doanh',
     ctaSecondaryText: 'Nông Sản BMQ Qualified',
   };
@@ -58,7 +59,7 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
             </p>
 
             {/* Core Values 3 Badges */}
-            <div className="grid grid-cols-3 gap-3 bg-[#f2e9dc] p-3.5 rounded-2xl border border-[#e2d5c3]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 bg-[#f2e9dc] p-3.5 rounded-2xl border border-[#e2d5c3]">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-[#274e23] shrink-0" />
                 <div>
@@ -105,7 +106,7 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
             </div>
 
             {/* Trust Footer Info */}
-            <div className="pt-4 flex items-center gap-6 border-t border-[#e2d5c3] text-xs text-[#7a6858]">
+            <div className="pt-4 flex flex-wrap items-center gap-3 sm:gap-6 border-t border-[#e2d5c3] text-xs text-[#7a6858]">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#274e23]" />
                 <span>{brandConfig.headquarters}</span>
@@ -130,11 +131,11 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-[#274e23] font-serif group-hover:text-amber-700 transition-colors flex items-center justify-between">
-                    {heroConfig.card1Title || 'Kế Hoạch Kinh Doanh 7 Trụ Cột'}
+                    {heroConfig.card1Title || 'Mô Hình 3 Trụ Cột Chiến Lược'}
                     <ArrowRight className="w-4 h-4 text-[#8c7868] group-hover:text-[#274e23] transition-colors" />
                   </h3>
                   <p className="text-xs text-[#6e5d4f] mt-0.5">
-                    {heroConfig.card1Desc || 'Mô hình Trải nghiệm – Bán lẻ – Doanh thu & Chi phí dự kiến.'}
+                    {heroConfig.card1Desc || 'Bản chất & Trải nghiệm – Sứ mệnh & Vận hành – Tiêu chuẩn BMQ.'}
                   </p>
                 </div>
               </div>
@@ -182,22 +183,22 @@ export const Hero: React.FC<HeroProps> = ({ setActiveTab }) => {
               </div>
             </div>
 
-            {/* Card 4: BiO AI Assistant */}
+            {/* Card 4: Cháo Lúa Mẹ */}
             <div
-              onClick={() => setActiveTab('advisor')}
+              onClick={() => setActiveTab('chaoluame')}
               className="p-5 rounded-2xl bg-white border border-[#e2d5c3] hover:border-[#274e23] cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md group"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-amber-600/10 text-amber-700 flex items-center justify-center font-bold text-lg group-hover:scale-105 transition-transform shrink-0">
-                  <Sparkles className="w-6 h-6 text-amber-600 animate-pulse" />
+                  <Wheat className="w-6 h-6 text-amber-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-bold text-[#274e23] font-serif group-hover:text-amber-700 transition-colors flex items-center justify-between">
-                    Tư Vấn Viên AI Bách Mộc
+                    Cháo Lúa Mẹ Bách Mộc
                     <ArrowRight className="w-4 h-4 text-[#8c7868] group-hover:text-[#274e23] transition-colors" />
                   </h3>
                   <p className="text-xs text-[#6e5d4f] mt-0.5">
-                    Hỏi đáp về nông sản sạch, bảo quản rau củ & chọn gạo cho bé.
+                    Ẩm thực thuận tự nhiên, bát cháo thơm lành nuôi dưỡng nguyên khí.
                   </p>
                 </div>
               </div>

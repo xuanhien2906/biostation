@@ -11,13 +11,13 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
   const { siteData } = useSite();
   const brandConfig = siteData?.brandConfig || {
-    subSlogan: 'Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên',
-    address: 'VP Bách Mộc – Khu đô thị Phú Mỹ Hưng, Quận 7, TP. HCM',
-    hotline: '0908 123 456',
+    subSlogan: 'Chạm để trở về – trở về với thiên nhiên, với bản thể gốc của chính mình',
+    address: '336 Lương Văn Nho, Xã Cần Giờ, TP. HCM (Trạm Trải Nghiệm Mẫu)',
+    hotline: '0388 500 500',
     websiteUrl: 'biostation.vn',
     email: 'contact@biostation.vn',
     copyrightText: '© 2026 BiO Station – Hệ Sinh Thái Bách Mộc. Chạm để trở về.',
-    footerDescription: 'BiO Station là hệ sinh thái điểm trạm nông sản hữu cơ Bách Mộc, kết nối cộng đồng sống xanh và tiêu dùng tử tế.',
+    footerDescription: 'BiO Station – Chạm để trở về. Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên, chuẩn BMQ Qualified.',
   };
 
   return (
@@ -97,7 +97,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                     }}
                     className="hover:text-amber-300 transition-colors cursor-pointer"
                   >
-                    {tab.label}
+                    {tab.id === 'model' ? 'Mô Hình 3 Trụ Cột' : tab.label}
                   </button>
                 </li>
               ))}

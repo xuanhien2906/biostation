@@ -10,17 +10,17 @@
     "logoMainText": "BiO",
     "logoSubText": "Station",
     "slogan": "Chạm Để Trở Về",
-    "subSlogan": "Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên",
-    "topBannerText": "🔥 Khai trương Station Cộng Đồng mới tại Vinhomes Central Park & Thảo Điền – Ưu đãi 15% tất cả gạo hữu cơ Bách Mộc!",
+    "subSlogan": "Trở về với thiên nhiên, với bản thể gốc của chính mình",
+    "topBannerText": "🔥 Trạm Trải Nghiệm Mẫu BiO Station Cần Giờ – 336 Lương Văn Nho, Xã Cần Giờ – Hotline: 0388.500.500",
     "hotline": "0388 500 500",
     "email": "contact@biostation.vn",
-    "address": "336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc)",
-    "websiteUrl": "www.BioStation.vn",
+    "address": "336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc), TP. HCM",
+    "websiteUrl": "biostation.vn",
     "operatingHours": "07:00 - 21:00 Hàng ngày",
-    "headquarters": "VP Bách Mộc – Phú Mỹ Hưng, TP. HCM",
+    "headquarters": "Trạm Mẫu: 336 Lương Văn Nho, Xã Cần Giờ, TP. HCM",
     "familyCountBadge": "Hơn 10,000+ Gia Đình Sống Xanh",
     "copyrightText": "© 2026 BiO Station – Hệ Sinh Thái Bách Mộc. Chạm để trở về.",
-    "footerDescription": "BiO Station là hệ sinh thái điểm trạm nông sản hữu cơ Bách Mộc, kết nối cộng đồng sống xanh và tiêu dùng tử tế.",
+    "footerDescription": "BiO Station – Chạm để trở về. Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên, chuẩn BMQ Qualified.",
     "socialFacebook": "https://facebook.com/biostation.vn",
     "socialZalo": "https://zalo.me/0813131385",
     "socialYoutube": "https://youtube.com/biostation.official",
@@ -34,19 +34,19 @@
     "certificationLogoUrl": "/custom-footer-logo.jpg"
   },
   "heroConfig": {
-    "badgeTag": "Hệ Sinh Thái Nông Sản Hữu Cơ & Sống Xanh Bách Mộc",
+    "badgeTag": "Tuyên Ngôn Thương Hiệu BiO Station",
     "titlePart1": "BiO Station –",
     "titleHighlight": "Chạm Để Trở Về",
-    "subTitle": "Trải nghiệm – Bán lẻ – Kết nối Thuận tự nhiên",
-    "descriptionText": "BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, gạo hữu cơ Bách Mộc, sản phẩm tử tế và cộng đồng yêu thiên nhiên.",
-    "coreValue1Title": "Đúng",
-    "coreValue1Desc": "Nguồn gốc rõ ràng",
-    "coreValue2Title": "Thật",
-    "coreValue2Desc": "Sản phẩm & thông tin thật",
-    "coreValue3Title": "Thuận tự nhiên",
-    "coreValue3Desc": "Sống hài hòa sinh thái",
-    "ctaPrimaryText": "Xem Mô Hình Kinh Doanh",
-    "ctaSecondaryText": "Nông Sản BMQ Qualified"
+    "subTitle": "Trở về với thiên nhiên, với bản thể gốc của chính mình",
+    "descriptionText": "Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên. Nơi bạn được Nhìn - Chạm - Ngửi - Nếm sản vật thuận mùa, đạt chuẩn hữu cơ cao nhất và sống chậm để tìm về giá trị nguyên sơ.",
+    "coreValue1Title": "Bản Chất & Trải Nghiệm",
+    "coreValue1Desc": "Nhìn • Chạm • Ngửi • Nếm",
+    "coreValue2Title": "Sứ Mệnh Vận Hành",
+    "coreValue2Desc": "Chia sẻ • Trải nghiệm • Kết nối",
+    "coreValue3Title": "Tiêu Chuẩn BMQ",
+    "coreValue3Desc": "Canh tác thuận tự nhiên",
+    "ctaPrimaryText": "Tuyên Ngôn & Mô Hình",
+    "ctaSecondaryText": "Cửa Hàng Nông Sản BMQ"
   },
   "themeConfig": {
     "primaryColor": "#274e23",
@@ -139,24 +139,26 @@
     "partnershipImageUrl": "/partnership.png",
     "title": "KẾ HOẠCH KINH DOANH BiO Station",
     "subTitle": "MÔ HÌNH: TRẢI NGHIỆM – BÁN LẺ – KẾT NỐI THUẬN TỰ NHIÊN",
-    "missionText": "BiO Station là điểm chạm để mọi người sống thuận tự nhiên hơn mỗi ngày – qua thực phẩm sạch, sản phẩm tử tế và cộng đồng yêu thiên nhiên.",
+    "missionText": "BiO Station – Chạm để trở về: trở về với thiên nhiên, với bản thể gốc của chính mình. Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên, chuẩn BMQ Qualified.",
+    "blocksSectionTitle": "3 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station",
+    "blocksSectionSubtitle": "Cấu trúc vận hành đồng bộ hóa từ nguồn hàng Bách Mộc tới trải nghiệm người dùng",
     "coreValues": [
       {
-        "name": "Đúng",
-        "desc": "Nguồn gốc rõ ràng",
-        "detail": "Minh bạch 100% chứng nhận nông hộ & nhật ký canh tác.",
+        "name": "Bản chất & Trải nghiệm",
+        "desc": "Nhìn • Chạm • Ngửi • Nếm",
+        "detail": "Đánh thức trọn vẹn 4 giác quan qua nông sản thuận mùa đạt chuẩn hữu cơ cao nhất.",
         "icon": "ShieldCheck"
       },
       {
-        "name": "Thật",
-        "desc": "Sản phẩm thật – thông tin thật",
-        "detail": "Nói không với hóa chất, chất bảo quản và quảng cáo quá đà.",
+        "name": "Sứ mệnh & Vận hành",
+        "desc": "Chia sẻ • Trải nghiệm • Kết nối • Phân phối",
+        "detail": "Cầu nối trực tiếp giữa người nông dân canh tác với người tiêu dùng tử tế.",
         "icon": "CheckCircle2"
       },
       {
-        "name": "Thuận tự nhiên",
-        "desc": "Tôn trọng tự nhiên, sống hài hòa",
-        "detail": "Canh tác tuần hoàn, bao bì thân thiện môi trường.",
+        "name": "Tiêu chuẩn BMQ",
+        "desc": "Canh tác thuận tự nhiên",
+        "detail": "Kiểm định nghiêm ngặt, minh bạch, trách nhiệm với đất đai và hệ sinh thái.",
         "icon": "Sprout"
       }
     ]
@@ -165,93 +167,41 @@
     {
       "id": 1,
       "number": "1",
-      "title": "MÔ HÌNH KINHN DOANH",
+      "title": "TRỤ CỘT 1: BẢN CHẤT & TRẢI NGHIỆM",
       "icon": "Store",
       "items": [
-        "Trải nghiệm tại chỗ (Thử sản phẩm, thưởng trà & nước ép)",
-        "Bán lẻ sản phẩm hữu cơ – thuận tự nhiên",
-        "Kết nối nông dân – người tiêu dùng (Direct Farmer Bridge)",
-        "Tổ chức workshop, sự kiện cộng đồng sống xanh"
+        "Hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên",
+        "Đa giác quan: Nhìn - Chạm - Ngửi - Nếm sản vật thuận mùa đạt chuẩn hữu cơ cao nhất",
+        "Không gian sống chậm để cảm nhận sự sống và tìm về giá trị nguyên sơ an lành",
+        "Điểm chạm trải nghiệm trực tiếp: Thưởng thức mâm cơm hữu cơ, trà hoa & nước ép bản địa"
       ],
-      "highlight": "Điểm trải nghiệm & chạm trực tiếp tại khu dân cư"
+      "highlight": "Đánh thức 4 giác quan & không gian sống chậm"
     },
     {
       "id": 2,
       "number": "2",
-      "title": "SẢN PHẨM CHÍNH",
-      "icon": "Wheat",
+      "title": "TRỤ CỘT 2: SỨ MỆNH & VẬN HÀNH",
+      "icon": "Users",
       "items": [
-        "Gạo hữu cơ Bách Mộc và nông sản BMQ (Qualified by BM)",
-        "Rau củ quả hữu cơ, thực phẩm sạch theo mùa",
-        "Sản phẩm chăm sóc sức khỏe, gia dụng xanh",
-        "Sản phẩm địa phương và thủ công tự nhiên"
+        "CHIA SẺ: Lan tỏa lối sống thuận tự nhiên đến từng gia đình",
+        "TRẢI NGHIỆM: Chân thực về sản vật bản địa và văn hóa ẩm thực truyền thống",
+        "KẾT NỐI: Cầu nối trực tiếp giữa người nông dân canh tác với người tiêu dùng",
+        "PHÂN PHỐI: Cung ứng nông sản sạch, phát triển Cộng đồng Tiêu dùng Thuần tự nhiên"
       ],
-      "highlight": "Tiêu chuẩn kiểm định nghiêm ngặt BMQ Standard"
+      "highlight": "Chia sẻ – Trải nghiệm – Kết nối – Phân phối"
     },
     {
       "id": 3,
       "number": "3",
-      "title": "KHÁCH HÀNG MỤC TIÊU",
-      "icon": "Users",
+      "title": "TRỤ CỘT 3: TIÊU CHUẨN BMQ",
+      "icon": "Wheat",
       "items": [
-        "Gia đình trẻ quan tâm sức khỏe & dinh dưỡng con trẻ",
-        "Người ăn chay, eat clean, theo đuổi lối sống lành",
-        "Người yêu thiên nhiên, thực hành sống xanh",
-        "Cộng đồng yêu nông nghiệp bền vững & hữu cơ"
+        "Nguồn hàng từ Cộng đồng Canh tác Thuận tự nhiên khắp các vùng miền",
+        "Lấy hệ tiêu chuẩn BMQ (Bách Mộc) làm nền tảng lựa chọn, đánh giá chất lượng",
+        "Đảm bảo canh tác nghiêm ngặt, minh bạch, trách nhiệm với đất đai và hệ sinh thái",
+        "Gạo ST25 Bách Mộc, rau củ hữu cơ hái sớm & thực phẩm sinh thái tử tế"
       ],
-      "highlight": "Tỷ lệ khách hàng trung thành quay lại > 75%"
-    },
-    {
-      "id": 4,
-      "number": "4",
-      "title": "DOANH THU DỰ KIẾN",
-      "icon": "TrendingUp",
-      "items": [
-        "Tháng đầu: 150 – 200 triệu VNĐ (Khai trương & truyền thông)",
-        "Tháng 6: 400 – 600 triệu VNĐ (Ổn định điểm bán & online)",
-        "Tháng 12: 700 triệu – 1 tỷ VNĐ (Mở rộng chuỗi cộng đồng)",
-        "Tăng trưởng nhờ cộng đồng và khách hàng trung thành"
-      ],
-      "highlight": "Dòng tiền dương từ tháng thứ 3 vận hành"
-    },
-    {
-      "id": 5,
-      "number": "5",
-      "title": "CHI PHÍ DỰ KIẾN",
-      "icon": "PieChart",
-      "items": [
-        "Mặt bằng & vận hành: 30%",
-        "Nhân sự chuyên môn & hỗ trợ: 25%",
-        "Nhập hàng & thu mua nông hộ: 40%",
-        "Marketing & trải nghiệm cộng đồng: 5%"
-      ],
-      "highlight": "Tối ưu chi phí nhờ nguồn hàng trực tiếp Bách Mộc"
-    },
-    {
-      "id": 6,
-      "number": "6",
-      "title": "KÊNH BÁN HÀNG",
-      "icon": "ShoppingBag",
-      "items": [
-        "Bán trực tiếp tại cửa hàng (Station trải nghiệm)",
-        "Kênh online: Facebook, Zalo, Website biostation.vn",
-        "Giao hàng tận nơi bằng đội xe giao vận xanh",
-        "Hợp tác với doanh nghiệp & cộng đồng (B2B Gift Set)"
-      ],
-      "highlight": "Omnichannel mượt mà tích hợp Zalo OA & Web App"
-    },
-    {
-      "id": 7,
-      "number": "7",
-      "title": "KẾ HOẠCH MARKETING",
-      "icon": "Megaphone",
-      "items": [
-        "Sự kiện khai trương & trải nghiệm dùng thử miễn phí",
-        "Workshop định kỳ: Làm rau mầm, trà hoa, sống xanh",
-        "Chương trình thành viên Bách Mộc Club",
-        "Nội dung truyền cảm hứng về sống thuận tự nhiên"
-      ],
-      "highlight": "Chạm cảm xúc – Lan tỏa từ giá trị tử tế"
+      "highlight": "100% Thuận tự nhiên, minh bạch với đất đai & hệ sinh thái"
     }
   ],
   "roadmapStages": [
@@ -325,15 +275,17 @@
       "id": "st-can-gio",
       "name": "BiO Station Cần Giờ (D51 Phước Lộc)",
       "type": "center",
-      "typeName": "Station Trải Nghiệm",
-      "address": "336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc)",
+      "typeName": "Trạm Trải Nghiệm Mẫu",
+      "address": "336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc), TP. HCM",
       "phone": "0388 500 500",
       "hours": "07:00 - 21:00 Hàng ngày",
       "status": "Đang vận hành",
       "features": [
+        "Trạm Trải Nghiệm Mẫu – Chạm để trở về",
+        "Đa giác quan: Nhìn - Chạm - Ngửi - Nếm sản vật bản địa",
         "Menu Cơm Hữu Cơ Bách Mộc (79k - 99k)",
-        "Cơm văn phòng hữu cơ (59k)",
-        "Bảng giá gạo hữu cơ quốc tế USDA, JAS, EU"
+        "Cơm văn phòng hữu cơ hộp giấy (59k)",
+        "Nông sản canh tác thuần tự nhiên chuẩn BMQ"
       ],
       "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80"
     },

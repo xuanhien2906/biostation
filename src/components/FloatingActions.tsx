@@ -22,7 +22,7 @@ export const FloatingActions: React.FC = () => {
 
         {/* 3D Motion Popup Card */}
         {showMapOptions && (
-          <div className="absolute bottom-full right-0 mb-4 w-72 sm:w-80 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-amber-200/80 overflow-hidden transform transition-all duration-300 origin-bottom-right z-50 animate-fade-in-up">
+          <div className="absolute bottom-full right-0 mb-4 w-72 sm:w-80 max-w-[calc(100vw-4rem)] bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-amber-200/80 overflow-hidden transform transition-all duration-300 origin-bottom-right z-50 animate-fade-in-up">
             {/* Popup Header with 3D gradient */}
             <div className="bg-gradient-to-r from-[#1b3d17] via-[#274e23] to-[#366731] text-white p-4 relative overflow-hidden">
               <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-400/20 rounded-full blur-xl pointer-events-none" />

@@ -24,9 +24,9 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { siteData } = useSite();
   const brandConfig = siteData?.brandConfig || {
-    topBannerText: '🔥 Khai trương Station Cộng Đồng mới – Ưu đãi 15% tất cả gạo hữu cơ Bách Mộc!',
-    hotline: '0908 123 456',
-    address: 'VP Bách Mộc – Phú Mỹ Hưng, Quận 7, TP. HCM',
+    topBannerText: '🔥 Trạm Trải Nghiệm Mẫu BiO Station Cần Giờ – 336 Lương Văn Nho, Cần Giờ – Hotline: 0388.500.500',
+    hotline: '0388 500 500',
+    address: '336 Lương Văn Nho, Xã Cần Giờ, TP. HCM',
   };
   const products = siteData?.products || [];
   const articles = siteData?.articles || [];
@@ -81,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <button
             onClick={() => handleNavClick('model')}
-            className="underline font-bold text-amber-300 hover:text-white transition-colors cursor-pointer text-[10px] sm:text-[11px]"
+            className="underline font-bold text-amber-300 hover:text-white transition-colors cursor-pointer text-[10px] sm:text-[11px] shrink-0 whitespace-nowrap"
           >
             Kế hoạch kinh doanh &rarr;
           </button>
@@ -191,7 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Controls: Cart & Mobile Toggle */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0 order-2 md:order-3">
-            <LanguageSwitcher />
+            <div className="hidden sm:flex"><LanguageSwitcher /></div>
 
             {/* Cart Button */}
             <button
@@ -214,6 +214,11 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
+          {/* Language Switcher in Mobile Drawer */}
+          <div className="pt-3 border-t border-[#e6dbc8] mt-2 px-2">
+            <p className="text-[11px] text-[#8c7868] font-semibold uppercase tracking-wider mb-2">Ngôn ngữ</p>
+            <LanguageSwitcher />
+          </div>
           </div>
         </div>
 
@@ -233,21 +238,11 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 {tab.id === 'model' && <Store className="w-4 h-4 text-amber-500" />}
-                {tab.label}
+                {tab.id === 'model' ? 'Mô Hình 3 Trụ Cột' : tab.label}
               </button>
             ))}
 
-            <button
-              onClick={() => handleNavClick('advisor')}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                activeTab === 'advisor'
-                  ? 'bg-amber-600 text-white font-semibold shadow-sm'
-                  : 'bg-[#e2d5c3] text-[#274e23] hover:bg-[#d8c7b2] font-semibold'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
-              BiO AI Bot
-            </button>
+
           </nav>
         </div>
       </div>
@@ -264,7 +259,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               {tab.id === 'model' && <Store className="w-4 h-4 text-amber-500" />}
-              {tab.label}
+              {tab.id === 'model' ? 'Mô Hình 3 Trụ Cột' : tab.label}
             </button>
           ))}
         </div>

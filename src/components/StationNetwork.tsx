@@ -12,6 +12,10 @@ import {
   Send,
   Sparkles,
   Users,
+  Eye,
+  Sprout,
+  ShieldCheck,
+  Utensils,
 } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
 import { sendOrderEmail } from '../utils/emailService';
@@ -72,6 +76,91 @@ export const StationNetwork: React.FC = () => {
             BiO Station kết nối từ nông trại sinh thái Bách Mộc đến các trạm điểm tại khu dân cư,
             mang nông sản tươi hái trong ngày tới từng căn bếp gia đình.
           </p>
+        </div>
+
+        {/* FLAGSHIP MODEL STATION HIGHLIGHT */}
+        <div className="bg-[#274e23] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-[#1e3e1a] relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8 space-y-4 text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-wider">
+                <Store className="w-4 h-4 text-amber-400" />
+                <span>Trạm Trải Nghiệm Mẫu Điển Hình</span>
+              </div>
+
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black font-serif text-white">
+                  BiO Station Cần Giờ – Chạm Để Trở Về
+                </h2>
+                <p className="text-sm sm:text-base font-serif italic text-amber-200 mt-1">
+                  "Trở về với thiên nhiên, với bản thể gốc của chính mình"
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div className="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/10">
+                  <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Đa Giác Quan</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-100 mt-1">
+                    Nhìn - Chạm - Ngửi - Nếm sản vật thuận mùa đạt chuẩn BMQ.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/10">
+                  <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <Utensils className="w-3.5 h-3.5" />
+                    <span>Bữa Ăn Trải Nghiệm</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-100 mt-1">
+                    Mâm cơm hữu cơ 79k - 99k, cơm trưa văn phòng hộp giấy 59k.
+                  </p>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/10">
+                  <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                    <Sprout className="w-3.5 h-3.5" />
+                    <span>Sống Chậm</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-100 mt-1">
+                    Không gian an lành kết nối thiên nhiên và giá trị nguyên sơ.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs text-emerald-100 border-t border-emerald-800/80">
+                <p className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>Địa chỉ:</strong> 336 Lương Văn Nho, Xã Cần Giờ, TP. HCM (D51 Phước Lộc)</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>Hotline:</strong> 0388.500.500</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col items-center justify-center bg-white/10 backdrop-blur p-5 rounded-2xl border border-white/15 text-center space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-2xl shadow-lg">
+                🌿
+              </div>
+              <div>
+                <h4 className="font-serif font-bold text-base text-white">Ghé Thăm Trạm Cần Giờ</h4>
+                <p className="text-xs text-emerald-200 mt-1">
+                  Mở cửa đón khách trải nghiệm 07:00 - 21:00 hàng ngày
+                </p>
+              </div>
+              <a
+                href="tel:0388500500"
+                className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow transition-all cursor-pointer"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>Gọi Đặt Bàn / Đặt Hàng Ngay</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* Filter Category Pills */}

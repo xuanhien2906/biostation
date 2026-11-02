@@ -9,7 +9,6 @@ import { ProductStore } from './components/ProductStore';
 import { CartDrawer } from './components/CartDrawer';
 import { RecipeDirectory } from './components/RecipeDirectory';
 import { KnowledgeBase } from './components/KnowledgeBase';
-import { AiAdvisor } from './components/AiAdvisor';
 import { SuccessStories } from './components/SuccessStories';
 import { ChaoLuaMe } from './components/ChaoLuaMe';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -125,6 +124,7 @@ export default function App() {
               setActiveTab('network');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
+            setActiveTab={setActiveTab}
           />
         )}
 
@@ -147,7 +147,6 @@ export default function App() {
 
         {activeTab === 'quiz' && <BodyTypeQuiz onGoToShop={() => setActiveTab('shop')} />}
 
-        {activeTab === 'advisor' && <AiAdvisor />}
 
         {activeTab === 'stories' && <SuccessStories />}
 

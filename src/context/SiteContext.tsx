@@ -271,10 +271,21 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [navConfig, setNavConfig] = useState<NavConfig>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_nav`);
-    return saved ? JSON.parse(saved) : ((SITE_CONFIG_DATA as any).navConfig || {
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.tabs)) {
+          parsed.tabs = parsed.tabs.map((t: any) =>
+            t.id === 'model' ? { ...t, label: 'Mô Hình 3 Trụ Cột' } : t
+          );
+          return parsed;
+        }
+      } catch {}
+    }
+    return ((SITE_CONFIG_DATA as any).navConfig || {
       tabs: [
         { id: 'home', label: 'Tổng Quan' },
-        { id: 'model', label: 'Mô Hình 7 Trụ Cột' },
+        { id: 'model', label: 'Mô Hình 3 Trụ Cột' },
         { id: 'chaoluame', label: 'Cháo Lúa Mẹ' },
         { id: 'shop', label: 'Cửa Hàng Hữu Cơ' },
         { id: 'network', label: 'Trạm Giao Điểm' },
@@ -342,12 +353,29 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [businessMission, setBusinessMissionState] = useState(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_mission`);
-    return saved ? JSON.parse(saved) : (SITE_CONFIG_DATA.businessMission || BUSINESS_MISSION);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.blocksSectionTitle && (parsed.blocksSectionTitle.includes('7') || parsed.blocksSectionTitle.includes('Bảy'))) {
+          parsed.blocksSectionTitle = '3 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station';
+        }
+        return { ...BUSINESS_MISSION, ...parsed, blocksSectionTitle: '3 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station' };
+      } catch {}
+    }
+    return (SITE_CONFIG_DATA.businessMission || BUSINESS_MISSION);
   });
 
   const [businessBlocks, setBusinessBlocks] = useState<BusinessBlock[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_blocks`);
-    return saved ? JSON.parse(saved) : BUSINESS_BLOCKS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 3 && parsed[0]?.title?.includes('BẢN CHẤT')) {
+          return parsed;
+        }
+      } catch {}
+    }
+    return BUSINESS_BLOCKS;
   });
 
   const [roadmapStages, setRoadmapStages] = useState<RoadmapStage[]>(() => {
@@ -493,6 +521,44 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_stories`, JSON.stringify(stories));
   }, [stories]);
+
+  // FORCED SANITIZATION: Eliminate any cached "7 Trụ Cột" or outdated 7 blocks from localStorage
+  useEffect(() => {
+    try {
+      const savedNav = localStorage.getItem(`${STORAGE_KEY}_nav`);
+      if (savedNav) {
+        const parsed = JSON.parse(savedNav);
+        if (parsed?.tabs?.some((t: any) => t.id === 'model' && t.label !== 'Mô Hình 3 Trụ Cột')) {
+          parsed.tabs = parsed.tabs.map((t: any) =>
+            t.id === 'model' ? { ...t, label: 'Mô Hình 3 Trụ Cột' } : t
+          );
+          localStorage.setItem(`${STORAGE_KEY}_nav`, JSON.stringify(parsed));
+          setNavConfig(parsed);
+        }
+      }
+
+      const savedBlocks = localStorage.getItem(`${STORAGE_KEY}_blocks`);
+      if (savedBlocks) {
+        const parsed = JSON.parse(savedBlocks);
+        if (!Array.isArray(parsed) || parsed.length !== 3 || !parsed[0]?.title?.includes('BẢN CHẤT')) {
+          localStorage.setItem(`${STORAGE_KEY}_blocks`, JSON.stringify(BUSINESS_BLOCKS));
+          setBusinessBlocks(BUSINESS_BLOCKS);
+        }
+      }
+
+      const savedMission = localStorage.getItem(`${STORAGE_KEY}_mission`);
+      if (savedMission) {
+        const parsed = JSON.parse(savedMission);
+        if (parsed.blocksSectionTitle?.includes('7') || parsed.blocksSectionTitle?.includes('Bảy')) {
+          parsed.blocksSectionTitle = '3 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station';
+          localStorage.setItem(`${STORAGE_KEY}_mission`, JSON.stringify(parsed));
+          setBusinessMissionState(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn('Cache migration warning:', e);
+    }
+  }, []);
 
   // ===== AUTO-SYNC & BACKUP SYSTEM =====
   // Track whether the initial data load from Supabase has completed.
@@ -662,7 +728,26 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
               }
               setExperienceMealConfig(config);
             }
-            if (parsed.businessMission) setBusinessMissionState(parsed.businessMission);
+            if (parsed.businessMission) {
+              const m = { ...parsed.businessMission };
+              if (m.blocksSectionTitle && (m.blocksSectionTitle.includes('7') || m.blocksSectionTitle.includes('Bảy'))) {
+                m.blocksSectionTitle = '3 Trụ Cột Trong Mô Hình Kinh Doanh BiO Station';
+              }
+              setBusinessMissionState(m);
+            }
+            if (parsed.businessBlocks) {
+              if (Array.isArray(parsed.businessBlocks) && parsed.businessBlocks.length === 3) {
+                setBusinessBlocks(parsed.businessBlocks);
+              } else {
+                setBusinessBlocks(BUSINESS_BLOCKS);
+              }
+            }
+            if (parsed.navConfig && parsed.navConfig.tabs) {
+              parsed.navConfig.tabs = parsed.navConfig.tabs.map((t: any) =>
+                t.id === 'model' ? { ...t, label: 'Mô Hình 3 Trụ Cột' } : t
+              );
+              setNavConfig(parsed.navConfig);
+            }
             if (parsed.stations && Array.isArray(parsed.stations)) setStations(parsed.stations);
             if (parsed.bioCategories && Array.isArray(parsed.bioCategories)) setBioCategories(parsed.bioCategories);
             if (parsed.products && Array.isArray(parsed.products) && parsed.products.length > 0) setProducts(parsed.products);

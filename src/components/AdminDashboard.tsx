@@ -1197,7 +1197,7 @@ const ALL_ADMIN_TABS_LIST: Array<{ id: AdminTabId; label: string; icon: string }
   { id: 'theme', label: 'Giao Diện & Font Chữ', icon: '🎨' },
   { id: 'payment', label: 'Thanh Toán & QR Code', icon: '💳' },
   { id: 'experience_meal', label: 'Menu Cơm Cháo', icon: '🍴' },
-  { id: 'business', label: 'Mô Hình 7 Trụ Cột', icon: '🏫' },
+  { id: 'business', label: 'Mô Hình 3 Trụ Cột', icon: '🏫' },
   { id: 'orders', label: 'Đơn Hàng & Mâm Cơm', icon: '📦' },
   { id: 'products', label: 'Sản Phẩm Nông Sản', icon: '🌾' },
   { id: 'stations', label: 'Trạm BiO Station', icon: '📍' },
@@ -3268,7 +3268,7 @@ export const AdminDashboard: React.FC = () => {
                 activeTab === 'business' ? 'bg-[#274e23] text-white shadow-md' : 'text-[#5c4d43] hover:bg-[#f2e9dc]'
               }`}
             >
-              <Store className="w-4 h-4" /> Mô Hình 7 Trụ Cột
+              <Store className="w-4 h-4" /> Mô Hình 3 Trụ Cột
             </button>
           )}
 
@@ -4058,14 +4058,14 @@ export const AdminDashboard: React.FC = () => {
                   <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 1: Tiêu đề</label>
                   <input
                     type="text"
-                    value={siteData.heroConfig.card1Title || 'Kế Hoạch Kinh Doanh 7 Trụ Cột'}
+                    value={siteData.heroConfig.card1Title || 'Mô Hình 3 Trụ Cột Chiến Lược'}
                     onChange={(e) => updateHeroConfig({ card1Title: e.target.value })}
                     className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white mb-2"
                   />
                   <label className="text-[11px] font-bold text-[#274e23] block mb-1">Thẻ Hero 1: Mô tả</label>
                   <textarea
                     rows={2}
-                    value={siteData.heroConfig.card1Desc || 'Mô hình Trải nghiệm – Bán lẻ – Doanh thu & Chi phí dự kiến.'}
+                    value={siteData.heroConfig.card1Desc || 'Bản chất & Trải nghiệm – Sứ mệnh & Vận hành – Tiêu chuẩn BMQ.'}
                     onChange={(e) => updateHeroConfig({ card1Desc: e.target.value })}
                     className="w-full text-xs p-2 rounded-lg border border-[#dcd0bf] bg-white"
                   />
@@ -5151,7 +5151,7 @@ export const AdminDashboard: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-bold font-serif text-[#274e23] flex items-center gap-2">
                     <Store className="w-5 h-5 text-amber-600" />
-                    Sứ Mệnh & Bảy Trụ Cột Mô Hình Kinh Doanh ({siteData.businessBlocks?.length || 0})
+                    Sứ Mệnh & 3 Trụ Cột Mô Hình Kinh Doanh ({siteData.businessBlocks?.length || 0})
                   </h3>
                   <p className="text-xs text-[#7a6858] mt-1">
                     Quản lý các trụ cột chiến lược của BiO Station. Bạn có thể chỉnh sửa, thêm mới, xóa hoặc thay đổi nội dung từng mục.
@@ -5225,7 +5225,7 @@ export const AdminDashboard: React.FC = () => {
 
                 <div>
                   <label className="text-xs font-semibold text-[#5c4d43] block mb-1">
-                    Tiêu Đề Phần Các Khối (VD: 7 Trụ Cột...)
+                    Tiêu Đề Phần Các Khối (VD: 3 Trụ Cột...)
                   </label>
                   <input
                     type="text"
@@ -5655,13 +5655,13 @@ export const AdminDashboard: React.FC = () => {
             {/* Bottom Save Button */}
             <div className="pt-4 border-t border-[#f0e6d8] flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-xs text-[#7a6858]">
-                💡 <strong>Lưu ý:</strong> Bấm nút bên phải để lưu toàn bộ các thay đổi về Sứ mệnh và Bảy trụ cột mô hình kinh doanh. Mọi thay đổi sẽ tự động làm mới và hiển thị trên toàn hệ thống.
+                💡 <strong>Lưu ý:</strong> Bấm nút bên phải để lưu toàn bộ các thay đổi về Sứ mệnh và 3 trụ cột mô hình kinh doanh. Mọi thay đổi sẽ tự động làm mới và hiển thị trên toàn hệ thống.
               </p>
               <button
-                onClick={() => handleSaveAndRefresh('Đã lưu cấu hình sứ mệnh & 7 trụ cột mô hình kinh doanh!')}
+                onClick={() => handleSaveAndRefresh('Đã lưu cấu hình sứ mệnh & 3 trụ cột mô hình kinh doanh!')}
                 className="w-full sm:w-auto px-6 py-3 bg-[#274e23] hover:bg-[#1f381c] text-white font-bold text-xs rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shrink-0"
               >
-                <Save className="w-4 h-4 text-amber-300" /> Lưu 7 Trụ Cột Mô Hình & Làm Mới Trang
+                <Save className="w-4 h-4 text-amber-300" /> Lưu 3 Trụ Cột Mô Hình & Làm Mới Trang
               </button>
             </div>
           </div>
