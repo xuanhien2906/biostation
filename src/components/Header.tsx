@@ -61,39 +61,31 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#fbf8f3]/95 backdrop-blur-md border-b border-[#e6dbc8] text-[#2d241e] shadow-sm">
       {/* Top Banner Announcement */}
-      <div className="bg-[#274e23] text-emerald-50 px-4 py-1.5 text-xs text-center font-medium flex items-center justify-between max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div className="hidden md:flex items-center gap-2 text-emerald-200 text-[11px]">
-          <MapPin className="w-3.5 h-3.5 text-amber-400" />
-          <span>{brandConfig.headquarters}</span>
+      <div className="bg-[#274e23] text-emerald-50 px-3 sm:px-6 lg:px-8 py-2 text-xs font-medium flex items-center justify-between max-w-7xl mx-auto gap-2 sm:gap-4">
+        {/* Left: Địa chỉ trạm mẫu (Hiển thị màn hình lớn) */}
+        <div className="hidden lg:flex items-center gap-1.5 text-emerald-200 text-[11px] shrink-0">
+          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>{brandConfig.headquarters || 'Trạm Mẫu: 336 Lương Văn Nho, Cần Giờ'}</span>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 mx-auto md:mx-0">
-          <div className="flex flex-col items-center text-center leading-tight">
-            <div className="flex items-center gap-1.5">
-              <Sprout className="w-3 h-3 text-amber-300 animate-pulse shrink-0" />
-              <span className="font-semibold">{brandConfig.topBannerText.split(/ – | - |\|/)[0]}</span>
-            </div>
-            {brandConfig.topBannerText.split(/ – | - |\|/).length > 1 && (
-              <span className="font-semibold text-amber-300 mt-0.5">
-                {brandConfig.topBannerText.split(/ – | - |\|/).slice(1).join(' - ')}
-              </span>
-            )}
-          </div>
-          <button
-            onClick={() => handleNavClick('model')}
-            className="underline font-bold text-amber-300 hover:text-white transition-colors cursor-pointer text-[10px] sm:text-[11px] shrink-0 whitespace-nowrap"
-          >
-            Kế hoạch kinh doanh &rarr;
-          </button>
+        {/* Center: Câu chào mừng khách hàng đến với trang */}
+        <div className="flex items-center justify-center gap-1.5 text-center flex-1 min-w-0">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
+          <span className="font-semibold text-emerald-50 text-xs sm:text-[13px]">
+            Chào mừng Quý khách đến với <strong className="text-amber-300 font-bold">BiO Station</strong> – Chạm để trở về
+          </span>
         </div>
 
-        <div className="hidden lg:flex flex-col items-end text-emerald-100 text-[11px] font-semibold leading-tight">
-          <div className="flex items-center gap-1.5">
-            <Phone className="w-3 h-3 text-amber-400" />
-            <span>Hotline</span>
-          </div>
-          <span className="text-amber-300 tracking-wider">{brandConfig.hotline}</span>
-        </div>
+        {/* Right: Hotline trên 1 hàng duy nhất */}
+        <a
+          href={`tel:${(brandConfig.hotline || '0388500500').replace(/\s+/g, '')}`}
+          className="flex items-center gap-1 sm:gap-1.5 text-emerald-100 hover:text-white transition-colors text-xs font-semibold whitespace-nowrap shrink-0"
+          title={`Gọi Hotline: ${brandConfig.hotline || '0388 500 500'}`}
+        >
+          <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span className="hidden sm:inline">Hotline:</span>
+          <span className="text-amber-300 font-bold tracking-wider">{brandConfig.hotline || '0388 500 500'}</span>
+        </a>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
