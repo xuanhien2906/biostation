@@ -379,14 +379,39 @@ Hotline: ${siteData.paymentConfig?.offlineCallPhone || siteData.paymentConfig?.s
             của gạo Bách Mộc và nông sản thuần tự nhiên.
           </p>
 
-          <div className="pt-2 border-t border-white/15 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-emerald-100">
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc)</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Hotline đặt món: {hotlineNum}</span>
+          <div className="mt-4 pt-4 border-t border-white/20 bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-amber-400/30 shadow-inner">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 text-amber-300 font-extrabold text-xs sm:text-sm uppercase tracking-wide">
+                  <Store className="w-4 h-4 text-amber-400 shrink-0 animate-bounce" />
+                  <span>Mời Quý Khách Tới Trải Nghiệm Trực Tiếp Tại BiO Station Cần Giờ</span>
+                </div>
+                <p className="text-xs sm:text-sm text-emerald-50 font-medium leading-relaxed">
+                  📍 Địa chỉ: <strong>336 Lương Văn Nho, Xã Cần Giờ (D51 Khu Dân cư Phước Lộc), TP. HCM</strong>
+                </p>
+                <p className="text-[11px] sm:text-xs text-amber-200/90">
+                  Thưởng thức trực tiếp bữa cơm hữu cơ nóng hổi, trà thảo mộc & cảm nhận nông sản thuần tự nhiên (07:00 – 21:00 hàng ngày).
+                </p>
+              </div>
+
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full lg:w-auto shrink-0">
+                <a
+                  href="tel:0388500500"
+                  className="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-105 cursor-pointer whitespace-nowrap"
+                >
+                  <Phone className="w-4 h-4 fill-slate-950" />
+                  <span>Gọi: 0388 500 500</span>
+                </a>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=336+L%C6%B0%C6%A1ng+V%C4%83n+Nho,+C%E1%BA%A7n+Gi%E1%BB%9D,+TP.+H%E1%BB%93+Ch%C3%AD+Minh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-initial px-4 py-3 rounded-xl bg-white hover:bg-emerald-50 text-[#274e23] font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-105 cursor-pointer whitespace-nowrap"
+                >
+                  <MapPin className="w-4 h-4 text-red-600" />
+                  <span>Xem Vị Trí Google Maps</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Product } from '../types';
+import { PRODUCTS } from '../data/products';
 import { ShoppingBag, Star, CheckCircle, ShieldCheck, Info, X, Plus, Sprout, Award, Phone, MapPin, Store } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
 import { ExperienceMealBuilder } from './ExperienceMealBuilder';
@@ -11,6 +12,26 @@ interface ProductStoreProps {
   onClearSelectedProductId?: () => void;
 }
 
+
+const LOCAL_PRODUCT_IMAGE_MAP: Record<string, string> = {
+  'prod-gao-trang-xat-doi': '/gao-trang-xat-doi.jpg',
+  'prod-gao-trang-nguyen-cam': '/gao-trang-nguyen-cam.jpg',
+  'prod-gao-do-nguyen-cam': '/gao-do-nguyen-cam.jpg',
+  'prod-gao-tim-nguyen-cam': '/gao-tim-nguyen-cam.jpg',
+  'prod-gao-lua-me-yang': '/gao-lua-me-yang.jpg',
+  'prod-gao-vung-dem-xat-doi': '/gao-vung-dem-xat-doi.jpg',
+  'prod-gao-vung-dem-nguyen-cam': '/gao-vung-dem-nguyen-cam.jpg',
+  'prod-nuoc-chiet-gao-len-men': '/nuoc-chiet-gao-len-men.jpg',
+  'prod-vien-dan-mang-gao': '/vien-dan-mang-gao.jpg',
+  'prod-mang-cam-gao-huu-co': '/mang-cam-gao-huu-co.jpg',
+  'prod-mang-gao-vung-dem': '/mang-gao-vung-dem.jpg',
+  'prod-bot-chuoi-hot': '/bot-chuoi-hot-rung.jpg',
+  'prod-nuoc-ep-nhau-nano': '/nuoc-ep-nhau-nano.jpg',
+  'prod-tra-thach-chau': '/tra-thach-chau.jpg',
+  'prod-cafe-huu-co-dang-farm': '/cafe-dang-farm.jpg',
+};
+const MAP_URL_CAN_GIO = 'https://www.google.com/maps/search/?api=1&query=336+L%C6%B0%C6%A1ng+V%C4%83n+Nho,+C%E1%BA%A7n+Gi%E1%BB%9D,+TP.+H%E1%BB%93+Ch%C3%AD+Minh';
+
 export const ProductStore: React.FC<ProductStoreProps> = ({
   onAddToCart,
   selectedProductId,
@@ -18,8 +39,18 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
   onClearSelectedProductId,
 }) => {
   const { siteData } = useSite();
-  const rawProducts = siteData?.products || [];
-  const products = rawProducts.filter(p => !p.is_hidden);
+  const rawProducts = siteData?.products && siteData.products.length > 0 ? siteData.products : PRODUCTS;
+  const mergedProducts: Product[] = PRODUCTS.map((defaultProd) => {
+    const found = rawProducts.find((p) => p.id === defaultProd.id);
+    if (!found) return { ...defaultProd, image: LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || defaultProd.image };
+    return {
+      ...defaultProd,
+      ...found,
+      image: LOCAL_PRODUCT_IMAGE_MAP[defaultProd.id] || found.image || defaultProd.image,
+    };
+  });
+  const extraProducts = rawProducts.filter((p) => !p.is_hidden && !PRODUCTS.some((dp) => dp.id === p.id));
+  const products = [...mergedProducts.filter(p => !p.is_hidden), ...extraProducts];
 
   const [activeCategory, setActiveCategory] = useState<string>(selectedCategory);
   const [activeModalProduct, setActiveModalProduct] = useState<Product | null>(
@@ -83,8 +114,8 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
         </p>
       </div>
 
-      {/* Offline Mode Banner: Menu & Pricing Only */}
-      {!siteData?.paymentConfig?.isOnlinePaymentEnabled && (
+      {/* Direct Station Experience Invitation Banner */}
+      {(
         <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100/70 p-4 sm:p-5 rounded-3xl border border-amber-300 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
             <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-900 shrink-0 mt-0.5 border border-amber-400/40">
@@ -115,13 +146,13 @@ export const ProductStore: React.FC<ProductStoreProps> = ({
               <span>Gọi Hotline: {siteData?.paymentConfig?.offlineCallPhone || siteData?.paymentConfig?.supportPhone || siteData?.brandConfig?.hotline || '0388 500 500'}</span>
             </a>
             <a
-              href={siteData?.brandConfig?.mapLinkStore || siteData?.brandConfig?.mapLinkCenter || 'https://maps.google.com'}
+              href={MAP_URL_CAN_GIO}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 md:flex-initial px-3.5 py-2.5 rounded-xl bg-white hover:bg-[#f0e6d8] text-[#274e23] border border-[#274e23]/30 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
               <MapPin className="w-3.5 h-3.5 text-amber-700" />
-              <span>Ghé Điểm Trạm</span>
+              <span>Vị Trí BiO Station Cần Giờ</span>
             </a>
           </div>
         </div>
