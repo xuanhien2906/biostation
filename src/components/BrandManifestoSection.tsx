@@ -34,7 +34,7 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
         
         {/* GRAND MANIFESTO HERO HEADER */}
         <div className="text-center max-w-4xl mx-auto space-y-5">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#274e23] text-amber-300 border border-[#1e3e1a] text-xs font-bold uppercase tracking-widest shadow-sm">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-1.5 rounded-full bg-[#274e23] text-amber-300 border border-[#1e3e1a] text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest shadow-sm whitespace-nowrap">
             <Sprout className="w-4 h-4 text-amber-400" />
             <span>TUYÊN NGÔN THƯƠNG HIỆU BiO STATION</span>
           </div>
@@ -43,24 +43,26 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-serif text-[#274e23] tracking-tight leading-none">
               Chạm Để Trở Về
             </h1>
-            <p className="text-lg sm:text-2xl md:text-3xl font-bold font-serif text-[#a66e2c] italic max-w-3xl mx-auto leading-snug">
+            <p className="text-base sm:text-2xl md:text-3xl font-bold font-serif text-[#a66e2c] italic max-w-3xl mx-auto leading-snug text-balance">
               Trở về với thiên nhiên, với bản thể gốc của chính mình
             </p>
           </div>
 
-          <p className="text-sm sm:text-base text-[#5c4d43] leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#5c4d43] leading-relaxed max-w-2xl mx-auto text-balance">
             Là hệ thống trạm trải nghiệm kết nối con người với thiên nhiên qua nông sản thuần tự nhiên. 
             Nơi bạn được sống chậm để cảm nhận sự sống và tìm về giá trị nguyên sơ an lành nhất.
           </p>
 
           {/* 4 SENSES BADGE STRIP */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-[#dcd0bf] shadow-sm text-xs text-[#274e23] font-bold">
+          <div className="inline-flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 bg-white/85 backdrop-blur-md px-4 py-2.5 sm:py-2 rounded-2xl border border-[#dcd0bf] shadow-sm text-xs text-[#274e23] font-bold max-w-full">
             <span className="text-amber-800 uppercase tracking-wider text-[11px]">Trải nghiệm 4 giác quan:</span>
-            <span className="px-2.5 py-1 rounded-lg bg-[#274e23]/10">👁️ Nhìn</span>
-            <span className="px-2.5 py-1 rounded-lg bg-[#274e23]/10">✋ Chạm</span>
-            <span className="px-2.5 py-1 rounded-lg bg-[#274e23]/10">👃 Ngửi</span>
-            <span className="px-2.5 py-1 rounded-lg bg-[#274e23]/10">👅 Nếm</span>
-            <span className="text-[11px] text-[#7a6858] font-normal hidden sm:inline">• Sản vật thuận mùa đạt chuẩn hữu cơ cao nhất</span>
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-nowrap">
+              <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-[#274e23]/10 whitespace-nowrap">👁️ Nhìn</span>
+              <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-[#274e23]/10 whitespace-nowrap">✋ Chạm</span>
+              <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-[#274e23]/10 whitespace-nowrap">👃 Ngửi</span>
+              <span className="px-2 sm:px-2.5 py-1 rounded-lg bg-[#274e23]/10 whitespace-nowrap">👅 Nếm</span>
+            </div>
+            <span className="text-[11px] text-[#7a6858] font-normal hidden md:inline">• Sản vật thuận mùa đạt chuẩn hữu cơ cao nhất</span>
           </div>
 
           {/* MAIN CTAS */}
@@ -71,7 +73,7 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
                   setActiveTab('model');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all hover:scale-105 cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#274e23] hover:bg-[#1e3e1a] text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg transition-all hover:scale-105 cursor-pointer"
               >
                 <Store className="w-4 h-4 text-amber-300" />
                 <span>Xem Mô Hình Kinh Doanh</span>
@@ -85,7 +87,7 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
                   setActiveTab('shop');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow hover:scale-105 cursor-pointer"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow hover:scale-105 cursor-pointer"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Nông Sản BMQ Qualified</span>
@@ -94,7 +96,7 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
 
             <button
               onClick={() => setShowPosterModal(true)}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#274e23] hover:text-amber-800 bg-white/90 hover:bg-white px-5 py-3.5 rounded-xl border border-[#dcd0bf] transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-[#274e23] hover:text-amber-800 bg-white/90 hover:bg-white px-5 py-3.5 rounded-xl border border-[#dcd0bf] transition-all shadow-sm cursor-pointer"
             >
               <Maximize2 className="w-4 h-4 text-amber-600" />
               <span>Xem Poster Tuyên Ngôn Gốc</span>
@@ -130,19 +132,19 @@ export const BrandManifestoSection: React.FC<BrandManifestoSectionProps> = ({ se
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Là hệ thống trạm trải nghiệm:</strong> Kết nối con người với thiên nhiên qua nông sản thuần tự nhiên.
+                    <strong>Là hệ thống trạm trải nghiệm:</strong> Kết nối con người với thiên nhiên qua <span className="whitespace-nowrap">nông sản thuần tự nhiên.</span>
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Trải nghiệm đa giác quan:</strong> Nơi bạn được <span className="font-bold text-[#274e23]">Nhìn – Chạm – Ngửi – Nếm</span> sản vật thuận mùa, đạt chuẩn hữu cơ cao nhất.
+                    <strong>Trải nghiệm đa giác quan:</strong> Nơi bạn được <span className="font-bold text-[#274e23] whitespace-nowrap">Nhìn – Chạm – Ngửi – Nếm</span> sản vật thuận mùa, đạt chuẩn <span className="whitespace-nowrap">hữu cơ cao nhất.</span>
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
-                    <strong>Không gian sống chậm:</strong> Để cảm nhận sự sống và tìm về giá trị nguyên sơ.
+                    <strong>Không gian sống chậm:</strong> Để cảm nhận sự sống và tìm về <span className="whitespace-nowrap">giá trị nguyên sơ.</span>
                   </span>
                 </li>
               </ul>

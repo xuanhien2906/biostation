@@ -184,7 +184,7 @@ export const BusinessModelCanvas: React.FC<BusinessModelCanvasProps> = ({
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />
-                    <span>Nơi bạn được <strong>Nhìn - Chạm - Ngửi - Nếm</strong> sản vật thuận mùa, đạt chuẩn hữu cơ cao nhất.</span>
+                    <span>Nơi bạn được <strong className="whitespace-nowrap">Nhìn - Chạm - Ngửi - Nếm</strong> sản vật thuận mùa, đạt chuẩn hữu cơ cao nhất.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0" />

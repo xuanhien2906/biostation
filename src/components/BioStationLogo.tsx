@@ -38,11 +38,10 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
   const baseHeight = brandConfig.logoHeight ?? 44;
 
   const imageTransformStyle: React.CSSProperties = {
-    height: `${baseHeight}px`,
-    transform: (scale !== 1 || offsetX !== 0 || offsetY !== 0) ? `translate(${offsetX}px, ${offsetY}px) scale(${scale})` : 'none',
-    transformOrigin: 'center center',
+    '--logo-h': `${baseHeight}px`,
+    '--logo-transform': (scale !== 1 || offsetX !== 0 || offsetY !== 0) ? `translate(${offsetX}px, ${offsetY}px) scale(${scale})` : 'none',
     transition: 'transform 0.05s ease-out',
-  };
+  } as React.CSSProperties;
 
   return (
     <div className={`inline-flex flex-col items-center justify-center ${className}`}>
@@ -53,7 +52,7 @@ export const BioStationLogo: React.FC<BioStationLogoProps> = ({
               src={imageUrl}
               alt={brandConfig.logoMainText || 'Logo'}
               style={imageTransformStyle}
-              className={isDark ? "h-16 sm:h-20 w-auto object-contain select-none" : "w-auto max-w-none object-contain select-none"} onError={(e) => { e.currentTarget.style.display = "none"; }}
+              className={isDark ? "h-16 sm:h-20 w-auto object-contain select-none" : "h-10 md:h-[var(--logo-h)] w-auto max-w-[165px] sm:max-w-[200px] md:max-w-none object-contain select-none transform-none md:[transform:var(--logo-transform)] origin-center"} onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
           </div>
         ) : (

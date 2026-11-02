@@ -214,11 +214,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-          {/* Language Switcher in Mobile Drawer */}
-          <div className="pt-3 border-t border-[#e6dbc8] mt-2 px-2">
-            <p className="text-[11px] text-[#8c7868] font-semibold uppercase tracking-wider mb-2">Ngôn ngữ</p>
-            <LanguageSwitcher />
-          </div>
           </div>
         </div>
 
@@ -262,6 +257,10 @@ export const Header: React.FC<HeaderProps> = ({
               {tab.id === 'model' ? 'Mô Hình 3 Trụ Cột' : tab.label}
             </button>
           ))}
+          <div className="pt-3 border-t border-[#e6dbc8] mt-2 px-2">
+            <p className="text-[11px] text-[#8c7868] font-semibold uppercase tracking-wider mb-2">Ngôn ngữ / Language</p>
+            <LanguageSwitcher />
+          </div>
         </div>
       )}
     </header>

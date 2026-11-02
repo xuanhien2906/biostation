@@ -50,7 +50,7 @@ export const DEFAULT_MAIN_MEAL_SETS = [
     badge: "Trải Nghiệm Tiêu Chuẩn",
     image: "/mam-com-trai-nghiem.jpg",
     flavor:
-      'Không gian sạch sẽ, thưởng thức trọn vẹn "Hương mộc mạc, vị tự nhiên" của gạo Bách Mộc và nông sản thuần tự nhiên.',
+      'Không gian sạch sẽ, thưởng thức trọn vẹn <span className="whitespace-nowrap">"Hương mộc mạc, vị tự nhiên"</span> của gạo Bách Mộc và nông sản thuần tự nhiên.',
     details: [
       "Gạo hữu cơ Bách Mộc thơm dẻo",
       "Món mặn kho / chiên thuần tự nhiên",
@@ -367,7 +367,7 @@ Hotline: ${siteData.paymentConfig?.offlineCallPhone || siteData.paymentConfig?.s
               MENU CƠM HỮU CƠ BÁCH MỘC
             </h2>
             <div className="text-amber-300 font-serif italic text-lg sm:text-xl font-bold mt-1">
-              Trải nghiệm 79.000đ – 99.000đ • Cơm văn phòng 59.000đ
+              <span className="whitespace-nowrap">Trải nghiệm 79.000đ – 99.000đ</span> • <span className="whitespace-nowrap">Cơm văn phòng 59.000đ</span>
             </div>
           </div>
 
